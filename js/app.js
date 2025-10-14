@@ -15,7 +15,8 @@ function determineInitialApiBaseUrl() {
       return LOCAL_API_URL;
     }
 
-    if (hostname.endsWith('.pages.dev')) {
+    // ✅ 所有线上环境都使用 Worker API
+    if (hostname.endsWith('.pages.dev') || hostname.endsWith('.sakamichi-tools.cn')) {
       return FALLBACK_WORKER_API_URL;
     }
 
