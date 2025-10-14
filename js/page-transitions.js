@@ -11,7 +11,7 @@ let isTransitioning = false;
  * @param {Function} callback - 切换内容的回调函数
  * @param {number} duration - 动画持续时间(ms)
  */
-async function smoothTransition(callback, duration = 250) {
+async function smoothTransition(callback, duration = 750) {
   if (isTransitioning) return;
 
   isTransitioning = true;
@@ -21,7 +21,7 @@ async function smoothTransition(callback, duration = 250) {
     // 淡出当前内容 - 使用cubic-bezier缓动
     container.style.transition = `opacity ${duration}ms cubic-bezier(0.4, 0, 0.2, 1), transform ${duration}ms cubic-bezier(0.4, 0, 0.2, 1)`;
     container.style.opacity = '0';
-    container.style.transform = 'translateY(-8px)';
+    container.style.transform = 'translateY(-10px)';
 
     // 等待淡出完成
     await new Promise(resolve => setTimeout(resolve, duration));
@@ -31,6 +31,12 @@ async function smoothTransition(callback, duration = 250) {
       await callback();
     }
 
+    // 重置 transition，准备淡入
+    container.style.transition = `opacity ${duration}ms cubic-bezier(0.4, 0, 0.2, 1), transform ${duration}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+    
+    // 强制重排，确保transition生效
+    void container.offsetHeight;
+    
     // 淡入新内容
     container.style.opacity = '1';
     container.style.transform = 'translateY(0)';

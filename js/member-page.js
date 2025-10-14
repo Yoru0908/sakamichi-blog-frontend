@@ -246,10 +246,10 @@ window.MemberPage = {
         }
       </style>
       
-      <!-- 返回按钮 -->
-      <div style="max-width: 1200px; margin: 0 auto; padding: 20px 20px 0;">
-        <button onclick="MemberPage.backToGroupPage()" class="back-button">
-          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <!-- 返回按钮（仅桌面显示） -->
+      <div style="margin-bottom: 24px;" class="hidden md:block">
+        <button id="memberBackBtn" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
           <span>返回</span>
@@ -260,12 +260,19 @@ window.MemberPage = {
       <div class="member-page-layout">
         <!-- 左侧：博客列表 -->
         <div class="member-main-content">
+          <!-- 手机端标题（只在手机显示） -->
+          <div class="md:hidden text-center mb-6 pb-4 border-b border-gray-200">
+            <h1 class="text-lg font-medium text-gray-900">
+              <span id="memberNameHeader">-</span> 公式博客一览
+            </h1>
+          </div>
+          
           <h2 class="blog-list-header">Blog</h2>
           
-          <!-- 博客列表 -->
-          <ul id="memberBlogsContainer" class="blog-list-nogizaka">
-            <!-- 博客项将在这里动态加载 -->
-          </ul>
+          <!-- 博客列表（网格布局，一行3个） -->
+          <div id="memberBlogsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- 博客卡片将在这里动态加载 -->
+          </div>
           
           <!-- 分页组件 -->
           <div id="memberPagination" class="hidden" style="margin-top: 32px;">
@@ -367,6 +374,10 @@ window.MemberPage = {
     if (container) {
       console.log('[MemberPage] 显示成员页面容器');
       container.classList.remove('hidden');
+      
+      // 确保加载状态初始化为隐藏
+      const loadingState = document.getElementById('memberLoadingState');
+      if (loadingState) loadingState.classList.add('hidden');
     } else {
       console.error('[MemberPage] 成员页面容器未找到!');
     }
@@ -397,6 +408,13 @@ window.MemberPage = {
     const blogsContainer = document.getElementById('blogsContainer');
     if (blogsContainer) {
       blogsContainer.style.display = 'none';
+    }
+
+    // 隐藏主页面的加载状态
+    const loadingState = document.getElementById('loadingState');
+    if (loadingState) {
+      console.log('[MemberPage] 隐藏主页面加载状态');
+      loadingState.classList.add('hidden');
     }
 
     // 隐藏分页
@@ -436,6 +454,10 @@ window.MemberPage = {
     // 更新侧边栏成员信息
     const nameEl = document.getElementById('memberNameSidebar');
     if (nameEl) nameEl.textContent = memberName;
+    
+    // 更新手机端标题
+    const headerEl = document.getElementById('memberNameHeader');
+    if (headerEl) headerEl.textContent = memberName;
     
     // 更新假名（如果有的话）
     const kanaEl = document.getElementById('memberKanaSidebar');
@@ -513,9 +535,19 @@ window.MemberPage = {
     const offset = (page - 1) * pageSize;
     
     // 显示加载状态
-    document.getElementById('memberLoadingState').classList.remove('hidden');
-    document.getElementById('memberBlogsContainer').innerHTML = '';
-    document.getElementById('memberEmptyState').classList.add('hidden');
+    const loadingEl = document.getElementById('memberLoadingState');
+    const containerEl = document.getElementById('memberBlogsContainer');
+    const emptyEl = document.getElementById('memberEmptyState');
+    
+    console.log('[MemberPage] 元素状态:', {
+      loading: !!loadingEl,
+      container: !!containerEl,
+      empty: !!emptyEl
+    });
+    
+    if (loadingEl) loadingEl.classList.remove('hidden');
+    if (containerEl) containerEl.innerHTML = '';
+    if (emptyEl) emptyEl.classList.add('hidden');
     
     try {
       // 使用 GroupConfig 获取API团体名称
@@ -537,7 +569,15 @@ window.MemberPage = {
       const response = await fetch(url);
       const data = await response.json();
       
-      document.getElementById('memberLoadingState').classList.add('hidden');
+      console.log('[MemberPage] API响应:', data);
+      
+      const loadingState = document.getElementById('memberLoadingState');
+      if (loadingState) {
+        console.log('[MemberPage] 隐藏加载状态');
+        loadingState.classList.add('hidden');
+      } else {
+        console.error('[MemberPage] 找不到 memberLoadingState 元素！');
+      }
       
       if (data.success && data.blogs && data.blogs.length > 0) {
         // 更新博客数量
@@ -552,11 +592,47 @@ window.MemberPage = {
           }
         }
         
-        // 渲染博客列表
+        // 渲染博客列表（使用博客卡片样式）
         const container = document.getElementById('memberBlogsContainer');
-        data.blogs.forEach(blog => {
-          container.appendChild(this.createBlogListItem(blog));
+        console.log('[MemberPage] 容器找到:', !!container);
+        console.log('[MemberPage] renderBlogItem存在:', !!window.renderBlogItem);
+        console.log('[MemberPage] 博客数量:', data.blogs.length);
+        
+        const cards = [];
+        data.blogs.forEach((blog, index) => {
+          // 使用主页面的博客卡片渲染
+          if (window.renderBlogItem) {
+            const card = window.renderBlogItem(blog);
+            console.log(`[MemberPage] 创建卡片 ${index + 1}:`, !!card);
+            container.appendChild(card);
+            cards.push(card);
+            
+            // 立即显示卡片（不等待滚动动画）
+            setTimeout(() => {
+              card.classList.add('visible');
+              console.log(`[MemberPage] 卡片 ${index + 1} 已显示`);
+              
+              // 调试图片尺寸
+              const img = card.querySelector('.blog-card-image');
+              if (img) {
+                console.log(`[MemberPage] 图片 ${index + 1} 尺寸:`, {
+                  宽度: img.offsetWidth,
+                  高度: img.offsetHeight,
+                  比例: (img.offsetHeight / img.offsetWidth).toFixed(2)
+                });
+              }
+            }, index * 50); // 保持波浪效果
+          } else {
+            console.warn('[MemberPage] renderBlogItem不存在，使用列表样式');
+            container.appendChild(this.createBlogListItem(blog));
+          }
         });
+        
+        console.log('[MemberPage] 容器子元素数量:', container.children.length);
+        console.log('[MemberPage] 容器 display:', window.getComputedStyle(container).display);
+        console.log('[MemberPage] 容器 visibility:', window.getComputedStyle(container).visibility);
+        console.log('[MemberPage] 容器 offsetHeight:', container.offsetHeight);
+        console.log('[MemberPage] 容器父元素:', container.parentElement);
         
         // 更新日历
         this.updateCalendar(data.blogs);
@@ -669,12 +745,17 @@ window.MemberPage = {
    */
   backToGroupPage() {
     console.log('[MemberPage] 返回团体页面:', this.currentGroup);
+    console.log('[MemberPage] Router存在:', !!window.Router);
     
-    // 使用Router进行导航
+    // 直接调用 Router.showGroupPage，不依赖 hash 变化
     if (window.Router) {
-      window.Router.navigate(`#${this.currentGroup}`);
+      console.log('[MemberPage] 直接调用 Router.showGroupPage');
+      // 先重置状态，确保不被防重复逻辑拦截
+      window.Router.currentView = null;
+      window.Router.currentMember = '';
+      window.Router.showGroupPage(this.currentGroup);
     } else {
-      // 降级处理
+      console.log('[MemberPage] 降级：直接设置 hash');
       window.location.hash = this.currentGroup;
     }
   },

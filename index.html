@@ -33,6 +33,7 @@
   <!-- 核心功能模块 -->
   <script src="js/pagination.js"></script>
   <script src="js/router.js"></script>
+  <script src="js/scroll-animations.js"></script>
   
   <!-- 成员页面模块 -->
   <script src="js/member-default-images.js"></script>
@@ -518,7 +519,8 @@
           }
           
           item.onclick = () => {
-            MemberPage.showMemberPage(member, currentGroup);
+            // 使用 Router 导航到成员页面
+            Router.navigate(`#${currentGroup}/member/${encodeURIComponent(member)}`);
           };
           grid.appendChild(item);
         });
@@ -545,7 +547,8 @@
           }
           
           item.onclick = () => {
-            MemberPage.showMemberPage(member, currentGroup);
+            // 使用 Router 导航到成员页面
+            Router.navigate(`#${currentGroup}/member/${encodeURIComponent(member)}`);
           };
           grid.appendChild(item);
         });

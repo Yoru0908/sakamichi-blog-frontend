@@ -66,13 +66,23 @@ window.Router = {
    */
   async showGroupPage(group) {
     console.log('[Router] 显示团体页面:', group);
+    console.log('[Router] 当前状态:', {
+      currentView: this.currentView,
+      currentGroup: this.currentGroup,
+      currentMember: this.currentMember,
+      windowGroup: window.currentGroup
+    });
     
     // ✅ 防止重复调用：如果已经在相同的团体页面，不重新加载
-    if (this.currentView === 'group' && this.currentGroup === group && window.currentGroup === group) {
+    if (this.currentView === 'group' && 
+        this.currentGroup === group && 
+        window.currentGroup === group &&
+        !this.currentMember) {  // 确保不是从成员页返回
       console.log('[Router] 已经在当前团体页面，跳过重新加载');
       return;
     }
     
+    console.log('[Router] 继续执行showGroupPage，设置状态');
     this.currentView = 'group';
     this.currentGroup = group;
     this.currentMember = '';
@@ -106,12 +116,14 @@ window.Router = {
     // 显示主页面
     const main = document.querySelector('main');
     if (main) {
+      console.log('[Router] 显示主页面');
       main.style.display = 'block';
     }
 
     // 恢复博客容器显示
     const blogsContainer = document.getElementById('blogsContainer');
     if (blogsContainer) {
+      console.log('[Router] 恢复博客容器显示');
       blogsContainer.style.display = '';
       blogsContainer.innerHTML = ''; // 清空旧内容
     }
@@ -119,14 +131,8 @@ window.Router = {
     // 显示页脚
     const footer = document.querySelector('footer');
     if (footer) {
+      console.log('[Router] 显示页脚');
       footer.style.display = 'block';
-    }
-
-    // ⚠️ 重要：确保 currentGroup 正确传递到 index.html 的 switchGroup
-    if (window.switchGroup) {
-      // 不使用 await，因为 switchGroup 内部会调用 loadBlogs
-      window.switchGroup(group);
-      return; // switchGroup 会处理所有后续逻辑
     }
 
     // 更新标签页状态
@@ -162,9 +168,14 @@ window.Router = {
       if (memberListSection) memberListSection.classList.add('hidden');
     }
 
-    // 加载博客列表
-    if (window.loadBlogs) {
-      console.log('[Router] 调用loadBlogs, currentGroup:', window.currentGroup);
+    // 加载博客列表（使用平滑过渡动画）
+    if (window.smoothTransition && window.loadBlogs) {
+      console.log('[Router] 使用平滑过渡加载博客, currentGroup:', window.currentGroup);
+      await window.smoothTransition(async () => {
+        await window.loadBlogs();
+      });
+    } else if (window.loadBlogs) {
+      console.log('[Router] 直接加载博客, currentGroup:', window.currentGroup);
       await window.loadBlogs();
     }
   },
@@ -242,7 +253,32 @@ window.Router = {
    */
   navigate(hash) {
     console.log('[Router] 导航到:', hash);
-    window.location.hash = hash;
+    console.log('[Router] 当前视图:', this.currentView);
+    console.log('[Router] 当前成员:', this.currentMember);
+    console.log('[Router] 是博客详情:', hash.startsWith('#blog/'));
+    console.log('[Router] 是成员页面:', hash.includes('/member/'));
+    
+    // 特殊处理：如果当前在成员页面，要切换到团体页面
+    if (this.currentView === 'member' && !hash.includes('/member/') && !hash.startsWith('#blog/')) {
+      console.log('[Router] 从成员页直接切换到团体页');
+      const group = hash.substring(1); // 移除 #
+      // 重置状态
+      this.currentView = null;
+      this.currentMember = '';
+      this.showGroupPage(group);
+      return;
+    }
+    
+    console.log('[Router] 设置 window.location.hash');
+    console.log('[Router] 当前 hash:', window.location.hash);
+    console.log('[Router] 目标 hash:', hash);
+    
+    if (window.location.hash === hash) {
+      console.warn('[Router] hash 相同，手动调用 handleRoute');
+      this.handleRoute();
+    } else {
+      window.location.hash = hash;
+    }
   },
   
   /**

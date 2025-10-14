@@ -83,8 +83,17 @@ window.currentSearch = '';
 window.isLoading = false;
 window.hasMore = true;
 window.totalPages = 1;
-window.blogsPerPage = 16; // 每页16篇博客（4x4布局）
 window.allBlogs = []; // 缓存所有博客数据
+
+// 动态获取每页显示数量
+function getBlogsPerPage() {
+  // #all 页面显示 16 篇（无限滚动）
+  if (window.currentGroup === 'all') {
+    return 16;
+  }
+  // 其他团体页面显示 32 篇（分页）
+  return 32;
+}
 
 // 去重函数：移除恢复的重复博客
 function removeDuplicateBlogs(blogs) {
@@ -248,11 +257,14 @@ window.loadBlogs = async function(append = false) {
   }
 
   try {
+    // 动态获取每页数量
+    const blogsPerPage = getBlogsPerPage();
+    
     // 计算偏移量
-    const offset = (window.currentPage - 1) * window.blogsPerPage;
+    const offset = (window.currentPage - 1) * blogsPerPage;
     
     const params = new URLSearchParams({
-      limit: window.blogsPerPage,
+      limit: blogsPerPage,
       offset: offset
     });
 
@@ -313,10 +325,11 @@ window.loadBlogs = async function(append = false) {
         }
 
         // 设置无限滚动状态
+        const blogsPerPage = getBlogsPerPage();
         if (typeof paginationInfo.hasMore === 'boolean') {
           window.hasMore = paginationInfo.hasMore;
         } else {
-          window.hasMore = uniqueBlogs.length >= window.blogsPerPage;
+          window.hasMore = uniqueBlogs.length >= blogsPerPage;
         }
 
         // 设置无限滚动
@@ -355,8 +368,9 @@ window.loadBlogs = async function(append = false) {
         hideEmptyState();
       }
 
+      const blogsPerPage = getBlogsPerPage();
       if (typeof totalCount === 'number') {
-        window.totalPages = Math.max(1, Math.ceil(totalCount / window.blogsPerPage));
+        window.totalPages = Math.max(1, Math.ceil(totalCount / blogsPerPage));
       } else if (typeof paginationInfo.totalPages === 'number') {
         window.totalPages = paginationInfo.totalPages;
       }
@@ -385,22 +399,36 @@ function displayBlogs(blogs) {
   const container = document.getElementById('blogsContainer');
   container.innerHTML = '';
 
+  const cards = [];
   blogs.forEach(blog => {
     // 使用 window.renderBlogItem（用户选择的样式）
     const blogCard = window.renderBlogItem ? window.renderBlogItem(blog) : createBlogCard(blog);
     container.appendChild(blogCard);
+    cards.push(blogCard);
   });
+  
+  // 监听所有卡片的滚动渐现动画
+  if (window.observeElements) {
+    setTimeout(() => window.observeElements(cards), 50);
+  }
 }
 
 // 追加博客
 function appendBlogs(blogs) {
   const container = document.getElementById('blogsContainer');
 
+  const cards = [];
   blogs.forEach(blog => {
     // 使用 window.renderBlogItem（用户选择的样式）
     const blogCard = window.renderBlogItem ? window.renderBlogItem(blog) : createBlogCard(blog);
     container.appendChild(blogCard);
+    cards.push(blogCard);
   });
+  
+  // 监听新追加卡片的滚动渐现动画
+  if (window.observeElements) {
+    setTimeout(() => window.observeElements(cards), 50);
+  }
 }
 
 // 创建博客卡片
