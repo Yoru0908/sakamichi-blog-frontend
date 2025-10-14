@@ -11,16 +11,13 @@ function determineInitialApiBaseUrl() {
     const origin = window.location.origin || '';
     const hostname = window.location.hostname || '';
 
+    // 本地开发环境
     if (!origin.startsWith('http') || origin.includes('localhost') || hostname === '127.0.0.1') {
       return LOCAL_API_URL;
     }
 
-    // ✅ 所有线上环境都使用 Worker API
-    if (hostname.endsWith('.pages.dev') || hostname.endsWith('.sakamichi-tools.cn')) {
-      return FALLBACK_WORKER_API_URL;
-    }
-
-    return origin;
+    // ✅ 所有线上环境都使用 Worker API（以后换域名不用改代码）
+    return FALLBACK_WORKER_API_URL;
   } catch (_) {
     return LOCAL_API_URL;
   }
