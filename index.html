@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>坂道博客翻译</title>
+  
+  <!-- DaisyUI + Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- 核心配置模块（必须最先加载） -->
+  <script src="js/group-config.js"></script>
+  
+  <!-- 成员数据 -->
+  <script src="members-data.js"></script>
+
+  <!-- 结构化内容渲染器 -->
+  <script src="structured-renderer.js"></script>
+
+  <!-- 图片下载库 -->
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  
+  <!-- 主题切换模块 -->
+  <script src="js/theme-toggle.js"></script>
+  
+  <!-- 核心功能模块 -->
+  <script src="js/pagination.js"></script>
+  <script src="js/router.js"></script>
+  
+  <!-- 成员页面模块 -->
+  <script src="js/member-default-images.js"></script>
+  <script src="js/member-page.js"></script>
+  <script src="js/member-detail.js"></script>
+  <script src="js/blog-detail-sidebar.js"></script>
+  
+  <!-- CSS模块 -->
+  <link rel="stylesheet" href="css/main-styles.css">
+  <link rel="stylesheet" href="css/mobile.css">
+  <link rel="stylesheet" href="css/transitions.css">
+  <link rel="stylesheet" href="css/calendar-component.css">
+  <link rel="stylesheet" href="css/dark-theme.css">
+  
+  <style>
+    /* 最小必要样式 */
+    
+    /* 防止PC端显示移动端搜索栏 */
+    .mobile-search-bar {
+      display: none;
+    }
+    
+    /* 分享菜单显示控制 */
+    .share-menu.show {
+      display: grid !important;
+    }
+    
+    /* 操作按钮区域 - 增加与上方内容的间距 */
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 24px;
+      padding-top: 0;
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Header -->
+  <header class="bg-white shadow-sm sticky top-0 z-50 border-b">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between" style="height: 56px;">
+        <!-- 左侧：标题 + 标签页 -->
+        <div class="flex items-center gap-8">
+          <h1 class="text-xl font-bold whitespace-nowrap">坂道博客翻译</h1>
+          
+          <!-- 标签页导航 -->
+          <div class="flex items-center desktop-tabs">
+            <div class="tab-item active" data-group="all" onclick="Router.navigate('#all')">全部</div>
+            <div class="tab-item" data-group="nogizaka" onclick="Router.navigate('#nogizaka')">乃木坂46</div>
+            <div class="tab-item" data-group="sakurazaka" onclick="Router.navigate('#sakurazaka')">樱坂46</div>
+            <div class="tab-item" data-group="hinatazaka" onclick="Router.navigate('#hinatazaka')">日向坂46</div>
+          </div>
+        </div>
+        
+        <!-- 右侧：搜索 + 主题切换 + 汉堡菜单 -->
+        <div class="flex items-center gap-3">
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="搜索成员或标题..." 
+            class="input input-bordered input-sm w-64"
+            style="height: 36px;"
+          />
+          
+          <!-- PC端主题切换按钮 -->
+          <button id="themeToggleDesktop" class="theme-toggle-btn desktop-only" title="切换主题">
+            <svg class="theme-icon-light" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3"/>
+              <line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/>
+              <line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+            <svg class="theme-icon-dark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+          
+          <!-- 移动端汉堡菜单按钮 -->
+          <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 移动端侧边栏菜单 -->
+  <div class="mobile-overlay" onclick="toggleMobileMenu()"></div>
+  <div class="mobile-sidebar">
+    <div class="mobile-sidebar-header">
+      <h2>菜单</h2>
+      <button class="mobile-sidebar-close" onclick="toggleMobileMenu()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    <!-- 移动端搜索框 -->
+    <div class="mobile-search-bar">
+      <input 
+        type="text" 
+        id="mobileSearchInput" 
+        placeholder="搜索成员或标题..." 
+        class="mobile-search-input"
+      />
+    </div>
+    
+    <nav class="mobile-sidebar-nav">
+      <div class="mobile-nav-item active" data-group="all" onclick="Router.navigate('#all')">全部</div>
+      <div class="mobile-nav-item" data-group="nogizaka" onclick="Router.navigate('#nogizaka')">乃木坂46</div>
+      <div class="mobile-nav-item" data-group="sakurazaka" onclick="Router.navigate('#sakurazaka')">樱坂46</div>
+      <div class="mobile-nav-item" data-group="hinatazaka" onclick="Router.navigate('#hinatazaka')">日向坂46</div>
+    </nav>
+    
+    <!-- 移动端主题切换 -->
+    <div class="mobile-theme-toggle">
+      <button id="themeToggleMobile" class="theme-toggle-btn-mobile">
+        <svg class="theme-icon-light" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg class="theme-icon-dark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <span class="theme-text">亮色模式</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-8 max-w-6xl">
+    
+    <!-- 团体信息区域 (仅在选择特定团体时显示) -->
+    <div id="groupInfo" class="hidden mb-8">
+      <!-- 统计信息和筛选器 -->
+      <div class="flex flex-col md:flex-row gap-4 mb-6">
+        <!-- 统计信息 -->
+        <div class="grid grid-cols-2 gap-4 flex-1">
+          <div class="stat-card">
+            <div class="stat-number" id="memberCount">-</div>
+            <div class="stat-label">成员数</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="todayCount">-</div>
+            <div class="stat-label">今日更新</div>
+          </div>
+        </div>
+        
+        <!-- 成员筛选器 -->
+        <div class="filter-card" style="min-width: 300px;">
+          <div class="filter-label">FILTER</div>
+          <select id="memberSelect" class="select select-bordered w-full" onchange="filterByMember()">
+            <option value="">全部成员</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 博客列表 -->
+    <div class="mb-8">
+      <div id="blogsContainer" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-4" style="min-height: 400px;">
+        <!-- 博客卡片将在这里动态加载 4x8=32篇布局 -->
+      </div>
+    </div>
+
+    <!-- 加载中（居中显示，默认显示） -->
+    <div id="loadingState" class="fixed inset-0 flex items-center justify-center bg-white bg-opacity-90 z-40">
+      <div class="text-center">
+        <span class="loading loading-spinner loading-lg"></span>
+        <p class="mt-4 text-gray-600">加载中...</p>
+      </div>
+    </div>
+
+    <!-- 空状态 -->
+    <div id="emptyState" class="hidden text-center py-12 bg-white">
+      <p class="text-gray-500">暂无博客</p>
+    </div>
+
+    <!-- 滚动提示 -->
+    <div id="scrollHint" class="hidden text-center mb-8">
+      <div class="inline-flex flex-col items-center text-gray-400">
+        <span class="text-sm mb-2">继续滚动查看更多</span>
+        <svg class="animate-bounce w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+        </svg>
+      </div>
+    </div>
+    
+    <!-- 翻页组件 -->
+    <div id="paginationContainer" class="hidden mb-8 mt-8">
+      <div class="flex flex-col items-center gap-4">
+        <!-- 页码信息 -->
+        <div id="pageInfo" class="text-sm text-gray-600 font-medium"></div>
+        
+        <!-- 翻页按钮 -->
+        <div class="inline-flex items-center gap-2">
+          <button id="prevPageBtn" class="flex items-center justify-center w-8 h-8 text-sm border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" disabled>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+          </button>
+          
+          <div id="pageButtons" class="flex items-center gap-1">
+            <!-- 页码按钮将在这里动态生成 -->
+          </div>
+          
+          <button id="nextPageBtn" class="flex items-center justify-center w-8 h-8 text-sm border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 无限滚动哨兵（用于触发加载） -->
+    <div id="scrollSentinel" class="hidden" style="height: 1px;"></div>
+    
+    <!-- 加载指示器（加载时显示） -->
+    <div id="loadingIndicator" class="hidden text-center mb-8">
+      <div class="inline-flex items-center">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+        <span class="ml-3 text-gray-600">加载中...</span>
+      </div>
+    </div>
+
+    <!-- メンバー別ブログ (仅在选择特定团体时显示，在博客列表下方) -->
+    <div id="memberListSection" class="hidden bg-white p-8">
+      <h2 class="section-title">メンバー別ブログ</h2>
+      <div id="memberGrid" class="member-grid">
+        <!-- 成员按钮将在这里动态加载 -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t mt-16">
+    <div class="container mx-auto px-4 py-8 text-center text-sm text-gray-600">
+      <p class="font-bold mb-2">坂道博客翻译系统</p>
+      <p>基于 Cloudflare Workers + Gemini AI 构建</p>
+    </div>
+  </footer>
+
+  <script>
+    // ❌ 已删除 API 配置 - 使用 app.js 中的 window.API_BASE_URL（带健康检查）
+    // ❌ 已删除全局变量 - 使用 app.js 中的 window.currentPage, window.currentGroup 等
+    // ❌ 已删除团体配置 - 使用 js/group-config.js 模块中的 window.GroupConfig
+
+    // 切换团体
+    async function switchGroup(group) {
+      // 如果在详情页，先关闭详情页
+      const detailPage = document.getElementById('blogDetail');
+      if (detailPage) {
+        closeBlogDetail();
+      }
+      
+      // 使用 window 全局变量（与 app.js 保持一致）
+      window.currentGroup = group;
+      window.currentPage = 1;  // ✅ 从1开始，避免负偏移
+      window.currentSearch = '';
+      window.hasMore = true;
+      window.isLoading = false;
+      
+      // 不再使用 history.pushState，Router 会处理路由
+      
+      // 同步PC端和移动端菜单状态
+      if (typeof syncMenuActiveState === 'function') {
+        syncMenuActiveState(group);
+      } else {
+        // 向后兼容：直接更新标签状态
+        document.querySelectorAll('.tab-item').forEach(tab => {
+          tab.classList.remove('active');
+          if (tab.dataset.group === group) {
+            tab.classList.add('active');
+          }
+        });
+      }
+      
+      // 显示/隐藏团体信息和メンバー別ブログ
+      const groupInfo = document.getElementById('groupInfo');
+      const memberListSection = document.getElementById('memberListSection');
+      
+      if (group !== 'all') {
+        groupInfo.classList.remove('hidden');
+        memberListSection.classList.remove('hidden');
+        await loadGroupInfo(group);
+      } else {
+        groupInfo.classList.add('hidden');
+        memberListSection.classList.add('hidden');
+      }
+      
+      await loadBlogs();
+    }
+
+    // 加载团体信息
+    async function loadGroupInfo(group) {
+      try {
+        const groupName = window.GroupConfig?.getDisplayName(group) || group;
+        // 获取更多博客以确保所有成员的最后更新日期都能获取到
+        const apiBase = window.API_BASE_URL || 'https://sakamichi-blog-translator.srzwyuu.workers.dev';
+        const response = await fetch(`${apiBase}/api/blogs?group=${encodeURIComponent(groupName)}&limit=500`);
+        const data = await response.json();
+        
+        if (data.success) {
+          // 从 MEMBERS_DATA 获取团体的完整成员列表
+          const groupData = MEMBERS_DATA[group];
+          let totalMembers = 0;
+          let allMembers = [];
+          let memberLastUpdate = {};
+          
+          if (groupData && groupData.generations) {
+            // 计算所有期别的总成员数
+            groupData.generations.forEach(generation => {
+              totalMembers += generation.members.length;
+              allMembers.push(...generation.members);
+            });
+          }
+          
+          // 计算每个成员的最后更新日期
+          data.blogs.forEach(blog => {
+            if (blog.member && blog.publish_date) {
+              const member = blog.member;
+              const dateStr = blog.publish_date;
+              
+              // 转换日期字符串为可比较的格式
+              // 支持 "2025/10/08 21:12" 和 "2025.10.8 21:12" 格式
+              const normalizedDate = dateStr.replace(/\./g, '/');
+              
+              if (!memberLastUpdate[member]) {
+                memberLastUpdate[member] = normalizedDate;
+              } else {
+                // 比较日期时间
+                const currentDate = new Date(memberLastUpdate[member].replace(/\//g, '-'));
+                const newDate = new Date(normalizedDate.replace(/\//g, '-'));
+                if (newDate > currentDate) {
+                  memberLastUpdate[member] = normalizedDate;
+                }
+              }
+            }
+          });
+          
+          // 更新成员数（显示团体的实际成员总数）
+          document.getElementById('memberCount').textContent = totalMembers;
+          
+          // 准备完整的成员列表（包括没有博客的成员）
+          const membersWithBlogs = [...new Set(data.blogs
+            .map(blog => blog.member)
+            .filter(member => member && member !== '未知成员' && !member.includes('未知'))
+          )].sort();
+          
+          // 更新今日更新数（使用日本时区）
+          const now = new Date();
+          const japanTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+          const today = japanTime.toISOString().split('T')[0]; // 日本当地日期
+          
+          console.log('[今日更新] 当前日本时间:', japanTime.toLocaleString('zh-CN', { timeZone: 'Asia/Tokyo' }));
+          console.log('[今日更新] 今天的日期:', today);
+          console.log('[今日更新] 共获取博客数:', data.blogs.length);
+          
+          const todayBlogs = data.blogs.filter(blog => {
+            if (!blog.publish_date) return false;
+            // 标准化日期：将 "2025/10/09" 或 "2025.10.9" 转为 "2025-10-09"
+            const normalized = blog.publish_date
+              .replace(/\//g, '-')
+              .replace(/\./g, '-')
+              .split(' ')[0]; // 只取日期部分
+            
+            // 补齐单数字月份/日期为双数字 (2025-10-9 -> 2025-10-09)
+            const parts = normalized.split('-');
+            if (parts.length === 3) {
+              const year = parts[0];
+              const month = parts[1].padStart(2, '0');
+              const day = parts[2].padStart(2, '0');
+              const standardDate = `${year}-${month}-${day}`;
+              const isToday = standardDate === today;
+              if (isToday) {
+                console.log('[今日更新] 找到今天的博客:', blog.member, blog.title, blog.publish_date);
+              }
+              return isToday;
+            }
+            return normalized === today;
+          });
+          
+          console.log('[今日更新] 今日更新数:', todayBlogs.length);
+          document.getElementById('todayCount').textContent = todayBlogs.length;
+          
+          // 填充筛选器下拉框（显示全部成员和最后更新时间，按期别排序）
+          populateMemberSelect(groupData, memberLastUpdate);
+          
+          // 填充メンバー别ブログ网格（显示完整成员列表，按期别）
+          renderMemberGrid(allMembers, membersWithBlogs);
+        }
+      } catch (error) {
+        console.error('加载团体信息失败:', error);
+      }
+    }
+
+    // 填充成员筛选下拉框
+    function populateMemberSelect(groupData, memberLastUpdate = {}) {
+      const select = document.getElementById('memberSelect');
+      select.innerHTML = '<option value="">全部成员</option>';
+      
+      if (!groupData || !groupData.generations) {
+        return;
+      }
+      
+      // 按期别顺序显示成员
+      groupData.generations.forEach(generation => {
+        generation.members.forEach(member => {
+          const option = document.createElement('option');
+          option.value = member;
+          
+          // 格式化显示文本：成员名 + 最后更新时间
+          let displayText = member;
+          if (memberLastUpdate[member]) {
+            // 将日期格式从 "2025/10/08 21:12" 转换为 "10.08 21:12 更新"
+            const date = memberLastUpdate[member];
+            const parts = date.split(' ');
+            if (parts.length >= 2) {
+              const datePart = parts[0]; // "2025/10/08"
+              const timePart = parts[1]; // "21:12"
+              const dateComponents = datePart.split('/'); // ["2025", "10", "08"]
+              if (dateComponents.length === 3) {
+                const month = dateComponents[1].padStart(2, '0');
+                const day = dateComponents[2].padStart(2, '0');
+                displayText = `${member}（${month}.${day} ${timePart} 更新）`;
+              } else {
+                // 如果格式不对，至少显示原始日期
+                displayText = `${member}（${date}）`;
+              }
+            } else if (parts.length === 1) {
+              // 只有日期没有时间
+              const datePart = parts[0];
+              const dateComponents = datePart.split('/');
+              if (dateComponents.length === 3) {
+                const month = dateComponents[1].padStart(2, '0');
+                const day = dateComponents[2].padStart(2, '0');
+                displayText = `${member}（${month}.${day} 更新）`;
+              }
+            }
+          } else {
+            displayText = `${member}（未更新）`;
+          }
+          
+          option.textContent = displayText;
+          select.appendChild(option);
+        });
+      });
+    }
+
+    // 渲染メンバー別ブログ网格（按期别）
+    function renderMemberGrid(members, membersWithBlogs = []) {
+      const grid = document.getElementById('memberGrid');
+      grid.innerHTML = '';
+      
+      // 获取当前团体的期别数据
+      const groupData = MEMBERS_DATA[currentGroup];
+      if (!groupData) {
+        // 如果没有期别数据，使用原来的方式
+        members.forEach(member => {
+          const item = document.createElement('div');
+          item.className = 'member-item';
+          item.textContent = member;
+          
+          // 如果没有博客，添加灰色样式
+          if (!membersWithBlogs.includes(member)) {
+            item.classList.add('opacity-50');
+          }
+          
+          item.onclick = () => {
+            MemberPage.showMemberPage(member, currentGroup);
+          };
+          grid.appendChild(item);
+        });
+        return;
+      }
+      
+      // 按期别显示
+      groupData.generations.forEach(generation => {
+        // 期别标题
+        const genTitle = document.createElement('div');
+        genTitle.className = 'col-span-full text-sm font-bold text-gray-700 mt-4 mb-2 px-2';
+        genTitle.textContent = generation.name;
+        grid.appendChild(genTitle);
+        
+        // 该期成员
+        generation.members.forEach(member => {
+          const item = document.createElement('div');
+          item.className = 'member-item';
+          item.textContent = member;
+          
+          // 如果没有博客，添加灰色样式
+          if (!membersWithBlogs.includes(member)) {
+            item.classList.add('opacity-50');
+          }
+          
+          item.onclick = () => {
+            MemberPage.showMemberPage(member, currentGroup);
+          };
+          grid.appendChild(item);
+        });
+      });
+    }
+
+    // 按成员筛选（从下拉框）
+    function filterByMember() {
+      const select = document.getElementById('memberSelect');
+      window.currentSearch = select.value;
+      window.currentPage = 1;  // ✅ 从1开始，避免负偏移
+      window.hasMore = true;
+      window.isLoading = false;
+      
+      // 更新 URL 状态
+      history.replaceState({ 
+        view: 'list', 
+        group: currentGroup, 
+        member: currentMember 
+      }, '', `#${currentGroup}${currentMember ? '/' + encodeURIComponent(currentMember) : ''}`);
+      
+      // 重新加载数据
+      loadBlogs();
+    }
+
+    // 渲染博客内容 - 直接使用blog-renderer.js中的renderMarkdown
+    function renderBlogContent(markdown, groupName) {
+      // 使用blog-renderer.js中的统一渲染逻辑
+      if (window.renderMarkdown) {
+        return window.renderMarkdown(markdown, groupName);
+      } else {
+        // 后备方案
+        return markdown.replace(/\n/g, '<br>');
+      }
+    }
+
+    // 日向坂46渲染函数（默认，每行独立）
+    function renderHinatazakaContent(content) {
+      const lines = content.split('\n');
+      const result = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const trimmedLine = line.trim();
+
+        // 跳过空行
+        if (trimmedLine === '') {
+          continue;
+        }
+
+        // <br>标签直接添加
+        if (trimmedLine === '<br>' || trimmedLine === '<br/>') {
+          result.push('<br>');
+        }
+        // 图片行直接添加
+        else if (line.includes('<img')) {
+          result.push(line);
+        }
+        // 所有文本行都独立显示，保持原文的行结构
+        else {
+          result.push(trimmedLine);
+          result.push('\n');
+        }
+      }
+
+      return result.join('');
+    }
+
+    // 樱坂46渲染函数（智能合并被分割的句子）
+    function renderSakurazakaContent(content) {
+      const lines = content.split('\n');
+      const result = [];
+      let i = 0;
+
+      while (i < lines.length) {
+        const line = lines[i];
+        const trimmedLine = line.trim();
+
+        // 跳过空行
+        if (trimmedLine === '') {
+          i++;
+          continue;
+        }
+
+        // <br>标签直接添加
+        if (trimmedLine === '<br>' || trimmedLine === '<br/>') {
+          result.push('<br>');
+          i++;
+        }
+        // 图片行直接添加
+        else if (line.includes('<img')) {
+          result.push(line);
+          i++;
+        }
+        // 文本行处理
+        else {
+          // 特殊处理：合并引号内容
+          if (trimmedLine.startsWith('「') && !trimmedLine.includes('」')) {
+            // 收集到」为止的所有内容
+            let mergedContent = trimmedLine;
+            i++;
+            while (i < lines.length) {
+              const nextLine = lines[i].trim();
+              if (nextLine === '' || nextLine === '<br>' || nextLine === '<br/>') {
+                i++;
+                continue;
+              }
+              mergedContent += nextLine;
+              i++;
+              if (nextLine.includes('」')) {
+                break;
+              }
+            }
+            result.push(mergedContent);
+            result.push('\n');
+          }
+          // 检查是否是需要与前一行合并的片段
+          else if (shouldMergeWithPrevious(trimmedLine, result)) {
+            // 与前一行合并
+            if (result.length > 0 && result[result.length - 1] === '\n') {
+              result.pop(); // 移除前一个换行
+            }
+            result.push(trimmedLine);
+            result.push('\n');
+            i++;
+          }
+          // 正常行
+          else {
+            result.push(trimmedLine);
+            // 检查下一行是否需要合并
+            if (i < lines.length - 1) {
+              const nextLine = lines[i + 1].trim();
+              if (!shouldMergeWithPrevious(nextLine, [trimmedLine])) {
+                result.push('\n');
+              }
+            } else {
+              result.push('\n');
+            }
+            i++;
+          }
+        }
+      }
+
+      return result.join('');
+    }
+
+    // 乃木坂46渲染函数（通过空行识别段落）
+    function renderNogizakaContent(content) {
+      const lines = content.split('\n');
+      const result = [];
+      let currentParagraph = [];
+      let emptyLineCount = 0;
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const trimmedLine = line.trim();
+
+        // 图片行特殊处理
+        if (line.includes('<img')) {
+          // 先输出当前段落
+          if (currentParagraph.length > 0) {
+            result.push(currentParagraph.join(''));
+            result.push('\n');
+            currentParagraph = [];
+          }
+          result.push(line);
+          emptyLineCount = 0;
+        }
+        // 空行处理
+        else if (trimmedLine === '') {
+          emptyLineCount++;
+          // 连续2个或以上空行表示段落结束
+          if (emptyLineCount >= 2 && currentParagraph.length > 0) {
+            result.push(currentParagraph.join(''));
+            result.push('<br><br>');
+            currentParagraph = [];
+          }
+        }
+        // 文本行
+        else {
+          // 如果之前有空行但不足2个，当作同一段落
+          if (emptyLineCount === 1 && currentParagraph.length > 0) {
+            // 单个空行在段落内可能是软换行
+            currentParagraph.push('\n');
+          }
+          emptyLineCount = 0;
+          currentParagraph.push(trimmedLine);
+        }
+      }
+
+      // 输出最后的段落
+      if (currentParagraph.length > 0) {
+        result.push(currentParagraph.join(''));
+        result.push('\n');
+      }
+
+      return result.join('');
+    }
+
+    // 判断是否应该与前一行合并（用于樱坂46）
+    function shouldMergeWithPrevious(line, prevResults) {
+      if (!line || line === '<br>' || line === '<br/>') return false;
+
+      // 单个标点符号或很短的句尾
+      if (line.match(/^[。！？、，,]$/) || line.match(/^.{1,2}[。！？]$/)) {
+        return true;
+      }
+
+      // 单个语气词
+      if (line.match(/^(呢|吧|啊|嘛|哦|啦|呀|吗|的|了)$/)) {
+        return true;
+      }
+
+      // 结束引号单独成行
+      if (line === '」' || line === '"' || line === '"' || line === '\'') {
+        return true;
+      }
+
+      // 检查前一行是否以不完整的句子结尾
+      if (prevResults.length > 0) {
+        const lastResult = prevResults[prevResults.length - 1];
+        if (typeof lastResult === 'string' && lastResult !== '<br>' && lastResult !== '\n') {
+          // 前一行没有句号结尾，且当前行很短
+          if (!lastResult.match(/[。！？]$/) && line.length < 5) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
+    // ❌ 已删除 loadBlogs() - 使用 app.js 中的 window.loadBlogs()
+
+    // 渲染博客项 - 官网卡片样式（纵向，带图片）
+    // ✅ 保留此函数 - 用户选择使用此样式
+    window.renderBlogItem = function(blog) {
+      const item = document.createElement('a');
+      item.className = 'blog-card';
+      item.href = `#blog/${blog.id}`;
+      item.onclick = (e) => {
+        e.preventDefault();
+        // 使用Router进行导航
+        if (window.Router) {
+          Router.navigate(`#blog/${blog.id}`);
+        }
+      };
+      
+      // 提取第一张图片（从translated_content或使用默认渐变）
+      let imageStyle = 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);';
+      if (blog.translated_content) {
+        const imageMatch = blog.translated_content.match(/!\[.*?\]\((https?:\/\/[^\)]+)\)/);
+        if (imageMatch && imageMatch[1]) {
+          imageStyle = `background-image: url('${imageMatch[1]}'); background-size: cover; background-position: center;`;
+        }
+      }
+      
+      item.innerHTML = `
+        <div class="blog-card-image" style="${imageStyle}"></div>
+        <div class="blog-card-content">
+          <div class="member-name mb-2">${blog.member || '未知成员'}</div>
+          <div class="blog-meta mb-2">${blog.publish_date || '未知日期'}</div>
+          <h3 class="blog-title">${blog.title || '无标题'}</h3>
+        </div>
+      `;
+      
+      return item; // 返回元素，由调用者决定如何添加到DOM
+    }
+    
+    // 显示博客详情页
+    function showBlogDetail(blog, skipHistory = false, blogData = null) {
+      console.log('[showBlogDetail] 显示博客详情:', blog.id, '已有数据:', !!blogData);
+
+      // 先移除已存在的详情页(防止重复)
+      const existingDetail = document.getElementById('blogDetail');
+      if (existingDetail) {
+        console.log('[showBlogDetail] 移除已存在的详情页');
+        existingDetail.remove();
+      }
+
+      // 隐藏列表页和页脚
+      const main = document.querySelector('main');
+      const footer = document.querySelector('footer');
+      if (main) main.style.display = 'none';
+      if (footer) footer.style.display = 'none';
+
+      // 不再使用 history.pushState，由 Router 管理
+      
+      // 创建详情页 - 两栏布局
+      const detailPage = document.createElement('main');
+      detailPage.id = 'blogDetail';
+      detailPage.className = 'container mx-auto px-4 py-8';
+      detailPage.style.maxWidth = '1200px';
+      
+      detailPage.innerHTML = `
+        <style>
+          @media (max-width: 768px) {
+            #blogDetail > div {
+              grid-template-columns: 1fr !important;
+            }
+            .member-sidebar-detail {
+              display: none !important;
+            }
+          }
+        </style>
+        <div style="display: grid; grid-template-columns: 1fr 320px; gap: 32px;">
+          <!-- 左侧：博客内容 -->
+          <article class="bg-white p-8 shadow-sm" style="border-radius: 8px;">
+          <header class="mb-8 pb-6 border-b">
+            <h1 class="text-3xl font-bold mb-4">${blog.title}</h1>
+            <div class="flex items-center gap-4 text-gray-600">
+              <span class="font-medium">${blog.member}</span>
+              <span>·</span>
+              <span>${blog.publish_date}</span>
+              <span>·</span>
+              <span class="text-sm">${window.GroupConfig?.getDisplayName(blog.group_name) || blog.group_name}</span>
+            </div>
+            
+            <!-- 操作按钮 -->
+            <div class="action-buttons">
+              <button class="action-btn primary" id="downloadAllBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                <span>下载全部图片</span>
+                <span id="imageCount"></span>
+              </button>
+              
+              <div class="share-dropdown">
+                <button class="action-btn" id="shareBtn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="18" cy="5" r="3"/>
+                    <circle cx="6" cy="12" r="3"/>
+                    <circle cx="18" cy="19" r="3"/>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                  </svg>
+                  <span>分享</span>
+                </button>
+                
+                <div class="share-menu" id="shareMenu" style="display: none;">
+                  <!-- 第一行 -->
+                  <a class="share-option" data-action="qq" title="QQ">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M21.395 15.035a39.548 39.548 0 0 0-.803-2.264l-1.079-2.695c.001-.032.014-.562.014-.836C19.526 4.632 17.081 0 12 0S4.474 4.632 4.474 9.241c0 .274.013.804.014.836l-1.08 2.695a39.548 39.548 0 0 0-.802 2.264c-1.021 3.283-.69 4.643-.438 4.673.54.063 2.063-2.48 2.063-2.48 0 1.193.381 2.286.822 3.465.443 1.179 1.021 2.03 1.794 2.4.603.288 1.963.564 5.153.564 3.19 0 4.55-.276 5.153-.564.773-.37 1.351-1.221 1.794-2.4.441-1.179.822-2.272.822-3.465 0 0 1.522 2.543 2.062 2.48.253-.03.584-1.39-.436-4.674z"/></svg>
+                  </a>
+                  <a class="share-option" data-action="weibo" title="微博">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9.56 14.5c-.47 1.46.43 2.88 1.88 3.07 1.42.18 3.09-.8 3.56-2.25.45-1.4-.43-2.78-1.87-2.97-1.45-.19-3.12.76-3.57 2.15zm11.64-5.78c-.32-.09-.54-.13-.37-.5.36-.81.4-1.51.01-2.01-.73-.94-2.74-.89-5.04.13 0 0-.72.33-.54-.27.36-1.18.3-2.17-.28-2.74-.86-.87-3.16.03-5.14 2-1.32 1.33-2.09 2.74-2.09 4.03 0 2.38 3.04 3.83 6.03 3.83 3.91 0 6.51-2.28 6.51-4.09 0-1.1-.93-1.72-2.09-2.38zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c0-.373.129-.689.386-.947.258-.257.574-.386.947-.386zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373Z"/></svg>
+                  </a>
+                  <a class="share-option" data-action="bilibili" title="哔哩哔哩">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.786 1.894v7.52c.017.764.28 1.395.786 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.498.769-1.129.786-1.893v-7.52c-.017-.765-.28-1.396-.786-1.894-.507-.497-1.134-.755-1.88-.773zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c0-.373.129-.689.386-.947.258-.257.574-.386.947-.386zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373Z"/></svg>
+                  </a>
+                  <a class="share-option" data-action="twitter" title="Twitter/X">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                  </a>
+                  <!-- 第二行 -->
+                  <a class="share-option" data-action="whatsapp" title="WhatsApp">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                  </a>
+                  <a class="share-option" data-action="copy" title="复制链接">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  </a>
+                  <a class="share-option" data-action="facebook" title="Facebook">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                  </a>
+                  <a class="share-option" data-action="telegram" title="Telegram">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </header>
+          
+          <div id="blogContent" class="blog-content-official">
+            <p class="text-gray-500">正在加载翻译内容...</p>
+          </div>
+          
+          <footer class="mt-8 pt-6 border-t">
+            <a href="${blog.original_url || '#'}" target="_blank" class="more-btn">
+              查看原文
+            </a>
+          </footer>
+        </article>
+        
+        <!-- 右侧：成员信息和日历 -->
+        <aside class="member-sidebar-detail" style="position: sticky; top: 80px; height: fit-content;">
+          <!-- 成员信息卡片 -->
+          <div style="background: white; border-radius: 8px; padding: 24px; margin-bottom: 20px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <div style="width: 240px; height: 300px; overflow: hidden; background: #f5f5f5; margin: 0 auto 16px; clip-path: polygon(0 0, 100% 0, 100% 80%, 75% 100%, 0 100%);">
+              <div id="detailMemberAvatar" style="width:100%;height:100%;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:48px;color:#999;">
+                <span>${blog.member.charAt(0)}</span>
+              </div>
+            </div>
+            <h3 style="font-size: 16px; font-weight: bold; margin-bottom: 4px; color: #333;">${blog.member}</h3>
+            <p style="font-size: 12px; color: #999; margin-bottom: 0;">${window.GroupConfig?.getDisplayName(blog.group_name) || blog.group_name}</p>
+          </div>
+          
+          <!-- 日历 -->
+          <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <h3 style="font-size: 14px; font-weight: bold; margin-bottom: 16px;">カレンダー</h3>
+            <div style="margin-bottom: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 12px; color: #666;">日</span>
+                <span style="font-size: 12px; color: #666;">月</span>
+                <span style="font-size: 12px; color: #666;">火</span>
+                <span style="font-size: 12px; color: #666;">水</span>
+                <span style="font-size: 12px; color: #666;">木</span>
+                <span style="font-size: 12px; color: #666;">金</span>
+                <span style="font-size: 12px; color: #666;">土</span>
+              </div>
+            </div>
+            <div id="detailCalendarDates">
+              <!-- 日历内容将在这里动态加载 -->
+            </div>
+          </div>
+          
+          <!-- NEW ENTRY -->
+          <div style="background: white; border-radius: 8px; padding: 20px; margin-top: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <h3 style="font-size: 14px; font-weight: bold; margin-bottom: 16px;">NEW ENTRY</h3>
+            <ul id="detailNewEntries" style="list-style: none; padding: 0; margin: 0;">
+              <!-- 最新博客将在这里动态加载 -->
+            </ul>
+            <!-- View More 按钮 -->
+            <div style="margin-top: 16px;">
+              <a id="viewMoreLink" href="#" style="display: inline-block; color: #fff; background: #9dccb5; font-size: 14px; width: 100%; height: 45px; line-height: 45px; text-align: center; border-radius: 5px; text-decoration: none; transition: opacity 0.3s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">もっと見る</a>
+            </div>
+          </div>
+        </aside>
+        </div>
+      `;
+      
+      document.body.appendChild(detailPage);
+      
+      // 添加进入动画
+      if (typeof animateBlogDetail === 'function') {
+        animateBlogDetail('enter');
+      }
+      
+      // 绑定按钮事件（在DOM添加后）- 使用多次尝试确保成功
+      let attemptCount = 0;
+      const maxAttempts = 5;
+      
+      const bindEvents = () => {
+        attemptCount++;
+        console.log(`🔄 Attempt ${attemptCount} to bind events...`);
+        
+        const downloadBtn = document.getElementById('downloadAllBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        
+        console.log('📍 Button elements:', {
+          downloadBtn: downloadBtn ? 'found' : 'NOT FOUND',
+          shareBtn: shareBtn ? 'found' : 'NOT FOUND',
+          downloadBtnId: downloadBtn?.id,
+          shareBtnId: shareBtn?.id
+        });
+        
+        if (downloadBtn && shareBtn) {
+          console.log('✅ Both buttons found! Binding events...');
+          
+          // 移除旧的事件监听器（如果有）
+          const newDownloadBtn = downloadBtn.cloneNode(true);
+          downloadBtn.parentNode.replaceChild(newDownloadBtn, downloadBtn);
+          
+          const newShareBtn = shareBtn.cloneNode(true);
+          shareBtn.parentNode.replaceChild(newShareBtn, shareBtn);
+          
+          // 绑定下载按钮
+          newDownloadBtn.onclick = function(e) {
+            console.log('🔽 Download button clicked!');
+            e.preventDefault();
+            e.stopPropagation();
+            try {
+              downloadAllImages();
+            } catch (err) {
+              console.error('Download error:', err);
+              alert('下载失败: ' + err.message);
+            }
+          };
+          console.log('✅ Download button bound');
+          
+          // 绑定分享按钮
+          newShareBtn.onclick = function(e) {
+            console.log('🔗 Share button clicked!');
+            e.preventDefault();
+            e.stopPropagation();
+            try {
+              toggleShareMenu(e);
+            } catch (err) {
+              console.error('Share error:', err);
+              alert('分享菜单打开失败: ' + err.message);
+            }
+          };
+          console.log('✅ Share button bound');
+          
+          // 测试按钮是否可点击
+          console.log('🧪 Testing button click simulation...');
+          
+          // 绑定分享选项事件
+          setTimeout(() => {
+            const shareOptions = document.querySelectorAll('.share-option');
+            console.log('📱 Found', shareOptions.length, 'share options');
+            shareOptions.forEach(option => {
+              const action = option.getAttribute('data-action');
+              if (action) {
+                option.onclick = function(e) {
+                  console.log('Share action:', action);
+                  e.preventDefault();
+                  e.stopPropagation();
+                  
+                  try {
+                    switch(action) {
+                      case 'qq': shareToQQ(); break;
+                      case 'weibo': shareToWeibo(); break;
+                      case 'bilibili': shareToBilibili(); break;
+                      case 'twitter': shareToTwitter(); break;
+                      case 'whatsapp': shareToWhatsApp(); break;
+                      case 'copy': copyLink(); break;
+                      case 'facebook': shareToFacebook(); break;
+                      case 'telegram': shareToTelegram(); break;
+                    }
+                  } catch (err) {
+                    console.error('Share action error:', err);
+                    alert('分享失败: ' + err.message);
+                  }
+                };
+              }
+            });
+          }, 100);
+          
+        } else {
+          console.warn(`⚠️ Buttons not ready yet (attempt ${attemptCount}/${maxAttempts})`);
+          if (attemptCount < maxAttempts) {
+            setTimeout(bindEvents, 500);
+          } else {
+            console.error('❌ Failed to find buttons after', maxAttempts, 'attempts');
+            console.error('Available elements:', {
+              allButtons: document.querySelectorAll('button').length,
+              buttonIds: Array.from(document.querySelectorAll('button')).map(b => b.id)
+            });
+          }
+        }
+      };
+      
+      setTimeout(bindEvents, 100);
+      
+      // 滚动到顶部
+      window.scrollTo(0, 0);
+
+      // 加载完整的翻译内容
+      if (blogData) {
+        console.log('[showBlogDetail] 使用已有数据，避免重复请求');
+        loadBlogContentWithData(blogData);
+      } else {
+        console.log('[showBlogDetail] 从 API 获取数据');
+        loadBlogContent(blog.id);
+      }
+    }
+    
+    // 关闭详情页
+    function closeBlogDetail() {
+      const detailPage = document.getElementById('blogDetail');
+      if (detailPage) {
+        // 添加退出动画
+        if (typeof animateBlogDetail === 'function') {
+          animateBlogDetail('exit');
+        } else {
+          detailPage.remove();
+        }
+      }
+      
+      // 延迟显示主内容，确保动画完成
+      setTimeout(() => {
+        document.querySelector('main').style.display = 'block';
+        document.querySelector('footer').style.display = 'block';
+        window.scrollTo(0, 0);
+      }, 100);
+    }
+    
+    // 加载博客完整内容(使用已有数据)
+    async function loadBlogContentWithData(blog) {
+      console.log('[loadBlogContentWithData] 使用已有博客数据:', blog.id);
+
+      // 存储当前博客数据供下载和分享使用
+      currentBlogData = blog;
+
+      // 更新原文链接
+      const originalLink = document.querySelector('.more-btn');
+      if (originalLink) {
+        if (blog.original_url) {
+          originalLink.href = blog.original_url;
+          console.log('设置原文链接:', blog.original_url);
+        } else {
+          // 如果没有original_url，根据ID和团体构建URL
+          const blogId = blog.id;
+          let baseUrl = '';
+
+          if (blogId.includes('nogizaka')) {
+            baseUrl = 'https://www.nogizaka46.com/s/n46/diary/detail/';
+          } else if (blogId.includes('sakurazaka')) {
+            baseUrl = 'https://sakurazaka46.com/s/s46/diary/detail/';
+          } else if (blogId.includes('hinatazaka')) {
+            baseUrl = 'https://www.hinatazaka46.com/s/official/diary/detail/';
+          }
+
+          if (baseUrl) {
+            // 提取实际的博客ID（数字部分）
+            const actualId = blogId.split('-').pop();
+            originalLink.href = baseUrl + actualId;
+            console.log('构建原文链接:', originalLink.href);
+          }
+        }
+      }
+
+      // 渲染内容
+      const contentDiv = document.getElementById('blogContent');
+      if (contentDiv && blog.translated_content) {
+        // 渲染 Markdown 内容（传递团体名称）
+        const groupName = window.GroupConfig?.getDisplayName(blog.group_name) || blog.group_name;
+        const rendered = renderMarkdown(blog.translated_content, groupName);
+
+        // 设置内容（使用innerHTML以支持HTML标签）
+        contentDiv.innerHTML = rendered;
+
+        // 更新图片数量
+        const images = window.extractImagesFromContent ? extractImagesFromContent() : [];
+        const imageCountEl = document.getElementById('imageCount');
+        if (imageCountEl) {
+          if (images.length > 0) {
+            imageCountEl.textContent = `(${images.length}张)`;
+          } else {
+            // 如果没有图片，禁用下载按钮
+            const downloadBtn = document.getElementById('downloadAllBtn');
+            if (downloadBtn) {
+              downloadBtn.disabled = true;
+              downloadBtn.style.opacity = '0.5';
+              downloadBtn.style.cursor = 'not-allowed';
+            }
+          }
+        }
+      }
+
+      // 只调用一次 BlogDetailSidebar.init
+      if (window.BlogDetailSidebar) {
+        console.log('[loadBlogContentWithData] 初始化侧边栏');
+        await window.BlogDetailSidebar.init(blog);
+      }
+    }
+
+    // 加载博客完整内容(从API获取)
+    async function loadBlogContent(blogId) {
+      try {
+        const apiBase = window.API_BASE_URL || 'https://sakamichi-blog-translator.srzwyuu.workers.dev';
+        const response = await fetch(`${apiBase}/api/blogs/${blogId}`);
+        const data = await response.json();
+        
+        if (data.success && data.blog) {
+          // 存储当前博客数据供下载和分享使用
+          currentBlogData = data.blog;
+          console.log('Loaded blog data:', data.blog);
+          
+          // 更新原文链接 - 修复URL格式
+          const originalLink = document.querySelector('.more-btn');
+          if (originalLink) {
+            if (data.blog.original_url) {
+              originalLink.href = data.blog.original_url;
+              console.log('设置原文链接:', data.blog.original_url);
+            } else {
+              // 如果没有original_url，根据ID和团体构建URL
+              const blogId = data.blog.id;
+              let baseUrl = '';
+              
+              if (blogId.includes('nogizaka')) {
+                baseUrl = 'https://www.nogizaka46.com/s/n46/diary/detail/';
+              } else if (blogId.includes('sakurazaka')) {
+                baseUrl = 'https://sakurazaka46.com/s/s46/diary/detail/';
+              } else if (blogId.includes('hinatazaka')) {
+                baseUrl = 'https://www.hinatazaka46.com/s/official/diary/detail/';
+              }
+              
+              if (baseUrl) {
+                // 提取实际的博客ID（数字部分）
+                const actualId = blogId.split('-').pop();
+                originalLink.href = baseUrl + actualId;
+                console.log('构建原文链接:', originalLink.href);
+              }
+            }
+          }
+          
+          const contentDiv = document.getElementById('blogContent');
+          if (contentDiv && data.blog.translated_content) {
+            // 渲染 Markdown 内容（传递团体名称）
+            const groupName = window.GroupConfig?.getDisplayName(data.blog.group_name) || data.blog.group_name;
+            const rendered = renderMarkdown(data.blog.translated_content, groupName);
+            
+            // 设置内容（使用innerHTML以支持HTML标签）
+            contentDiv.innerHTML = rendered;
+            
+            // 更新图片数量
+            const images = window.extractImagesFromContent ? extractImagesFromContent() : [];
+            const imageCountEl = document.getElementById('imageCount');
+            if (imageCountEl) {
+              if (images.length > 0) {
+                imageCountEl.textContent = `(${images.length}张)`;
+              } else {
+                // 如果没有图片，禁用下载按钮
+                const downloadBtn = document.getElementById('downloadAllBtn');
+                if (downloadBtn) {
+                  downloadBtn.disabled = true;
+                  downloadBtn.style.opacity = '0.5';
+                  downloadBtn.style.cursor = 'not-allowed';
+                }
+              }
+            }
+          }
+          
+          // 使用新模块加载侧边栏数据
+          if (window.BlogDetailSidebar) {
+            await window.BlogDetailSidebar.init(data.blog);
+          }
+        }
+      } catch (error) {
+        console.error('加载内容失败:', error);
+        const contentDiv = document.getElementById('blogContent');
+        if (contentDiv) {
+          contentDiv.innerHTML = '<p class="text-red-500">加载失败，请稍后重试</p>';
+          console.error('详细错误信息:', error.message);
+          const apiBase = window.API_BASE_URL || 'https://sakamichi-blog-translator.srzwyuu.workers.dev';
+          console.error('API URL:', `${apiBase}/api/blogs/${blogId}`);
+        }
+      }
+    }
+
+    // 侧边栏功能已移至 blog-detail-sidebar.js 模块
+    
+    // ❌ 已删除状态变量 - 使用 app.js 中的 window.hasMore, window.totalPages 等
+    // ❌ 已删除 loadMoreBlogs() - 使用 app.js 中的 window.loadBlogs(append=true)
+    // ❌ 已删除 setupInfiniteScroll() - 使用 app.js 中的 window.setupInfiniteScroll()
+
+    // ❌ 已删除搜索变量 - 使用 app.js 中的 window.currentSearch
+    // ❌ 已删除本地搜索 (filterBlogs) - 使用 app.js 中的服务端搜索 (performSearch + enhanceSearchInput)
+
+    // ========== 下载和分享功能 ==========
+    
+    let currentBlogData = null; // 存储当前博客数据
+    
+    // 测试函数是否可用
+    console.log('🧪 Functions loaded:', {
+      downloadAllImages: typeof downloadAllImages,
+      toggleShareMenu: typeof toggleShareMenu,
+      showToast: typeof showToast
+    });
+    
+    // 图片下载函数已移至模块文件
+    // js/image-download.js - 图片下载功能
+    
+    // extractImages 和 downloadAllImages 已移至 js/image-download.js
+    
+    // 分享菜单控制
+    function toggleShareMenu(event) {
+      console.log('🔗 toggleShareMenu called');
+      if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      
+      const menu = document.getElementById('shareMenu');
+      console.log('📱 Share menu element:', menu);
+      
+      if (menu) {
+        const isShowing = menu.classList.contains('show');
+        console.log('Current state:', isShowing ? 'showing' : 'hidden');
+        menu.classList.toggle('show');
+        console.log('New state:', menu.classList.contains('show') ? 'showing' : 'hidden');
+      } else {
+        console.error('❌ Share menu element not found!');
+      }
+    }
+    
+    // 点击其他地方关闭分享菜单
+    document.addEventListener('click', () => {
+      const menu = document.getElementById('shareMenu');
+      if (menu) menu.classList.remove('show');
+    });
+    
+    // 分享和工具函数已移至模块文件
+    // js/share-module.js - 分享功能
+    // js/utils.js - 工具函数
+    
+    // 进度对话框
+    function showProgressDialog(message, progress) {
+      let dialog = document.getElementById('downloadProgress');
+      if (!dialog) {
+        dialog = document.createElement('div');
+        dialog.id = 'downloadProgress';
+        dialog.className = 'download-progress';
+        dialog.innerHTML = `
+          <div id="progressMessage" style="font-size: 14px; color: #374151; margin-bottom: 8px;"></div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <div id="progressPercent" style="font-size: 12px; color: #6b7280;"></div>
+        `;
+        document.body.appendChild(dialog);
+      }
+      
+      updateProgressDialog(message, progress);
+    }
+    
+    function updateProgressDialog(message, progress) {
+      const dialog = document.getElementById('downloadProgress');
+      if (!dialog) return;
+      
+      document.getElementById('progressMessage').textContent = message;
+      document.getElementById('progressFill').style.width = progress + '%';
+      document.getElementById('progressPercent').textContent = Math.round(progress) + '%';
+    }
+    
+    function hideProgressDialog() {
+      const dialog = document.getElementById('downloadProgress');
+      if (dialog) {
+        dialog.remove();
+      }
+    }
+    
+    // ========== 原有功能 ==========
+    
+    // popstate 处理已移至 Router 模块
+
+    // 更新翻页组件
+    function updatePagination() {
+      const paginationContainer = document.getElementById('paginationContainer');
+      const pageButtons = document.getElementById('pageButtons');
+      const prevBtn = document.getElementById('prevPageBtn');
+      const nextBtn = document.getElementById('nextPageBtn');
+      
+      if (!totalPages || totalPages <= 1) {
+        paginationContainer.classList.add('hidden');
+        return;
+      }
+      
+      paginationContainer.classList.remove('hidden');
+      
+      // 更新上一页/下一页按钮状态
+      prevBtn.disabled = currentDisplayPage <= 1;
+      nextBtn.disabled = currentDisplayPage >= totalPages;
+      
+      // 生成页码按钮
+      pageButtons.innerHTML = '';
+      
+      // 计算显示的页码范围
+      let startPage = 1;
+      let endPage = totalPages;
+      
+      if (totalPages > 10) {
+        if (currentDisplayPage <= 5) {
+          endPage = Math.min(9, totalPages);
+        } else if (currentDisplayPage >= totalPages - 4) {
+          startPage = Math.max(totalPages - 8, 1);
+        } else {
+          startPage = currentDisplayPage - 4;
+          endPage = currentDisplayPage + 4;
+        }
+      }
+      
+      // 添加第一页
+      if (startPage > 1) {
+        const btn = createPageButton(1);
+        pageButtons.appendChild(btn);
+        
+        if (startPage > 2) {
+          const dots = document.createElement('span');
+          dots.className = 'px-2 text-gray-400';
+          dots.textContent = '...';
+          pageButtons.appendChild(dots);
+        }
+      }
+      
+      // 添加中间页码
+      for (let i = startPage; i <= endPage; i++) {
+        const btn = createPageButton(i);
+        pageButtons.appendChild(btn);
+      }
+      
+      // 添加最后一页
+      if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+          const dots = document.createElement('span');
+          dots.className = 'px-2 text-gray-400';
+          dots.textContent = '...';
+          pageButtons.appendChild(dots);
+        }
+        
+        const btn = createPageButton(totalPages);
+        pageButtons.appendChild(btn);
+      }
+    }
+    
+    // 创建页码按钮
+    function createPageButton(pageNum) {
+      const btn = document.createElement('button');
+      btn.className = pageNum === currentDisplayPage 
+        ? 'px-3 py-1 text-sm bg-blue-500 text-white rounded' 
+        : 'px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100';
+      btn.textContent = pageNum;
+      btn.onclick = () => jumpToPage(pageNum);
+      return btn;
+    }
+    
+    // 跳转到指定页
+    function jumpToPage(pageNum) {
+      if (pageNum < 1 || pageNum > totalPages || pageNum === currentDisplayPage) {
+        return;
+      }
+      
+      currentPage = (pageNum - 1);
+      hasMoreBlogs = pageNum < totalPages;
+      isLoadingMore = false;
+      currentDisplayPage = pageNum;
+      
+      // 清空当前内容
+      document.getElementById('blogsContainer').innerHTML = '';
+      
+      // 加载新页面
+      loadBlogs();
+      
+      // 滚动到顶部
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    // 绑定上一页/下一页按钮事件
+    document.getElementById('prevPageBtn').onclick = () => {
+      if (currentDisplayPage > 1) {
+        jumpToPage(currentDisplayPage - 1);
+      }
+    };
+    
+    document.getElementById('nextPageBtn').onclick = () => {
+      if (currentDisplayPage < totalPages) {
+        jumpToPage(currentDisplayPage + 1);
+      }
+    };
+
+    // ❌ 已删除 DOMContentLoaded 初始化 - 统一移至 app.js 中执行
+    // 初始化顺序：app.js 先初始化核心系统，再初始化 UI 模块（Pagination, MemberPage, Router）
+  </script>
+  
+  <!-- JS模块文件（按加载顺序） -->
+  <script src="js/utils.js"></script>
+  <script src="js/blog-renderer.js"></script>  <!-- 博客渲染器（新版）-->
+  <script src="js/app.js"></script>  <!-- 主应用逻辑 -->
+  <script src="js/share-module.js"></script>
+  <script src="js/image-download.js"></script>
+  <script src="js/page-transitions.js"></script>
+  <script src="js/mobile-menu.js"></script>
+  <script src="js/mobile-download.js"></script>
+  <script src="js/sidebar-sticky.js"></script>  <!-- 侧边栏智能固定 -->
+</body>
+</html>

@@ -1,0 +1,81 @@
+name: Update Member Images
+
+on:
+  schedule:
+    # 每周一凌晨2点（UTC时间，北京时间10点）运行
+    - cron: '0 2 * * 1'
+  
+  # 也可以手动触发
+  workflow_dispatch:
+
+jobs:
+  update-images:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout frontend repo
+        uses: actions/checkout@v3
+        with:
+          path: frontend
+      
+      - name: Checkout backend repo
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ github.repository_owner }}/sakamichi-blog-backend
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: backend
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install dependencies
+        working-directory: backend
+        run: npm install
+      
+      - name: Fetch member images
+        working-directory: backend
+        run: |
+          # 抓取所有团体的成员图片
+          node scripts/fetch-real-member-images.js
+          node scripts/fetch-nogizaka-api.js
+          echo "Image fetch completed"
+      
+      - name: Smart backup check
+        working-directory: backend
+        run: |
+          # 智能备份：只在照片变化时创建新备份
+          node scripts/smart-backup-images.js
+      
+      - name: Check for changes
+        id: check_changes
+        working-directory: frontend
+        run: |
+          if [ -f "data/member-images.json" ]; then
+            git add data/member-images.json
+            git add data/backups/*.json 2>/dev/null || true
+            if git diff --staged --quiet; then
+              echo "has_changes=false" >> $GITHUB_OUTPUT
+              echo "No changes detected"
+            else
+              echo "has_changes=true" >> $GITHUB_OUTPUT
+              echo "Changes detected"
+            fi
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "File not found"
+          fi
+      
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.has_changes == 'true'
+        working-directory: frontend
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git commit -m "🤖 自动更新成员图片数据 [skip ci]"
+          git push
+      
+      - name: No changes to commit
+        if: steps.check_changes.outputs.has_changes == 'false'
+        run: echo "✅ 成员图片数据已是最新，无需更新"
