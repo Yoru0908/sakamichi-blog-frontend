@@ -345,7 +345,7 @@ window.BlogDetailSidebar = {
     const daysInMonth = lastDay.getDate();
     const startWeekday = firstDay.getDay();
     
-    let html = '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px;">';
+    let html = '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; padding-bottom: 8px;">';
     
     // 星期标题
     const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
