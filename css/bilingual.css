@@ -138,7 +138,7 @@
   color: #6c757d;
   font-size: 14px;
   font-style: italic;
-  margin-bottom: 0.3em;
+  margin-bottom: 0;  /* 移除底部间距，让原文和译文紧贴 */
 }
 
 /* 中文译文样式 */
@@ -146,7 +146,7 @@
   color: #212529;
   font-size: 14px;
   font-weight: 450;
-  margin-bottom: 0.5em;
+  margin-bottom: 0;  /* 段落间距由<br>标签控制 */
 }
 
 /* 图片样式 */
