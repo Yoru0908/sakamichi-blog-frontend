@@ -165,57 +165,55 @@
   }
 }
 
-/* ========== 暗色模式支持 ========== */
-@media (prefers-color-scheme: dark) {
-  .calendar-section {
-    background: #2d2d2d;
-    color: #e5e5e5;
-  }
-  
-  .calendar-month-selector {
-    background: #3a3a3a;
-    border-color: #404040;
-    color: #e5e5e5;
-  }
-  
-  .calendar-month-selector:hover {
-    background: #404040;
-    border-color: #4a9eff;
-  }
-  
-  .calendar-nav-btn {
-    color: #b4b4b4;
-  }
-  
-  .calendar-nav-btn:hover {
-    background: #404040;
-    color: #4a9eff;
-  }
-  
-  .calendar-weekday {
-    color: #b4b4b4;
-  }
-  
-  .calendar-day-cell {
-    color: #e5e5e5;
-  }
-  
-  .calendar-day-cell.has-blog {
-    color: #4a9eff;
-    background: #3a3a3a;
-  }
-  
-  .calendar-day-cell.has-blog::after {
-    background: #4a9eff;
-  }
-  
-  .calendar-day-cell.has-blog:hover {
-    background: #4a9eff;
-    color: white;
-  }
-  
-  .calendar-day-cell.is-today {
-    background: #4a9eff;
-    color: white;
-  }
+/* ========== 暗色模式支持（使用CSS变量系统）========== */
+.dark-theme .calendar-section {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-theme .calendar-month-selector {
+  background: var(--bg-tertiary) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-theme .calendar-month-selector:hover {
+  background: var(--bg-hover) !important;
+  border-color: var(--accent-primary) !important;
+}
+
+.dark-theme .calendar-nav-btn {
+  color: var(--text-secondary) !important;
+}
+
+.dark-theme .calendar-nav-btn:hover {
+  background: var(--bg-hover) !important;
+  color: var(--accent-primary) !important;
+}
+
+.dark-theme .calendar-weekday {
+  color: var(--text-secondary) !important;
+}
+
+.dark-theme .calendar-day-cell {
+  color: var(--text-primary) !important;
+}
+
+.dark-theme .calendar-day-cell.has-blog {
+  color: var(--accent-primary) !important;
+  background: var(--bg-tertiary) !important;
+}
+
+.dark-theme .calendar-day-cell.has-blog::after {
+  background: var(--accent-primary) !important;
+}
+
+.dark-theme .calendar-day-cell.has-blog:hover {
+  background: var(--accent-primary) !important;
+  color: white !important;
+}
+
+.dark-theme .calendar-day-cell.is-today {
+  background: var(--accent-primary) !important;
+  color: white !important;
 }
