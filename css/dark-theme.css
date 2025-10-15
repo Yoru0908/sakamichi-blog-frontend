@@ -346,6 +346,20 @@
   border-color: var(--border-hover);
 }
 
+/* 侧边栏卡片 */
+.dark-theme .sidebar-card {
+  background: var(--bg-secondary) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.dark-theme .sidebar-card h3 {
+  color: var(--text-primary) !important;
+}
+
+.dark-theme .sidebar-card p {
+  color: var(--text-secondary) !important;
+}
+
 /* 博客详情页 */
 .dark-theme #blogDetail article {
   background: var(--bg-secondary) !important;

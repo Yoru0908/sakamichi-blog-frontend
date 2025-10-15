@@ -20,6 +20,13 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* 侧边栏卡片 */
+.sidebar-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
 /* 博客卡片 - 官网网格样式 */
 .blog-card {
   background: white;
