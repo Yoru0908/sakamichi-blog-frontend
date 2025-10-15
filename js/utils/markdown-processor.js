@@ -1,0 +1,63 @@
+/**
+ * Markdown 处理器
+ * 统一处理 Markdown 格式转换，避免重复代码
+ */
+
+const MarkdownProcessor = {
+  /**
+   * 处理 Markdown 图片: ![alt](url) -> <img>
+   * @param {string} content - 要处理的内容
+   * @returns {string} 处理后的内容
+   */
+  processImages(content) {
+    return content.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, url) => {
+      return `<img src="${url}" alt="${alt || '图片'}" class="w-full my-4 rounded-lg" loading="lazy" />`;
+    });
+  },
+
+  /**
+   * 处理 Markdown 粗体: **text** -> <strong>
+   * @param {string} content - 要处理的内容
+   * @returns {string} 处理后的内容
+   */
+  processBold(content) {
+    return content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  },
+
+  /**
+   * 处理 URL 链接: http://... -> <a>
+   * @param {string} content - 要处理的内容
+   * @returns {string} 处理后的内容
+   */
+  processLinks(content) {
+    return content.replace(/(https?:\/\/[^\s<]+)/g, (match) => {
+      // 如果是图片格式或已经在 img 标签中，不处理
+      if (match.includes('.jpg') || match.includes('.png') || 
+          match.includes('.gif') || match.includes('.jpeg') || 
+          match.includes('.webp')) {
+        return match;
+      }
+      return `<a href="${match}" target="_blank" class="text-blue-600 hover:underline">${match}</a>`;
+    });
+  },
+
+  /**
+   * 统一入口：处理所有 Markdown 格式
+   * @param {string} content - 要处理的内容
+   * @returns {string} 处理后的内容
+   */
+  process(content) {
+    if (!content) return '';
+    
+    let result = content;
+    result = this.processImages(result);
+    result = this.processBold(result);
+    result = this.processLinks(result);
+    return result;
+  }
+};
+
+// 导出给全局使用
+if (typeof window !== 'undefined') {
+  window.MarkdownProcessor = MarkdownProcessor;
+}

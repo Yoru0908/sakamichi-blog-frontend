@@ -79,23 +79,22 @@ function renderStructuredContent(content, images = []) {
     // 处理普通文本
     let processedLine = line;
     
-    // 1. 处理Markdown图片 ![alt](url)
-    processedLine = processedLine.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, url) => {
-      console.log(`[结构化渲染] 发现Markdown图片: ${url}`);
-      return `<img src="${url}" alt="${alt || '图片'}" class="w-full my-4 rounded-lg" loading="lazy" />`;
-    });
-    
-    // 2. 处理粗体 **text**
-    processedLine = processedLine.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-    // 3. 处理链接（但不处理图片URL）
-    processedLine = processedLine.replace(/(https?:\/\/[^\s<]+)/g, (match) => {
-      // 如果是图片格式或已经在img标签中，不处理
-      if (match.includes('.jpg') || match.includes('.png') || match.includes('.gif') || match.includes('.jpeg') || match.includes('.webp')) {
-        return match;
+    // 使用统一的 Markdown 处理器
+    if (typeof MarkdownProcessor !== 'undefined') {
+      // 检查是否包含 Markdown 图片（用于日志）
+      if (processedLine.includes('![')) {
+        const imgMatch = processedLine.match(/!\[.*?\]\((.*?)\)/);
+        if (imgMatch) {
+          console.log(`[结构化渲染] 发现Markdown图片: ${imgMatch[1]}`);
+        }
       }
-      return `<a href="${match}" target="_blank" class="text-blue-600 hover:underline">${match}</a>`;
-    });
+      processedLine = MarkdownProcessor.process(processedLine);
+    } else {
+      // 后备方案：基本处理
+      console.warn('[结构化渲染] MarkdownProcessor 未加载');
+      processedLine = processedLine.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" />');
+      processedLine = processedLine.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    }
 
     result.push(processedLine);
 
