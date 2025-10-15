@@ -1184,10 +1184,22 @@
 
       // 渲染内容
       const contentDiv = document.getElementById('blogContent');
-      if (contentDiv && blog.translated_content) {
-        // 渲染 Markdown 内容（传递团体名称）
-        const groupName = window.GroupConfig?.getDisplayName(blog.group_name) || blog.group_name;
-        const rendered = renderMarkdown(blog.translated_content, groupName);
+      if (contentDiv) {
+        let rendered;
+        
+        // 优先使用双语内容（如果存在）
+        if (blog.bilingual_content) {
+          console.log('✅ 检测到双语内容，直接使用');
+          // 双语内容已经是完整的HTML，直接使用
+          rendered = blog.bilingual_content;
+        } else if (blog.translated_content) {
+          console.log('使用翻译内容（无双语）');
+          // 渲染 Markdown 内容（传递团体名称）
+          const groupName = window.GroupConfig?.getDisplayName(blog.group_name) || blog.group_name;
+          rendered = renderMarkdown(blog.translated_content, groupName);
+        } else {
+          rendered = '<p class="text-gray-500">暂无内容</p>';
+        }
 
         // 设置内容（使用innerHTML以支持HTML标签）
         contentDiv.innerHTML = rendered;
@@ -1258,10 +1270,22 @@
           }
           
           const contentDiv = document.getElementById('blogContent');
-          if (contentDiv && data.blog.translated_content) {
-            // 渲染 Markdown 内容（传递团体名称）
-            const groupName = window.GroupConfig?.getDisplayName(data.blog.group_name) || data.blog.group_name;
-            const rendered = renderMarkdown(data.blog.translated_content, groupName);
+          if (contentDiv) {
+            let rendered;
+            
+            // 优先使用双语内容（如果存在）
+            if (data.blog.bilingual_content) {
+              console.log('✅ 检测到双语内容，直接使用');
+              // 双语内容已经是完整的HTML，直接使用
+              rendered = data.blog.bilingual_content;
+            } else if (data.blog.translated_content) {
+              console.log('使用翻译内容（无双语）');
+              // 渲染 Markdown 内容（传递团体名称）
+              const groupName = window.GroupConfig?.getDisplayName(data.blog.group_name) || data.blog.group_name;
+              rendered = renderMarkdown(data.blog.translated_content, groupName);
+            } else {
+              rendered = '<p class="text-gray-500">暂无内容</p>';
+            }
             
             // 设置内容（使用innerHTML以支持HTML标签）
             contentDiv.innerHTML = rendered;
