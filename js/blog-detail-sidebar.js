@@ -347,13 +347,7 @@ window.BlogDetailSidebar = {
     
     let html = '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 4px;">';
     
-    // 星期标题
-    const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
-    weekdays.forEach(day => {
-      html += `<div style="text-align: center; font-size: 10px; color: #999; padding: 4px;">${day}</div>`;
-    });
-    
-    // 空白占位
+    // 空白占位（星期标题在 HTML 中已定义，不需要重复渲染）
     for (let i = 0; i < startWeekday; i++) {
       html += '<div style="aspect-ratio: 1; padding: 2px;"></div>';
     }

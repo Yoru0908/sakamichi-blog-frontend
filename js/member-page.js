@@ -825,8 +825,8 @@ window.MemberPage = {
     if (datesEl) {
       let html = '';
       
-      // 添加星期标题
-      const weekdays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+      // 添加星期标题（日文）
+      const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
       html += '<div class="calendar-weekdays">';
       weekdays.forEach(day => {
         html += `<div class="calendar-weekday">${day}</div>`;
