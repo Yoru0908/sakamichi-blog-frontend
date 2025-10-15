@@ -164,3 +164,58 @@
     padding: 6px 0;
   }
 }
+
+/* ========== 暗色模式支持 ========== */
+@media (prefers-color-scheme: dark) {
+  .calendar-section {
+    background: #1f2937;
+    color: #e5e7eb;
+  }
+  
+  .calendar-month-selector {
+    background: #374151;
+    border-color: #4b5563;
+    color: #e5e7eb;
+  }
+  
+  .calendar-month-selector:hover {
+    background: #4b5563;
+    border-color: #3b82f6;
+  }
+  
+  .calendar-nav-btn {
+    color: #9ca3af;
+  }
+  
+  .calendar-nav-btn:hover {
+    background: #4b5563;
+    color: #3b82f6;
+  }
+  
+  .calendar-weekday {
+    color: #9ca3af;
+  }
+  
+  .calendar-day-cell {
+    color: #d1d5db;
+  }
+  
+  .calendar-day-cell.has-blog {
+    color: #60a5fa;
+    background: #1e3a8a;
+  }
+  
+  .calendar-day-cell.has-blog::after {
+    background: #60a5fa;
+  }
+  
+  .calendar-day-cell.has-blog:hover {
+    background: #3b82f6;
+    color: white;
+  }
+  
+  .calendar-day-cell.is-today {
+    background: #3b82f6;
+    color: white;
+  }
+}
