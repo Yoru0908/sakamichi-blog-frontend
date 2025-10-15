@@ -544,6 +544,116 @@
   opacity: 1;
 }
 
+/* 成员详情页 */
+.dark-theme .member-blog-detail-page {
+  background: var(--bg-primary) !important;
+}
+
+.dark-theme .detail-header {
+  background: var(--bg-secondary) !important;
+  border-bottom-color: var(--border-color) !important;
+}
+
+.dark-theme .detail-header h2 {
+  color: var(--text-primary) !important;
+}
+
+.dark-theme .back-btn {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.dark-theme .back-btn:hover {
+  background: var(--bg-hover) !important;
+}
+
+.dark-theme .detail-content {
+  background: var(--bg-secondary) !important;
+}
+
+.dark-theme .detail-content h3 {
+  color: var(--text-primary) !important;
+}
+
+.dark-theme .sidebar-section {
+  background: var(--bg-secondary) !important;
+}
+
+.dark-theme .sidebar-section h4 {
+  color: var(--text-primary) !important;
+}
+
+.dark-theme .member-profile-card {
+  color: var(--text-primary) !important;
+}
+
+.dark-theme .member-profile-card p {
+  color: var(--text-secondary) !important;
+}
+
+.dark-theme .member-avatar-medium {
+  background: var(--bg-tertiary) !important;
+}
+
+.dark-theme .blog-item {
+  background: var(--bg-tertiary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.dark-theme .blog-item:hover {
+  background: var(--bg-hover) !important;
+  border-color: var(--accent-primary) !important;
+}
+
+.dark-theme .blog-thumbnail {
+  background: var(--bg-hover) !important;
+}
+
+.dark-theme .blog-date {
+  color: var(--text-tertiary) !important;
+}
+
+.dark-theme .blog-title {
+  color: var(--text-primary) !important;
+}
+
+.dark-theme .calendar-day {
+  color: var(--text-primary) !important;
+  background: transparent !important;
+}
+
+.dark-theme .calendar-day:hover {
+  background: var(--bg-tertiary) !important;
+}
+
+.dark-theme .calendar-day.has-blog {
+  background: var(--bg-tertiary) !important;
+  color: var(--accent-primary) !important;
+}
+
+.dark-theme .calendar-day.today {
+  background: var(--accent-primary) !important;
+  color: white !important;
+}
+
+.dark-theme .archive-month {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.dark-theme .archive-month:hover {
+  background: var(--bg-hover) !important;
+  border-color: var(--accent-primary) !important;
+}
+
+.dark-theme .archive-month.active {
+  background: var(--accent-primary) !important;
+  color: white !important;
+  border-color: var(--accent-primary) !important;
+}
+
 /* 滚动条样式 */
 .dark-theme::-webkit-scrollbar {
   width: 10px;
