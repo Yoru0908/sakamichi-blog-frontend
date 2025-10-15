@@ -1219,12 +1219,22 @@
         await window.BlogDetailSidebar.init(blog);
       }
       
-      // 初始化双语控件（内容加载完成后，延迟确保DOM渲染）
-      if (window.BilingualControl) {
+      // 初始化双语控件（内容加载完成后，使用更可靠的方式）
+      if (typeof BilingualControl !== 'undefined' || window.BilingualControl) {
         console.log('[loadBlogContentWithData] 初始化双语控件');
-        setTimeout(() => {
+        // 使用requestAnimationFrame确保DOM渲染完成
+        requestAnimationFrame(() => {
+          // 如果已存在实例，先销毁
+          if (window.bilingualControl && typeof window.bilingualControl.destroy === 'function') {
+            window.bilingualControl.destroy();
+          }
+          // 创建新实例
           window.bilingualControl = new BilingualControl();
-        }, 100);  // 延迟100ms确保DOM完全渲染
+          // 同步到App命名空间
+          if (window.App && window.App.bilingual) {
+            window.App.bilingual.control = window.bilingualControl;
+          }
+        });
       }
     }
 
@@ -1312,12 +1322,22 @@
             await window.BlogDetailSidebar.init(data.blog);
           }
           
-          // 初始化双语控件（内容加载完成后，延迟确保DOM渲染）
-          if (window.BilingualControl) {
+          // 初始化双语控件（内容加载完成后，使用更可靠的方式）
+          if (typeof BilingualControl !== 'undefined' || window.BilingualControl) {
             console.log('[loadBlogContent] 初始化双语控件');
-            setTimeout(() => {
+            // 使用requestAnimationFrame确保DOM渲染完成
+            requestAnimationFrame(() => {
+              // 如果已存在实例，先销毁
+              if (window.bilingualControl && typeof window.bilingualControl.destroy === 'function') {
+                window.bilingualControl.destroy();
+              }
+              // 创建新实例
               window.bilingualControl = new BilingualControl();
-            }, 100);  // 延迟100ms确保DOM完全渲染
+              // 同步到App命名空间
+              if (window.App && window.App.bilingual) {
+                window.App.bilingual.control = window.bilingualControl;
+              }
+            });
           }
         }
       } catch (error) {

@@ -44,8 +44,8 @@ class BilingualControl {
    * 插入桌面端下拉选择器（在下载和分享按钮左侧）
    */
   insertDesktopSelector() {
-    // 尝试查找下载按钮容器
-    const downloadButton = document.querySelector('.download-button, [data-action="download"]');
+    // 尝试查找下载按钮容器 - 修正选择器
+    const downloadButton = document.querySelector('#downloadAllBtn, .action-btn.primary, .download-button, [data-action="download"]');
     
     const selectorHTML = `
       <div class="language-selector" id="languageSelector">
@@ -368,13 +368,26 @@ class BilingualControl {
   }
 }
 
+// 导出类到全局App命名空间
+if (window.App && window.App.bilingual) {
+  window.App.bilingual.Class = BilingualControl;
+}
+// 兼容旧的window.BilingualControl引用
+window.BilingualControl = BilingualControl;
+
 // 页面加载完成后初始化
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     window.bilingualControl = new BilingualControl();
+    if (window.App && window.App.bilingual) {
+      window.App.bilingual.control = window.bilingualControl;
+    }
   });
 } else {
   window.bilingualControl = new BilingualControl();
+  if (window.App && window.App.bilingual) {
+    window.App.bilingual.control = window.bilingualControl;
+  }
 }
 
 // 导出（如果使用模块）

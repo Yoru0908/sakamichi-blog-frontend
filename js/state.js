@@ -50,6 +50,12 @@ window.App.view = {
   currentBlog: null     // 当前显示的博客数据
 };
 
+// ===== 双语控件 =====
+window.App.bilingual = {
+  control: null,        // BilingualControl实例
+  Class: null          // BilingualControl类
+};
+
 // ===== 向后兼容：保留旧的全局变量引用 =====
 // 使用 getter/setter 实现双向同步
 Object.defineProperties(window, {
