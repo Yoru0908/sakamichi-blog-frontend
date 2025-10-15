@@ -192,14 +192,14 @@
 
 /* ========== 移动端：悬浮按钮（FAB）========== */
 
-/* 悬浮按钮容器 */
+/* 悬浮按钮容器 - 主按钮在下，选项向上展开 */
 .fab-container {
   position: fixed;
-  bottom: 16px;  /* 从24px改为16px，更靠角落 */
-  right: 16px;   /* 从24px改为16px，更靠角落 */
+  bottom: 20px;
+  right: 20px;
   display: flex;
-  flex-direction: column-reverse;
-  align-items: center;
+  flex-direction: column;  /* 从上往下排列：选项在上，主按钮在下 */
+  align-items: flex-end;
   gap: 12px;
   z-index: 1000;
 }
@@ -238,33 +238,34 @@
   height: 20px;
 }
 
-/* 次要按钮 */
+/* 次要按钮 - 从下往上展开动画 */
 .fab-action {
   display: flex;
   align-items: center;
   gap: 10px;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(12px) scale(0.8);
+  transform: translateY(60px) scale(0.8);  /* 从主按钮下方60px开始 */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .fab-container.open .fab-action {
   opacity: 1;
   visibility: visible;
-  transform: translateY(0) scale(1);
+  transform: translateY(0) scale(1);  /* 向上移动到正常位置 */
+}
+
+/* 从下往上的渐进式延迟 - 越靠近主按钮的越先出现 */
+.fab-container.open .fab-action:nth-child(3) {
+  transition-delay: 0s;  /* 最下方的选项（日文）最先出现 */
 }
 
 .fab-container.open .fab-action:nth-child(2) {
-  transition-delay: 0.05s;
+  transition-delay: 0.05s;  /* 中间的选项（中文）*/
 }
 
-.fab-container.open .fab-action:nth-child(3) {
-  transition-delay: 0.1s;
-}
-
-.fab-container.open .fab-action:nth-child(4) {
-  transition-delay: 0.15s;
+.fab-container.open .fab-action:nth-child(1) {
+  transition-delay: 0.1s;  /* 最上方的选项（双语）最后出现 */
 }
 
 .fab-label {
@@ -347,36 +348,80 @@
   }
 }
 
-/* ========== 深色模式支持 ========== */
+/* ========== 暗色主题支持（使用CSS变量系统）========== */
 
-@media (prefers-color-scheme: dark) {
-  .display-mode-controls {
-    background: #2d2d2d;
-    border-color: #404040;
-  }
-  
-  .display-mode-controls label {
-    color: #e5e5e5;
-  }
-  
-  .display-mode-controls button {
-    background: #3a3a3a;
-    border-color: #404040;
-    color: #e5e5e5;
-  }
-  
-  .display-mode-controls button:hover {
-    background: #404040;
-    border-color: #667eea;
-  }
-  
-  .blog-content-official p[lang="ja"] {
-    color: #b4b4b4;
-  }
-  
-  .blog-content-official p[lang="zh"] {
-    color: #e5e5e5;
-  }
+.dark-theme .selector-button {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.dark-theme .selector-button:hover {
+  border-color: var(--accent-primary);
+}
+
+.dark-theme .dropdown-menu {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+  box-shadow: var(--shadow-md);
+}
+
+.dark-theme .dropdown-item {
+  color: var(--text-primary);
+}
+
+.dark-theme .dropdown-item:hover {
+  background: var(--bg-tertiary);
+}
+
+.dark-theme .dropdown-item.selected {
+  background: var(--bg-hover);
+  color: var(--accent-primary);
+}
+
+.dark-theme .display-mode-controls {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+.dark-theme .display-mode-controls label {
+  color: var(--text-primary);
+}
+
+.dark-theme .display-mode-controls button {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.dark-theme .display-mode-controls button:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent-secondary);
+}
+
+.dark-theme .blog-content-official {
+  color: var(--text-primary);
+}
+
+.dark-theme .blog-content-official p[lang="ja"] {
+  color: var(--text-secondary);
+}
+
+.dark-theme .blog-content-official p[lang="zh"] {
+  color: var(--text-primary);
+}
+
+.dark-theme .fab-main {
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+}
+
+.dark-theme .fab-button {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+.dark-theme .fab-button svg {
+  color: var(--text-primary);
 }
 
 /* ========== 打印样式 ========== */

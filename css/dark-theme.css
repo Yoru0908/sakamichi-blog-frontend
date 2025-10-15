@@ -213,14 +213,36 @@
 }
 
 .dark-theme .mobile-nav-item {
-  color: var(--text-secondary);
-  border-bottom-color: var(--border-color);
+  color: var(--text-primary) !important;
+  background: var(--bg-tertiary) !important;
+  border-color: var(--border-color) !important;
 }
 
-.dark-theme .mobile-nav-item:hover,
+.dark-theme .mobile-nav-item:hover {
+  background: var(--bg-hover) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-hover) !important;
+}
+
 .dark-theme .mobile-nav-item.active {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
+  background: var(--bg-hover) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--accent-primary) !important;
+  font-weight: 600;
+}
+
+.dark-theme .mobile-sidebar-close {
+  background: var(--bg-tertiary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.dark-theme .mobile-sidebar-close:hover {
+  background: var(--bg-hover) !important;
+  border-color: var(--border-hover) !important;
+}
+
+.dark-theme .mobile-sidebar-close svg {
+  color: var(--text-primary) !important;
 }
 
 .dark-theme .mobile-theme-toggle {
@@ -339,11 +361,20 @@
 }
 
 .dark-theme #blogDetail header {
-  border-bottom-color: var(--border-color);
+  border-bottom-color: var(--border-color) !important;
 }
 
 .dark-theme #blogDetail footer {
-  border-top-color: var(--border-color);
+  border-top-color: var(--border-color) !important;
+}
+
+/* 确保所有border-b和border-t类在暗色模式下使用正确颜色 */
+.dark-theme #blogDetail .border-b {
+  border-bottom-color: var(--border-color) !important;
+}
+
+.dark-theme #blogDetail .border-t {
+  border-top-color: var(--border-color) !important;
 }
 
 /* 操作按钮 */

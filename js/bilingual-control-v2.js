@@ -366,6 +366,34 @@ class BilingualControl {
       return 'bilingual';
     }
   }
+
+  /**
+   * 销毁控件，清理DOM和事件监听器
+   */
+  destroy() {
+    console.log('🗑️ 销毁双语控件实例');
+    
+    // 移除桌面端选择器
+    const desktopSelector = document.getElementById('languageSelector');
+    if (desktopSelector) {
+      desktopSelector.remove();
+    }
+    
+    // 移除移动端FAB
+    const mobileFab = document.getElementById('bilingualFab');
+    if (mobileFab) {
+      mobileFab.remove();
+    }
+    
+    // 移除移动端模态框
+    const mobileModal = document.getElementById('bilingualModal');
+    if (mobileModal) {
+      mobileModal.remove();
+    }
+    
+    // 清理事件监听器（通过移除DOM元素自动清理）
+    console.log('✅ 双语控件已销毁');
+  }
 }
 
 // 导出类到全局App命名空间
@@ -375,20 +403,9 @@ if (window.App && window.App.bilingual) {
 // 兼容旧的window.BilingualControl引用
 window.BilingualControl = BilingualControl;
 
-// 页面加载完成后初始化
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    window.bilingualControl = new BilingualControl();
-    if (window.App && window.App.bilingual) {
-      window.App.bilingual.control = window.bilingualControl;
-    }
-  });
-} else {
-  window.bilingualControl = new BilingualControl();
-  if (window.App && window.App.bilingual) {
-    window.App.bilingual.control = window.bilingualControl;
-  }
-}
+// 不再自动初始化，改为按需初始化
+// 只有在博客详情页加载内容后才会初始化（由 index.html 中的 loadBlogContent 触发）
+console.log('[bilingual-control-v2.js] ✅ BilingualControl 类已加载，等待手动初始化');
 
 // 导出（如果使用模块）
 if (typeof module !== 'undefined' && module.exports) {
