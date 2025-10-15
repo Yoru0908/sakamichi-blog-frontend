@@ -276,9 +276,8 @@
   }
   
   .share-menu {
-    /* 移动端：向下弹出 */
+    /* 移动端：向下居中弹出 */
     top: calc(100% + 8px);
-    bottom: auto;
     left: 50%;
     right: auto;
     transform: translateX(-50%);

@@ -179,7 +179,7 @@ body {
 
 .share-menu {
   position: absolute;
-  bottom: calc(100% + 8px);  /* PC端：向上弹出 */
+  top: calc(100% + 8px);  /* PC端：向下弹出 */
   right: 0;  /* PC端：右对齐 */
   background: white;
   border: 1px solid #e5e7eb;
