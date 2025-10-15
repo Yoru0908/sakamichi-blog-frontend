@@ -351,31 +351,31 @@
 
 @media (prefers-color-scheme: dark) {
   .display-mode-controls {
-    background: #1f2937;
-    border-color: #374151;
+    background: #2d2d2d;
+    border-color: #404040;
   }
   
   .display-mode-controls label {
-    color: #e5e7eb;
+    color: #e5e5e5;
   }
   
   .display-mode-controls button {
-    background: #374151;
-    border-color: #4b5563;
-    color: #d1d5db;
+    background: #3a3a3a;
+    border-color: #404040;
+    color: #e5e5e5;
   }
   
   .display-mode-controls button:hover {
-    background: #4b5563;
-    border-color: #8b5cf6;
+    background: #404040;
+    border-color: #667eea;
   }
   
   .blog-content-official p[lang="ja"] {
-    color: #9ca3af;
+    color: #b4b4b4;
   }
   
   .blog-content-official p[lang="zh"] {
-    color: #e5e7eb;
+    color: #e5e5e5;
   }
 }
 

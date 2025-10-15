@@ -11,16 +11,16 @@
   
   /* 博客内容区域 */
   #blogDetail article {
-    background: #1f2937 !important;
-    color: #e5e7eb !important;
+    background: #2d2d2d !important;
+    color: #e5e5e5 !important;
   }
   
   #blogDetail header h1 {
-    color: #f9fafb !important;
+    color: #e5e5e5 !important;
   }
   
   #blogDetail header .text-gray-600 {
-    color: #9ca3af !important;
+    color: #b4b4b4 !important;
   }
   
   #blogDetail header .border-b {
@@ -33,21 +33,21 @@
   
   /* 成员侧边栏 */
   .member-sidebar-detail > div {
-    background: #1f2937 !important;
-    color: #e5e7eb !important;
+    background: #2d2d2d !important;
+    color: #e5e5e5 !important;
   }
   
   /* 成员信息卡片 */
   .member-sidebar-detail > div:first-child {
-    background: #1f2937 !important;
+    background: #2d2d2d !important;
   }
   
   .member-sidebar-detail h3 {
-    color: #f9fafb !important;
+    color: #e5e5e5 !important;
   }
   
   .member-sidebar-detail p {
-    color: #9ca3af !important;
+    color: #b4b4b4 !important;
   }
   
   /* 头像背景 */
@@ -58,19 +58,19 @@
   
   /* NEW ENTRY区域 */
   #detailNewEntries {
-    color: #e5e7eb !important;
+    color: #e5e5e5 !important;
   }
   
   #detailNewEntries li {
-    color: #d1d5db !important;
+    color: #e5e5e5 !important;
   }
   
   #detailNewEntries li:hover {
-    background: #374151 !important;
+    background: #3a3a3a !important;
   }
   
   #detailNewEntries a {
-    color: #d1d5db !important;
+    color: #e5e5e5 !important;
   }
   
   #detailNewEntries a:hover {
@@ -79,23 +79,23 @@
   
   /* View More按钮 */
   .member-sidebar-detail a[href*="member"] {
-    background: #374151 !important;
-    color: #e5e7eb !important;
-    border-color: #4b5563 !important;
+    background: #3a3a3a !important;
+    color: #e5e5e5 !important;
+    border-color: #404040 !important;
   }
   
   .member-sidebar-detail a[href*="member"]:hover {
-    background: #4b5563 !important;
-    border-color: #60a5fa !important;
+    background: #404040 !important;
+    border-color: #4a9eff !important;
   }
   
   /* 博客内容文字 */
   .blog-content-official {
-    color: #e5e7eb !important;
+    color: #e5e5e5 !important;
   }
   
   .blog-content-official p {
-    color: #d1d5db !important;
+    color: #e5e5e5 !important;
   }
   
   /* 查看原文链接 */
@@ -111,36 +111,36 @@
   
   /* 操作按钮 */
   .action-btn {
-    background: #374151 !important;
-    color: #e5e7eb !important;
-    border-color: #4b5563 !important;
+    background: #3a3a3a !important;
+    color: #e5e5e5 !important;
+    border-color: #404040 !important;
   }
   
   .action-btn:hover {
-    background: #4b5563 !important;
+    background: #404040 !important;
   }
   
   .action-btn.primary {
-    background: #1e40af !important;
-    border-color: #1e40af !important;
+    background: #4a9eff !important;
+    border-color: #4a9eff !important;
   }
   
   .action-btn.primary:hover {
-    background: #1e3a8a !important;
+    background: #3a8eef !important;
   }
   
   /* 分享菜单 */
   .share-menu {
-    background: #1f2937 !important;
-    border-color: #374151 !important;
+    background: #3a3a3a !important;
+    border-color: #404040 !important;
   }
   
   .share-option {
-    color: #9ca3af !important;
+    color: #e5e5e5 !important;
   }
   
   .share-option:hover {
-    background: #374151 !important;
-    color: #60a5fa !important;
+    background: #404040 !important;
+    color: #4a9eff !important;
   }
 }
