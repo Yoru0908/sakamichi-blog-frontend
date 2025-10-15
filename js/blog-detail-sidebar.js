@@ -345,17 +345,17 @@ window.BlogDetailSidebar = {
     const daysInMonth = lastDay.getDate();
     const startWeekday = firstDay.getDay();
     
-    let html = '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 4px;">';
+    let html = '<div class="calendar-days">';
     
     // 添加星期标题（日文）
     const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
     weekdays.forEach(day => {
-      html += `<div style="text-align: center; font-size: 10px; color: #999; padding: 4px;">${day}</div>`;
+      html += `<div class="calendar-weekday">${day}</div>`;
     });
     
     // 空白占位
     for (let i = 0; i < startWeekday; i++) {
-      html += '<div style="aspect-ratio: 1; padding: 2px;"></div>';
+      html += '<div class="calendar-day-empty"></div>';
     }
     
     // 日期
@@ -363,26 +363,21 @@ window.BlogDetailSidebar = {
       const isToday = day === today.getDate();
       const hasBlog = blogDates.has(day);
       
-      let style = 'aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 11px; padding: 2px; border-radius: 4px;';
-      
-      if (isToday) {
-        style += ' background: #1a73e8; color: white; font-weight: bold;';
-      } else if (hasBlog) {
-        style += ' background: #e8f0fe; color: #1a73e8; cursor: pointer;';
-      } else {
-        style += ' color: #ccc;';
-      }
+      // 使用CSS类而不是内联样式
+      let classes = 'calendar-day-cell';
+      if (isToday) classes += ' is-today';
+      if (hasBlog) classes += ' has-blog';
       
       if (hasBlog) {
         const dateStr = `${currentYear}/${String(currentMonth).padStart(2, '0')}/${String(day).padStart(2, '0')}`;
         const targetBlog = blogs.find(b => b.publish_date && b.publish_date.startsWith(dateStr));
         if (targetBlog) {
-          html += `<div style="${style}" onclick="location.hash='#blog/${targetBlog.id}'; location.reload();">${day}</div>`;
+          html += `<div class="${classes}" onclick="location.hash='#blog/${targetBlog.id}'; location.reload();">${day}</div>`;
         } else {
-          html += `<div style="${style}">${day}</div>`;
+          html += `<div class="${classes}">${day}</div>`;
         }
       } else {
-        html += `<div style="${style}">${day}</div>`;
+        html += `<div class="${classes}">${day}</div>`;
       }
     }
     

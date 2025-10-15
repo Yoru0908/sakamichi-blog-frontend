@@ -348,24 +348,24 @@
 
 /* 博客详情页 */
 .dark-theme #blogDetail article {
-  background: var(--bg-secondary);
-  box-shadow: var(--shadow-sm);
+  background: var(--bg-secondary) !important;
+  box-shadow: var(--shadow-sm) !important;
 }
 
 .dark-theme #blogDetail h1 {
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
 }
 
 .dark-theme #blogDetail .blog-content-official {
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
 }
 
 .dark-theme #blogDetail header {
-  border-bottom-color: var(--border-color) !important;
+  border-bottom: 1px solid var(--border-color) !important;
 }
 
 .dark-theme #blogDetail footer {
-  border-top-color: var(--border-color) !important;
+  border-top: 1px solid var(--border-color) !important;
 }
 
 /* 确保所有border-b和border-t类在暗色模式下使用正确颜色 */

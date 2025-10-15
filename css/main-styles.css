@@ -145,6 +145,13 @@ body {
   transition: all 0.15s, transform 0.1s;
   text-decoration: none;
   position: relative;
+  height: 38px;  /* 固定高度确保对齐 */
+}
+
+.action-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 .action-btn:active {
@@ -160,10 +167,6 @@ body {
 .action-btn.primary:hover {
   background: #1d4ed8;
   border-color: #1d4ed8;
-}
-
-.action-btn svg {
-  flex-shrink: 0;
 }
 
 .action-btn:hover {
