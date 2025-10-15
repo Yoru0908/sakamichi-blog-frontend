@@ -825,20 +825,18 @@ window.MemberPage = {
     if (datesEl) {
       let html = '';
       
+      // 使用单一 grid 布局（与博客详情页一致）
+      html += '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 4px;">';
+      
       // 添加星期标题（日文）
       const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
-      html += '<div class="calendar-weekdays">';
       weekdays.forEach(day => {
-        html += `<div class="calendar-weekday">${day}</div>`;
+        html += `<div style="text-align: center; font-size: 10px; color: #999; padding: 4px;">${day}</div>`;
       });
-      html += '</div>';
-      
-      // 添加日期
-      html += '<div class="calendar-days">';
       
       // 添加占位空白
       for (let i = 0; i < startWeekday; i++) {
-        html += '<div class="calendar-day-empty"></div>';
+        html += '<div style="aspect-ratio: 1; padding: 2px;"></div>';
       }
       
       // 添加每一天
@@ -849,16 +847,23 @@ window.MemberPage = {
       for (let day = 1; day <= daysInMonth; day++) {
         const hasBlog = blogDatesSet.has(day);
         const isToday = day === currentDay;
-        const classes = ['calendar-day-cell'];
-        if (hasBlog) classes.push('has-blog');
-        if (isToday) classes.push('is-today');
+        
+        let style = 'aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 11px; padding: 2px; border-radius: 4px; border: none; background: transparent; cursor: default;';
+        
+        if (isToday) {
+          style += ' background: #1a73e8; color: white; font-weight: bold;';
+        } else if (hasBlog) {
+          style += ' background: #e8f0fe; color: #1a73e8; cursor: pointer;';
+        } else {
+          style += ' color: #ccc;';
+        }
         
         const dateStr = `${this.currentYear}/${String(this.currentMonth).padStart(2, '0')}/${String(day).padStart(2, '0')}`;
         
         if (hasBlog) {
-          html += `<button class="${classes.join(' ')}" onclick="MemberPage.filterByDate('${dateStr}')">${String(day).padStart(2, '0')}</button>`;
+          html += `<button style="${style}" onclick="MemberPage.filterByDate('${dateStr}')">${day}</button>`;
         } else {
-          html += `<div class="${classes.join(' ')}">${String(day).padStart(2, '0')}</div>`;
+          html += `<div style="${style}">${day}</div>`;
         }
       }
       
