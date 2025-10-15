@@ -1,0 +1,416 @@
+/**
+ * 双语博客显示模式 CSS
+ * 方案1：使用 <br> 标签还原空行，继承 line-height
+ * 完全匹配官网的换行间距
+ */
+
+/* ========== 桌面端：下拉选择器 ========== */
+.language-selector {
+  position: relative;
+  min-width: 160px;
+}
+
+.selector-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.selector-button:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.selector-button.open {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.selector-arrow {
+  width: 14px;
+  height: 14px;
+  color: #9ca3af;
+  transition: transform 0.2s;
+}
+
+.selector-button.open .selector-arrow {
+  transform: rotate(180deg);
+}
+
+/* 下拉菜单 */
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: all 0.15s ease-out;
+}
+
+.language-selector.open .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-item {
+  padding: 10px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #374151;
+  font-size: 14px;
+  transition: background 0.1s;
+}
+
+.dropdown-item:hover {
+  background: #f9fafb;
+}
+
+.dropdown-item.selected {
+  background: #eff6ff;
+  color: #3b82f6;
+  font-weight: 500;
+}
+
+.check-icon {
+  width: 14px;
+  height: 14px;
+  color: #3b82f6;
+}
+
+/* ========== 博客内容样式（匹配官网） ========== */
+
+/* 基础样式 - 完全匹配官网 */
+.blog-content-official {
+  font-size: 14px;           /* 官网字体大小 */
+  line-height: 1.75;          /* 官网行高 */
+  color: #333;
+  letter-spacing: 0.02em;
+  max-width: none;
+}
+
+/* br标签样式 - 关键：继承行高 */
+.blog-content-official br {
+  display: block;
+  content: "";
+  margin: 0;
+  padding: 0;
+  height: 0;
+  line-height: inherit;       /* 🎯 继承 1.75，自动匹配官网 */
+}
+
+/* 段落基础样式 */
+.blog-content-official p {
+  margin: 0;
+  padding: 0;
+  line-height: 1.75;
+}
+
+/* ========== 双语段落样式 ========== */
+
+.blog-content-official p[lang] {
+  line-height: 1.75;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* 日文原文样式 */
+.blog-content-official p[lang="ja"] {
+  color: #6c757d;
+  font-size: 14px;
+  font-style: italic;
+  margin-bottom: 0.3em;
+}
+
+/* 中文译文样式 */
+.blog-content-official p[lang="zh"] {
+  color: #212529;
+  font-size: 14px;
+  font-weight: 450;
+  margin-bottom: 0.5em;
+}
+
+/* 图片样式 */
+.blog-content-official img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1em 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: block;
+}
+
+/* ========== 显示模式控制 ========== */
+
+/* 仅中文模式：隐藏日文 */
+.blog-content-official.mode-chinese p[lang="ja"] {
+  display: none;
+}
+
+/* 仅日文模式：隐藏中文 */
+.blog-content-official.mode-japanese p[lang="zh"] {
+  display: none;
+}
+
+/* 仅日文模式：调整日文样式为主要内容 */
+.blog-content-official.mode-japanese p[lang="ja"] {
+  color: #212529;
+  font-style: normal;
+  font-weight: 450;
+}
+
+/* ========== 平滑过渡效果 ========== */
+
+.blog-content-official.mode-chinese p[lang="ja"],
+.blog-content-official.mode-japanese p[lang="zh"] {
+  opacity: 0;
+  transform: translateX(-10px);
+  height: 0;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* ========== 移动端：悬浮按钮（FAB）========== */
+
+/* 悬浮按钮容器 */
+.fab-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 12px;
+  z-index: 1000;
+}
+
+/* 主按钮 */
+.fab-main {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fab-main:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.5);
+}
+
+.fab-main:active {
+  transform: scale(0.95);
+}
+
+.fab-main.open {
+  transform: rotate(135deg);
+}
+
+.fab-main svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* 次要按钮 */
+.fab-action {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px) scale(0.8);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fab-container.open .fab-action {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.fab-container.open .fab-action:nth-child(2) {
+  transition-delay: 0.05s;
+}
+
+.fab-container.open .fab-action:nth-child(3) {
+  transition-delay: 0.1s;
+}
+
+.fab-container.open .fab-action:nth-child(4) {
+  transition-delay: 0.15s;
+}
+
+.fab-label {
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+}
+
+.fab-button {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+}
+
+.fab-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: #3b82f6;
+}
+
+.fab-button svg {
+  width: 18px;
+  height: 18px;
+  color: #374151;
+}
+
+/* 遮罩层 */
+.fab-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+  z-index: 999;
+  backdrop-filter: blur(2px);
+}
+
+.fab-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+@media (max-width: 768px) {
+  /* 隐藏桌面端语言选择器 */
+  .language-selector {
+    display: none;
+  }
+  
+  /* 显示悬浮按钮 */
+  .fab-container {
+    display: flex;
+  }
+  
+  .blog-content-official {
+    font-size: 14px;
+    padding: 16px;
+  }
+}
+
+@media (min-width: 769px) {
+  /* 桌面端隐藏悬浮按钮 */
+  .fab-container {
+    display: none;
+  }
+}
+
+/* ========== 深色模式支持 ========== */
+
+@media (prefers-color-scheme: dark) {
+  .display-mode-controls {
+    background: #1f2937;
+    border-color: #374151;
+  }
+  
+  .display-mode-controls label {
+    color: #e5e7eb;
+  }
+  
+  .display-mode-controls button {
+    background: #374151;
+    border-color: #4b5563;
+    color: #d1d5db;
+  }
+  
+  .display-mode-controls button:hover {
+    background: #4b5563;
+    border-color: #8b5cf6;
+  }
+  
+  .blog-content-official p[lang="ja"] {
+    color: #9ca3af;
+  }
+  
+  .blog-content-official p[lang="zh"] {
+    color: #e5e7eb;
+  }
+}
+
+/* ========== 打印样式 ========== */
+
+@media print {
+  .display-mode-controls {
+    display: none !important;
+  }
+  
+  /* 打印时默认显示中日对照 */
+  .blog-content-official p[lang] {
+    display: block !important;
+    opacity: 1 !important;
+    transform: none !important;
+    height: auto !important;
+  }
+  
+  .blog-content-official {
+    font-size: 12pt;
+  }
+}
+
+/* ========== 无障碍支持 ========== */
+
+.blog-content-official p[lang="ja"]:lang(ja) {
+  quotes: "「" "」" "『" "』";
+}
+
+.blog-content-official p[lang="zh"]:lang(zh) {
+  quotes: """ """ "'" "'";
+}
+
+/* 焦点可见性 */
+.display-mode-controls button:focus-visible {
+  outline: 2px solid #8b5cf6;
+  outline-offset: 2px;
+}
