@@ -179,18 +179,17 @@ body {
 
 .share-menu {
   position: absolute;
-  top: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: calc(100% + 8px);  /* PC端：向上弹出 */
+  right: 0;  /* PC端：右对齐 */
   background: white;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   padding: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 10;
-  min-width: 200px;
+  min-width: 320px;  /* 增加宽度以容纳4列 */
   display: none;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);  /* 4列 */
   gap: 8px;
 }
 
@@ -198,8 +197,8 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 48px;  /* 增大按钮尺寸 */
+  height: 48px;
   flex-shrink: 0;
   color: #374151;
   cursor: pointer;
@@ -211,8 +210,8 @@ body {
 }
 
 .share-option svg {
-  width: 22px;
-  height: 22px;
+  width: 24px;  /* 增大图标尺寸 */
+  height: 24px;
 }
 
 .share-option:hover {

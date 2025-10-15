@@ -11,7 +11,7 @@ function isMobileDevice() {
 // 分享到各平台
 function shareToQQ() {
   const url = window.location.href;
-  const text = `${currentBlogData.member}的博客：${currentBlogData.title}`;
+  const text = `${App.view.currentBlog.member}的博客：${App.view.currentBlog.title}`;
   
   if (isMobileDevice()) {
     // 移动端尝试唤起QQ APP
@@ -35,7 +35,7 @@ function shareToQQ() {
 
 function shareToWeibo() {
   const url = window.location.href;
-  const text = `${currentBlogData.member}的博客：${currentBlogData.title}`;
+  const text = `${App.view.currentBlog.member}的博客：${App.view.currentBlog.title}`;
   
   if (isMobileDevice()) {
     // 移动端尝试唤起微博APP
@@ -60,7 +60,7 @@ function shareToWeibo() {
 function shareToBilibili() {
   // B站动态分享
   const url = window.location.href;
-  const text = `${currentBlogData.member}的博客：${currentBlogData.title} ${url}`;
+  const text = `${App.view.currentBlog.member}的博客：${App.view.currentBlog.title} ${url}`;
   // 复制到剪贴板
   copyToClipboard(text);
   window.open('https://t.bilibili.com/', '_blank');
@@ -69,7 +69,7 @@ function shareToBilibili() {
 
 function shareToTwitter() {
   const url = window.location.href;
-  const text = `${currentBlogData.member} - ${currentBlogData.title}`;
+  const text = `${App.view.currentBlog.member} - ${App.view.currentBlog.title}`;
   const shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
   window.open(shareUrl, '_blank', 'width=600,height=400');
   showToast('已打开Twitter分享');
@@ -77,7 +77,7 @@ function shareToTwitter() {
 
 function shareToWhatsApp() {
   const url = window.location.href;
-  const text = `${currentBlogData.member}的博客：${currentBlogData.title}`;
+  const text = `${App.view.currentBlog.member}的博客：${App.view.currentBlog.title}`;
   
   if (isMobileDevice()) {
     // 移动端直接使用whatsapp://协议唤起APP
@@ -117,7 +117,7 @@ function shareToFacebook() {
 
 function shareToTelegram() {
   const url = window.location.href;
-  const text = `${currentBlogData.member} - ${currentBlogData.title}`;
+  const text = `${App.view.currentBlog.member} - ${App.view.currentBlog.title}`;
   const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
   window.open(shareUrl, '_blank', 'width=600,height=400');
   showToast('已打开Telegram分享');
