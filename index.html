@@ -1217,10 +1217,12 @@
         await window.BlogDetailSidebar.init(blog);
       }
       
-      // 初始化双语控件（内容加载完成后）
+      // 初始化双语控件（内容加载完成后，延迟确保DOM渲染）
       if (window.BilingualControl) {
         console.log('[loadBlogContentWithData] 初始化双语控件');
-        window.bilingualControl = new BilingualControl();
+        setTimeout(() => {
+          window.bilingualControl = new BilingualControl();
+        }, 100);  // 延迟100ms确保DOM完全渲染
       }
     }
 
