@@ -195,8 +195,8 @@
 /* 悬浮按钮容器 */
 .fab-container {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  bottom: 16px;  /* 从24px改为16px，更靠角落 */
+  right: 16px;   /* 从24px改为16px，更靠角落 */
   display: flex;
   flex-direction: column-reverse;
   align-items: center;

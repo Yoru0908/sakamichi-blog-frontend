@@ -41,12 +41,12 @@ class BilingualControl {
   }
 
   /**
-   * 插入桌面端下拉选择器
+   * 插入桌面端下拉选择器（在下载和分享按钮左侧）
    */
   insertDesktopSelector() {
-    const blogContent = document.querySelector('.blog-content-official');
-    if (!blogContent) return;
-
+    // 尝试查找下载按钮容器
+    const downloadButton = document.querySelector('.download-button, [data-action="download"]');
+    
     const selectorHTML = `
       <div class="language-selector" id="languageSelector">
         <button class="selector-button" id="selectorButton">
@@ -67,7 +67,18 @@ class BilingualControl {
       </div>
     `;
 
-    blogContent.insertAdjacentHTML('beforebegin', selectorHTML);
+    // 如果找到下载按钮，插入到它前面；否则保持原来的位置
+    if (downloadButton) {
+      downloadButton.insertAdjacentHTML('beforebegin', selectorHTML);
+      console.log('✅ 双语选择器已插入到下载按钮左侧');
+    } else {
+      // 回退方案：插入到博客内容前面
+      const blogContent = document.querySelector('.blog-content-official');
+      if (blogContent) {
+        blogContent.insertAdjacentHTML('beforebegin', selectorHTML);
+        console.log('⚠️ 未找到下载按钮，双语选择器插入到博客内容前面');
+      }
+    }
   }
 
   /**
