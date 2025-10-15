@@ -4,11 +4,8 @@
  */
 
 window.Pagination = {
-  currentPage: 1,
-  totalPages: 1,
   totalBlogs: 0,
   blogsPerPage: 32,
-  hasMore: false,
   
   /**
    * 初始化分页
@@ -38,10 +35,9 @@ window.Pagination = {
    * 重置分页
    */
   reset() {
-    this.currentPage = 1;
-    this.totalPages = 1;
+    App.state.totalPages = 1;
     this.totalBlogs = 0;
-    this.hasMore = false;
+    App.state.hasMore = false;
     this.hide();
   },
   
@@ -52,27 +48,27 @@ window.Pagination = {
     const paginationContainer = document.getElementById('paginationContainer');
     if (!paginationContainer) return;
 
-    // 同步全局currentPage到本地（确保一致性）
-    this.currentPage = window.currentPage || 1;
+    // 使用统一状态
+    const currentPage = App.state.page || 1;
 
     // 计算总页数
     if (totalCount) {
       this.totalBlogs = totalCount;
-      this.totalPages = Math.ceil(totalCount / this.blogsPerPage);
-      this.hasMore = this.currentPage < this.totalPages;
+      App.state.totalPages = Math.ceil(totalCount / this.blogsPerPage);
+      App.state.hasMore = currentPage < App.state.totalPages;
     } else {
       // 如果没有总数，根据返回数量判断是否还有更多
-      this.hasMore = blogsCount >= this.blogsPerPage;
+      App.state.hasMore = blogsCount >= this.blogsPerPage;
       // 保守估计总页数
-      if (this.hasMore) {
-        this.totalPages = this.currentPage + 1;
+      if (App.state.hasMore) {
+        App.state.totalPages = currentPage + 1;
       } else {
-        this.totalPages = this.currentPage;
+        App.state.totalPages = currentPage;
       }
     }
 
     // 如果只有一页，隐藏分页
-    if (this.totalPages <= 1 && !this.hasMore) {
+    if (App.state.totalPages <= 1 && !App.state.hasMore) {
       this.hide();
       return;
     }
@@ -93,29 +89,29 @@ window.Pagination = {
     // 更新页码信息
     if (pageInfo) {
       if (this.totalBlogs > 0) {
-        const startIndex = (this.currentPage - 1) * this.blogsPerPage + 1;
-        const endIndex = Math.min(this.currentPage * this.blogsPerPage, this.totalBlogs);
+        const startIndex = (App.state.page - 1) * this.blogsPerPage + 1;
+        const endIndex = Math.min(App.state.page * this.blogsPerPage, this.totalBlogs);
         pageInfo.textContent = `显示 ${startIndex}-${endIndex} / 共 ${this.totalBlogs} 篇`;
       } else {
-        pageInfo.textContent = `第 ${this.currentPage} 页`;
+        pageInfo.textContent = `第 ${App.state.page} 页`;
       }
     }
     
     // 更新按钮状态
     if (prevBtn) {
-      prevBtn.disabled = this.currentPage === 1;
+      prevBtn.disabled = App.state.page === 1;
     }
     
     if (nextBtn) {
-      nextBtn.disabled = !this.hasMore && this.currentPage >= this.totalPages;
+      nextBtn.disabled = !App.state.hasMore && App.state.page >= App.state.totalPages;
     }
     
     // 生成页码按钮
     if (pageButtons) {
       pageButtons.innerHTML = '';
       
-      const startPage = Math.max(1, this.currentPage - 2);
-      const endPage = Math.min(this.totalPages, this.currentPage + 2);
+      const startPage = Math.max(1, App.state.page - 2);
+      const endPage = Math.min(App.state.totalPages, App.state.page + 2);
       
       // 第一页
       if (startPage > 1) {
@@ -130,18 +126,18 @@ window.Pagination = {
       
       // 中间页码
       for (let i = startPage; i <= endPage; i++) {
-        pageButtons.appendChild(this.createPageButton(i, i === this.currentPage));
+        pageButtons.appendChild(this.createPageButton(i, i === App.state.page));
       }
       
       // 最后一页
-      if (endPage < this.totalPages) {
-        if (endPage < this.totalPages - 1) {
+      if (endPage < App.state.totalPages) {
+        if (endPage < App.state.totalPages - 1) {
           const dots = document.createElement('span');
           dots.className = 'px-2 text-gray-400';
           dots.textContent = '...';
           pageButtons.appendChild(dots);
         }
-        pageButtons.appendChild(this.createPageButton(this.totalPages, false));
+        pageButtons.appendChild(this.createPageButton(App.state.totalPages, false));
       }
     }
   },
@@ -168,12 +164,10 @@ window.Pagination = {
    * 跳转到指定页
    */
   goToPage(page) {
-    if (page < 1 || page === this.currentPage) return;
+    if (page < 1 || page === App.state.page) return;
 
-    this.currentPage = page;
-
-    // 同步到全局变量（app.js使用window.currentPage）
-    window.currentPage = page;
+    // 设置统一状态
+    App.state.page = page;
 
     // 触发加载事件
     if (window.loadBlogs) {
@@ -188,8 +182,8 @@ window.Pagination = {
    * 上一页
    */
   goToPreviousPage() {
-    if (this.currentPage > 1) {
-      this.goToPage(this.currentPage - 1);
+    if (App.state.page > 1) {
+      this.goToPage(App.state.page - 1);
     }
   },
   
@@ -197,8 +191,9 @@ window.Pagination = {
    * 下一页
    */
   goToNextPage() {
-    if (this.currentPage < this.totalPages || this.hasMore) {
-      this.goToPage(this.currentPage + 1);
+    const currentPage = App.state.page || 1;
+    if (currentPage < App.state.totalPages || App.state.hasMore) {
+      this.goToPage(currentPage + 1);
     }
   },
   

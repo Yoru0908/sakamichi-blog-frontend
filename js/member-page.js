@@ -4,9 +4,7 @@
  */
 
 window.MemberPage = {
-  // 当前成员信息
-  currentMember: null,
-  currentGroup: null,
+  // 成员数据
   memberImages: null,
   memberBlogs: [],
   currentYear: new Date().getFullYear(),
@@ -355,8 +353,9 @@ window.MemberPage = {
   async showMemberPage(memberName, groupKey) {
     console.log('[MemberPage] 显示成员页面:', memberName, groupKey);
 
-    this.currentMember = memberName;
-    this.currentGroup = groupKey;
+    // 设置统一状态
+    App.state.group = groupKey;
+    App.state.member = memberName;
 
     // 更新URL (由Router调用时已经设置了hash,不需要再pushState)
     // history.pushState现在注释掉,由Router统一管理
@@ -598,6 +597,11 @@ window.MemberPage = {
         console.log('[MemberPage] renderBlogItem存在:', !!window.renderBlogItem);
         console.log('[MemberPage] 博客数量:', data.blogs.length);
         
+        // ✅ 清空容器，避免重复显示
+        if (container) {
+          container.innerHTML = '';
+        }
+        
         const cards = [];
         data.blogs.forEach((blog, index) => {
           // 使用主页面的博客卡片渲染
@@ -735,8 +739,8 @@ window.MemberPage = {
    * 跳转到指定页
    */
   async goToPage(page) {
-    if (!this.currentMember || !this.currentGroup) return;
-    await this.loadMemberBlogs(this.currentMember, this.currentGroup, page);
+    if (!App.state.member || !App.state.group) return;
+    await this.loadMemberBlogs(App.state.member, App.state.group, page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   },
   
@@ -744,7 +748,7 @@ window.MemberPage = {
    * 返回团体页面
    */
   backToGroupPage() {
-    console.log('[MemberPage] 返回团体页面:', this.currentGroup);
+    console.log('[MemberPage] 返回团体页面:', App.state.group);
     console.log('[MemberPage] Router存在:', !!window.Router);
     
     // 直接调用 Router.showGroupPage，不依赖 hash 变化
@@ -752,11 +756,11 @@ window.MemberPage = {
       console.log('[MemberPage] 直接调用 Router.showGroupPage');
       // 先重置状态，确保不被防重复逻辑拦截
       window.Router.currentView = null;
-      window.Router.currentMember = '';
-      window.Router.showGroupPage(this.currentGroup);
+      // 清除成员状态已在 Router.showGroupPage 中处理
+      window.Router.showGroupPage(App.state.group);
     } else {
       console.log('[MemberPage] 降级：直接设置 hash');
-      window.location.hash = this.currentGroup;
+      window.location.hash = App.state.group;
     }
   },
   

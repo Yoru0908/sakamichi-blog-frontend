@@ -9,7 +9,8 @@ async function downloadImageAsBlob(url) {
   
   // 方案1: 通过后端代理下载（推荐）
   try {
-    const proxyUrl = `${API_BASE}/api/proxy/image?url=${encodeURIComponent(url)}`;
+    const apiBase = App.config.apiBaseUrl || window.API_BASE_URL || 'https://sakamichi-blog-translator.srzwyuu.workers.dev';
+    const proxyUrl = `${apiBase}/api/proxy/image?url=${encodeURIComponent(url)}`;
     console.log(`🔄 使用代理URL: ${proxyUrl}`);
     
     const response = await fetch(proxyUrl);
@@ -93,22 +94,22 @@ async function downloadAllImages() {
   console.log('🔽 下载按钮被点击');
   console.log('='.repeat(60));
   
-  if (!currentBlogData) {
+  if (!App.view.currentBlog) {
     alert('博客数据未加载');
     return;
   }
   
   console.log('📋 当前博客信息:', {
-    title: currentBlogData.title,
-    member: currentBlogData.member,
-    content_length: currentBlogData.content?.length
+    title: App.view.currentBlog.title,
+    member: App.view.currentBlog.member,
+    content_length: App.view.currentBlog.content?.length
   });
   
   // 检查是否移动设备
   if (typeof isMobileDevice === 'function' && isMobileDevice()) {
     console.log('📱 检测到移动设备，尝试使用移动端下载方案');
     const images = extractImagesFromContent();
-    const result = await mobileDownloadImages(images, currentBlogData);
+    const result = await mobileDownloadImages(images, App.view.currentBlog);
     console.log('📱 移动端下载结果:', result);
     
     if (result) {
@@ -175,7 +176,7 @@ async function downloadAllImages() {
     
     // 下载ZIP
     const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-    const fileName = `${currentBlogData.member}_${date}_${currentBlogData.title.slice(0, 20)}.zip`;
+    const fileName = `${App.view.currentBlog.member}_${date}_${App.view.currentBlog.title.slice(0, 20)}.zip`;
     saveAs(blob, fileName);
     
     hideProgressDialog();
@@ -191,7 +192,7 @@ async function downloadAllImages() {
 // 从内容中提取图片URL
 function extractImagesFromContent() {
   const images = [];
-  const content = currentBlogData.translated_content || currentBlogData.content || '';
+  const content = App.view.currentBlog.translated_content || App.view.currentBlog.content || '';
   
   // 使用正则表达式提取所有图片URL
   const imgRegex = /!\[.*?\]\((.*?)\)/g;

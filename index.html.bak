@@ -301,14 +301,14 @@
 
     // 切换团体
     async function switchGroup(group) {
-      console.log('切换团体:', group);
-      if (!window.Router) {
-        console.error('Router 未初始化！');
-        return;
+      // 如果在详情页，先关闭详情页
+      const detailPage = document.getElementById('blogDetail');
+      if (detailPage) {
+        closeBlogDetail();
       }
       
-      // 设置统一状态
-      App.state.group = group;
+      // 使用 window 全局变量（与 app.js 保持一致）
+      window.currentGroup = group;
       window.currentPage = 1;  // ✅ 从1开始，避免负偏移
       window.currentSearch = '';
       window.hasMore = true;
@@ -507,7 +507,7 @@
       grid.innerHTML = '';
       
       // 获取当前团体的期别数据
-      const groupData = MEMBERS_DATA[App.state.group];
+      const groupData = MEMBERS_DATA[currentGroup];
       if (!groupData) {
         // 如果没有期别数据，使用原来的方式
         members.forEach(member => {
@@ -522,7 +522,7 @@
           
           item.onclick = () => {
             // 使用 Router 导航到成员页面
-            Router.navigate(`#${App.state.group}/member/${encodeURIComponent(member)}`);
+            Router.navigate(`#${currentGroup}/member/${encodeURIComponent(member)}`);
           };
           grid.appendChild(item);
         });
@@ -550,7 +550,7 @@
           
           item.onclick = () => {
             // 使用 Router 导航到成员页面
-            Router.navigate(`#${App.state.group}/member/${encodeURIComponent(member)}`);
+            Router.navigate(`#${currentGroup}/member/${encodeURIComponent(member)}`);
           };
           grid.appendChild(item);
         });
@@ -568,9 +568,9 @@
       // 更新 URL 状态
       history.replaceState({ 
         view: 'list', 
-        group: App.state.group, 
+        group: currentGroup, 
         member: currentMember 
-      }, '', `#${App.state.group}${currentMember ? '/' + encodeURIComponent(currentMember) : ''}`);
+      }, '', `#${currentGroup}${currentMember ? '/' + encodeURIComponent(currentMember) : ''}`);
       
       // 重新加载数据
       loadBlogs();
@@ -785,21 +785,9 @@
 
     // ❌ 已删除 loadBlogs() - 使用 app.js 中的 window.loadBlogs()
 
-    // ===== Phase 3: 命名空间迁移 =====
-    
-    // 创建 App 全局命名空间（如果不存在）
-    if (typeof window.App === 'undefined') {
-      window.App = {};
-    }
-    
-    // 创建 App.ui 子命名空间
-    if (typeof window.App.ui === 'undefined') {
-      window.App.ui = {};
-    }
-    
     // 渲染博客项 - 官网卡片样式（纵向，带图片）
     // ✅ 保留此函数 - 用户选择使用此样式
-    App.ui.renderBlogItem = function(blog) {
+    window.renderBlogItem = function(blog) {
       const item = document.createElement('a');
       item.className = 'blog-card';
       item.href = `#blog/${blog.id}`;
@@ -832,13 +820,8 @@
       return item; // 返回元素，由调用者决定如何添加到DOM
     }
     
-    // 过渡期：保留 window 映射（向后兼容）
-    window.renderBlogItem = App.ui.renderBlogItem;
-    
-    console.log('[index.html] ✅ renderBlogItem 已迁移到 App.ui 命名空间');
-    
     // 显示博客详情页
-    window.showBlogDetail = function(blog, skipHistory = false, blogData = null) {
+    function showBlogDetail(blog, skipHistory = false, blogData = null) {
       console.log('[showBlogDetail] 显示博客详情:', blog.id, '已有数据:', !!blogData);
 
       // 先移除已存在的详情页(防止重复)
@@ -1152,7 +1135,7 @@
       console.log('[loadBlogContentWithData] 使用已有博客数据:', blog.id);
 
       // 存储当前博客数据供下载和分享使用
-      App.view.currentBlog = blog;
+      currentBlogData = blog;
 
       // 更新原文链接
       const originalLink = document.querySelector('.more-btn');
@@ -1184,22 +1167,10 @@
 
       // 渲染内容
       const contentDiv = document.getElementById('blogContent');
-      if (contentDiv) {
-        let rendered;
-        
-        // 优先使用双语内容（如果存在）
-        if (blog.bilingual_content) {
-          console.log('✅ 检测到双语内容，直接使用');
-          // 双语内容已经是完整的HTML，直接使用
-          rendered = blog.bilingual_content;
-        } else if (blog.translated_content) {
-          console.log('使用翻译内容（无双语）');
-          // 渲染 Markdown 内容（传递团体名称）
-          const groupName = window.GroupConfig?.getDisplayName(blog.group_name) || blog.group_name;
-          rendered = renderMarkdown(blog.translated_content, groupName);
-        } else {
-          rendered = '<p class="text-gray-500">暂无内容</p>';
-        }
+      if (contentDiv && blog.translated_content) {
+        // 渲染 Markdown 内容（传递团体名称）
+        const groupName = window.GroupConfig?.getDisplayName(blog.group_name) || blog.group_name;
+        const rendered = renderMarkdown(blog.translated_content, groupName);
 
         // 设置内容（使用innerHTML以支持HTML标签）
         contentDiv.innerHTML = rendered;
@@ -1238,7 +1209,7 @@
         
         if (data.success && data.blog) {
           // 存储当前博客数据供下载和分享使用
-          App.view.currentBlog = data.blog;
+          currentBlogData = data.blog;
           console.log('Loaded blog data:', data.blog);
           
           // 更新原文链接 - 修复URL格式
@@ -1270,22 +1241,10 @@
           }
           
           const contentDiv = document.getElementById('blogContent');
-          if (contentDiv) {
-            let rendered;
-            
-            // 优先使用双语内容（如果存在）
-            if (data.blog.bilingual_content) {
-              console.log('✅ 检测到双语内容，直接使用');
-              // 双语内容已经是完整的HTML，直接使用
-              rendered = data.blog.bilingual_content;
-            } else if (data.blog.translated_content) {
-              console.log('使用翻译内容（无双语）');
-              // 渲染 Markdown 内容（传递团体名称）
-              const groupName = window.GroupConfig?.getDisplayName(data.blog.group_name) || data.blog.group_name;
-              rendered = renderMarkdown(data.blog.translated_content, groupName);
-            } else {
-              rendered = '<p class="text-gray-500">暂无内容</p>';
-            }
+          if (contentDiv && data.blog.translated_content) {
+            // 渲染 Markdown 内容（传递团体名称）
+            const groupName = window.GroupConfig?.getDisplayName(data.blog.group_name) || data.blog.group_name;
+            const rendered = renderMarkdown(data.blog.translated_content, groupName);
             
             // 设置内容（使用innerHTML以支持HTML标签）
             contentDiv.innerHTML = rendered;
@@ -1336,7 +1295,7 @@
 
     // ========== 下载和分享功能 ==========
     
-    // ✅ 使用统一状态管理 - App.view.currentBlog (已在 state.js 中定义)
+    let currentBlogData = null; // 存储当前博客数据
     
     // 测试函数是否可用
     console.log('🧪 Functions loaded:', {
@@ -1421,18 +1380,126 @@
     
     // popstate 处理已移至 Router 模块
 
-    // ❌ 删除重复的分页函数 - 统一使用 Pagination 模块
-    // 之前的 createPageButton, jumpToPage 等函数已删除
-    // 分页功能由 js/pagination.js 的 Pagination 模块统一管理
+    // 更新翻页组件
+    function updatePagination() {
+      const paginationContainer = document.getElementById('paginationContainer');
+      const pageButtons = document.getElementById('pageButtons');
+      const prevBtn = document.getElementById('prevPageBtn');
+      const nextBtn = document.getElementById('nextPageBtn');
+      
+      if (!totalPages || totalPages <= 1) {
+        paginationContainer.classList.add('hidden');
+        return;
+      }
+      
+      paginationContainer.classList.remove('hidden');
+      
+      // 更新上一页/下一页按钮状态
+      prevBtn.disabled = currentDisplayPage <= 1;
+      nextBtn.disabled = currentDisplayPage >= totalPages;
+      
+      // 生成页码按钮
+      pageButtons.innerHTML = '';
+      
+      // 计算显示的页码范围
+      let startPage = 1;
+      let endPage = totalPages;
+      
+      if (totalPages > 10) {
+        if (currentDisplayPage <= 5) {
+          endPage = Math.min(9, totalPages);
+        } else if (currentDisplayPage >= totalPages - 4) {
+          startPage = Math.max(totalPages - 8, 1);
+        } else {
+          startPage = currentDisplayPage - 4;
+          endPage = currentDisplayPage + 4;
+        }
+      }
+      
+      // 添加第一页
+      if (startPage > 1) {
+        const btn = createPageButton(1);
+        pageButtons.appendChild(btn);
+        
+        if (startPage > 2) {
+          const dots = document.createElement('span');
+          dots.className = 'px-2 text-gray-400';
+          dots.textContent = '...';
+          pageButtons.appendChild(dots);
+        }
+      }
+      
+      // 添加中间页码
+      for (let i = startPage; i <= endPage; i++) {
+        const btn = createPageButton(i);
+        pageButtons.appendChild(btn);
+      }
+      
+      // 添加最后一页
+      if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+          const dots = document.createElement('span');
+          dots.className = 'px-2 text-gray-400';
+          dots.textContent = '...';
+          pageButtons.appendChild(dots);
+        }
+        
+        const btn = createPageButton(totalPages);
+        pageButtons.appendChild(btn);
+      }
+    }
+    
+    // 创建页码按钮
+    function createPageButton(pageNum) {
+      const btn = document.createElement('button');
+      btn.className = pageNum === currentDisplayPage 
+        ? 'px-3 py-1 text-sm bg-blue-500 text-white rounded' 
+        : 'px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100';
+      btn.textContent = pageNum;
+      btn.onclick = () => jumpToPage(pageNum);
+      return btn;
+    }
+    
+    // 跳转到指定页
+    function jumpToPage(pageNum) {
+      if (pageNum < 1 || pageNum > totalPages || pageNum === currentDisplayPage) {
+        return;
+      }
+      
+      currentPage = (pageNum - 1);
+      hasMoreBlogs = pageNum < totalPages;
+      isLoadingMore = false;
+      currentDisplayPage = pageNum;
+      
+      // 清空当前内容
+      document.getElementById('blogsContainer').innerHTML = '';
+      
+      // 加载新页面
+      loadBlogs();
+      
+      // 滚动到顶部
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    // 绑定上一页/下一页按钮事件
+    document.getElementById('prevPageBtn').onclick = () => {
+      if (currentDisplayPage > 1) {
+        jumpToPage(currentDisplayPage - 1);
+      }
+    };
+    
+    document.getElementById('nextPageBtn').onclick = () => {
+      if (currentDisplayPage < totalPages) {
+        jumpToPage(currentDisplayPage + 1);
+      }
+    };
 
     // ❌ 已删除 DOMContentLoaded 初始化 - 统一移至 app.js 中执行
     // 初始化顺序：app.js 先初始化核心系统，再初始化 UI 模块（Pagination, MemberPage, Router）
   </script>
   
   <!-- JS模块文件（按加载顺序） -->
-  <script src="js/state.js"></script>  <!-- ✅ 统一状态管理（最先加载） -->
   <script src="js/utils.js"></script>
-  <script src="js/utils/markdown-processor.js"></script>  <!-- Markdown 统一处理器 -->
   <script src="js/blog-renderer.js"></script>  <!-- 博客渲染器（新版）-->
   <script src="js/app.js"></script>  <!-- 主应用逻辑 -->
   <script src="js/share-module.js"></script>

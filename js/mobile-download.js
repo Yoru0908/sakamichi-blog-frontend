@@ -230,7 +230,8 @@ async function downloadImagesSequentially(images) {
 async function downloadSingleImage(url, fileName) {
   try {
     // 通过后端代理获取图片
-    const proxyUrl = `${API_BASE}/api/proxy/image?url=${encodeURIComponent(url)}`;
+    const apiBase = App.config.apiBaseUrl || window.API_BASE_URL || 'https://sakamichi-blog-translator.srzwyuu.workers.dev';
+    const proxyUrl = `${apiBase}/api/proxy/image?url=${encodeURIComponent(url)}`;
     const response = await fetch(proxyUrl);
     
     if (!response.ok) {

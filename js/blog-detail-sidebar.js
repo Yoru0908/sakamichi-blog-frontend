@@ -208,11 +208,12 @@ window.BlogDetailSidebar = {
    */
   async loadMemberBlogs(blog) {
     try {
-      const API_BASE = 'https://sakamichi-blog-translator.srzwyuu.workers.dev';
+      // 使用统一的 API 配置
+      const apiBase = App.config.apiBaseUrl || window.API_BASE_URL || 'https://sakamichi-blog-translator.srzwyuu.workers.dev';
       const groupName = encodeURIComponent(blog.group_name);
       const memberName = encodeURIComponent(blog.member);
       
-      const response = await fetch(`${API_BASE}/api/blogs?group=${groupName}&member=${memberName}&limit=10`);
+      const response = await fetch(`${apiBase}/api/blogs?group=${groupName}&member=${memberName}&limit=10`);
       const data = await response.json();
       
       if (data.success && data.blogs) {

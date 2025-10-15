@@ -5,8 +5,6 @@
 
 window.Router = {
   currentView: null,
-  currentGroup: 'all',
-  currentMember: '',
   currentBlog: null,
   
   /**
@@ -68,27 +66,24 @@ window.Router = {
     console.log('[Router] 显示团体页面:', group);
     console.log('[Router] 当前状态:', {
       currentView: this.currentView,
-      currentGroup: this.currentGroup,
-      currentMember: this.currentMember,
-      windowGroup: window.currentGroup
+      stateMember: App.state.member,
+      stateGroup: App.state.group
     });
     
     // ✅ 防止重复调用：如果已经在相同的团体页面，不重新加载
     if (this.currentView === 'group' && 
-        this.currentGroup === group && 
-        window.currentGroup === group &&
-        !this.currentMember) {  // 确保不是从成员页返回
+        App.state.group === group &&
+        !App.state.member) {  // 确保不是从成员页返回
       console.log('[Router] 已经在当前团体页面，跳过重新加载');
       return;
     }
     
     console.log('[Router] 继续执行showGroupPage，设置状态');
     this.currentView = 'group';
-    this.currentGroup = group;
-    this.currentMember = '';
+    App.state.member = '';  // 清除成员状态
 
-    // 必须先设置全局变量，再加载博客
-    window.currentGroup = group;
+    // 设置统一状态
+    App.state.group = group;
     window.currentPage = 1;  // 重置为第1页
     window.currentSearch = '';
 
@@ -97,7 +92,7 @@ window.Router = {
       window.Pagination.reset();
     }
 
-    console.log('[Router] 设置全局变量 currentGroup:', window.currentGroup);
+    console.log('[Router] 设置状态 App.state.group:', App.state.group);
 
     // ⚠️ 重要：先隐藏其他页面，再调用 switchGroup
     // 隐藏成员页面
@@ -170,12 +165,12 @@ window.Router = {
 
     // 加载博客列表（使用平滑过渡动画）
     if (window.smoothTransition && window.loadBlogs) {
-      console.log('[Router] 使用平滑过渡加载博客, currentGroup:', window.currentGroup);
+      console.log('[Router] 使用平滑过渡加载博客, currentGroup:', App.state.group);
       await window.smoothTransition(async () => {
         await window.loadBlogs();
       });
     } else if (window.loadBlogs) {
-      console.log('[Router] 直接加载博客, currentGroup:', window.currentGroup);
+      console.log('[Router] 直接加载博客, currentGroup:', App.state.group);
       await window.loadBlogs();
     }
   },
@@ -186,8 +181,10 @@ window.Router = {
   showMemberPage(member, group) {
     console.log('[Router] 显示成员页面:', member, group);
     this.currentView = 'member';
-    this.currentGroup = group;
-    this.currentMember = member;
+    
+    // 设置统一状态
+    App.state.group = group;
+    App.state.member = member;
     
     // 隐藏博客详情页
     const blogDetail = document.getElementById('blogDetail');
@@ -254,7 +251,7 @@ window.Router = {
   navigate(hash) {
     console.log('[Router] 导航到:', hash);
     console.log('[Router] 当前视图:', this.currentView);
-    console.log('[Router] 当前成员:', this.currentMember);
+    console.log('[Router] 当前成员:', App.state.member);
     console.log('[Router] 是博客详情:', hash.startsWith('#blog/'));
     console.log('[Router] 是成员页面:', hash.includes('/member/'));
     
@@ -264,7 +261,7 @@ window.Router = {
       const group = hash.substring(1); // 移除 #
       // 重置状态
       this.currentView = null;
-      this.currentMember = '';
+      App.state.member = '';
       this.showGroupPage(group);
       return;
     }

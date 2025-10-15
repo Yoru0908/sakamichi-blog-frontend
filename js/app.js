@@ -76,19 +76,14 @@ async function ensureApiBaseUrl() {
   throw lastError || new Error('无法连接到后端服务');
 }
 
-// 全局变量
-window.currentPage = 1;
-window.currentGroup = 'all';
-window.currentSearch = '';
-window.isLoading = false;
-window.hasMore = true;
-window.totalPages = 1;
-window.allBlogs = []; // 缓存所有博客数据
+// ===== 全局状态已迁移到 js/state.js =====
+// 现在使用 App.state.* 访问所有状态
+// 旧的 window.* 变量通过 getter/setter 映射到 App.state，保持向后兼容
 
 // 动态获取每页显示数量
 function getBlogsPerPage() {
   // #all 页面显示 16 篇（无限滚动）
-  if (window.currentGroup === 'all') {
+  if (App.state.group === 'all') {
     return 16;
   }
   // 其他团体页面显示 32 篇（分页）
@@ -141,6 +136,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     // 暴露 API_BASE_URL 给其他模块
     window.API_BASE_URL = API_BASE_URL;
+    
+    // 同步到统一配置
+    App.config.apiBaseUrl = API_BASE_URL;
+    console.log('[App] ✅ API配置已同步到 App.config.apiBaseUrl');
   } catch (error) {
     console.error('[App] 无法连接后端服务:', error);
     showError('无法连接后端服务，请稍后重试');
@@ -269,10 +268,10 @@ window.loadBlogs = async function(append = false) {
     });
 
     // 使用 GroupConfig 获取正确的API名称
-    if (window.currentGroup !== 'all') {
-      const apiName = window.GroupConfig.getApiName(window.currentGroup);
+    if (App.state.group !== 'all') {
+      const apiName = window.GroupConfig.getApiName(App.state.group);
       params.append('group', apiName);
-      console.log(`[loadBlogs] 筛选团体: ${window.currentGroup} -> API: ${apiName}`);
+      console.log(`[loadBlogs] 筛选团体: ${App.state.group} -> API: ${apiName}`);
     }
 
     if (window.currentSearch) {
@@ -318,7 +317,7 @@ window.loadBlogs = async function(append = false) {
       const totalCount = data.total ?? paginationInfo.total ?? paginationInfo.totalCount ?? null;
 
       // 更新分页 - 只在非'all'页面显示分页
-      if (window.currentGroup === 'all') {
+      if (App.state.group === 'all') {
         // #all 页面使用无限滚动，隐藏分页
         if (window.Pagination) {
           window.Pagination.hide();
@@ -356,7 +355,6 @@ window.loadBlogs = async function(append = false) {
       } else {
         // 其他页面使用分页
         if (window.Pagination) {
-          window.Pagination.currentPage = window.currentPage;
           window.Pagination.update(uniqueBlogs.length, totalCount);
         }
       }
@@ -401,8 +399,8 @@ function displayBlogs(blogs) {
 
   const cards = [];
   blogs.forEach(blog => {
-    // 使用 window.renderBlogItem（用户选择的样式）
-    const blogCard = window.renderBlogItem ? window.renderBlogItem(blog) : createBlogCard(blog);
+    // 使用官网卡片样式
+    const blogCard = window.renderBlogItem(blog);
     container.appendChild(blogCard);
     cards.push(blogCard);
   });
@@ -419,8 +417,8 @@ function appendBlogs(blogs) {
 
   const cards = [];
   blogs.forEach(blog => {
-    // 使用 window.renderBlogItem（用户选择的样式）
-    const blogCard = window.renderBlogItem ? window.renderBlogItem(blog) : createBlogCard(blog);
+    // 使用官网卡片样式
+    const blogCard = window.renderBlogItem(blog);
     container.appendChild(blogCard);
     cards.push(blogCard);
   });
@@ -431,80 +429,9 @@ function appendBlogs(blogs) {
   }
 }
 
-// 创建博客卡片
-function createBlogCard(blog) {
-  const article = document.createElement('article');
-  article.className = 'bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden fade-in cursor-pointer';
-  
-  // 点击卡片跳转到详情页
-  article.addEventListener('click', (e) => {
-    // 使用 Router 统一管理导航（支持过渡动画、滚动管理等）
-    if (window.Router && window.Router.navigate) {
-      Router.navigate(`#blog/${blog.id}`);
-    } else {
-      window.location.hash = `#blog/${blog.id}`;
-    }
-  });
+// ✅ createBlogCard 已删除 - 统一使用 window.renderBlogItem（官网卡片样式）
 
-  const groupConfig = window.GroupConfig.getByName(blog.group_name);
-  const groupInfo = {
-    name: groupConfig ? groupConfig.name : blog.group_name,
-    emoji: groupConfig ? groupConfig.emoji : '📝'
-  };
-
-  // 构建成员显示信息
-  let memberDisplay = blog.member;
-  if (blog.member_display_name && blog.member_display_name !== blog.member) {
-    memberDisplay = blog.member_display_name;
-  }
-
-  // 添加昵称信息
-  if (blog.fan_nickname) {
-    memberDisplay += ` (${blog.fan_nickname})`;
-  }
-  
-  // 头像与主图
-  const displayGroupName = window.GroupConfig.getDisplayName(blog.group_name);
-  const avatarUrl = (window.MemberImages && typeof window.MemberImages.getImageUrl === 'function')
-    ? (window.MemberImages.getImageUrl(blog.member, displayGroupName) || '')
-    : '';
-  const firstImageUrl = (blog.images && blog.images.length > 0)
-    ? (blog.images[0].r2_url || blog.images[0].original_url)
-    : '';
-
-
-  article.innerHTML = `
-    <div>
-      <!-- 主图（大图） -->
-      ${firstImageUrl ? `
-        <div class="w-full">
-          <img src="${firstImageUrl}" alt="封面图片" class="w-full aspect-square object-cover" loading="lazy">
-        </div>
-      ` : ''}
-
-      <!-- 标题 + 成员 + 日期 -->
-      <div class="p-4">
-        <h2 class="text-base font-semibold text-gray-900 mb-3 line-clamp-2" style="min-height: 3rem;">${blog.title || ''}</h2>
-
-        <div class="flex items-center gap-3 mb-2">
-          <div class="w-6 h-6 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center flex-shrink-0">
-            ${avatarUrl ? `<img src="${avatarUrl}" alt="${blog.member}" class="w-full h-full object-cover" loading="lazy">` : `<span class="text-xs text-gray-500">${blog.member?.charAt(0) || ''}</span>`}
-          </div>
-          <span class="text-sm font-medium text-gray-700">${memberDisplay}</span>
-        </div>
-
-        <time class="text-xs text-gray-500">${formatDate(blog.publish_date)}</time>
-      </div>
-    </div>
-  `;
-
-  return article;
-}
-
-// 获取团体颜色（使用 GroupConfig）
-function getGroupColor(groupName) {
-  return window.GroupConfig.getColor(groupName);
-}
+// ✅ getGroupColor 已删除 - 直接使用 window.GroupConfig.getColor()
 
 // 获取翻译内容预览
 function getTranslatedContentPreview(blog) {
@@ -560,8 +487,8 @@ function formatDate(dateString) {
 
 // 筛选功能
 function filterByGroup(group) {
-  currentGroup = group;
-  currentPage = 1;
+  App.state.group = group;
+  App.state.page = 1;
 
   // 更新标签状态
   document.querySelectorAll('.group-tab').forEach(tab => {
@@ -645,7 +572,7 @@ function displaySearchResults(results, query) {
 
   // 显示搜索结果
   results.forEach(blog => {
-    const blogCard = createBlogCard(blog);
+    const blogCard = window.renderBlogItem(blog);
     blogCard.classList.add('ring-2', 'ring-blue-200'); // 高亮搜索结果
     container.appendChild(blogCard);
   });
@@ -669,7 +596,7 @@ function showSearchResults(results) {
   }
 
   results.forEach(blog => {
-    const blogCard = createBlogCard(blog);
+    const blogCard = window.renderBlogItem(blog);
     container.appendChild(blogCard);
   });
 }
@@ -802,9 +729,9 @@ function hideMemberSuggestions() {
 
 // 选择成员
 function selectMember(memberName, groupName) {
-  currentGroup = groupName;
-  currentSearch = memberName;
-  currentPage = 1;
+  App.state.group = groupName;
+  App.state.search = memberName;
+  App.state.page = 1;
 
   // 更新筛选标签
   document.querySelectorAll('.group-tab').forEach(tab => {
@@ -953,7 +880,7 @@ window.setupInfiniteScroll = function() {
   }
 
   // 只在 #all 页面启用无限滚动
-  if (window.currentGroup !== 'all') {
+  if (App.state.group !== 'all') {
     console.log('[InfiniteScroll] 非all页面，不启用无限滚动');
     return;
   }

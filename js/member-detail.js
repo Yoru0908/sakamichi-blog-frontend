@@ -575,7 +575,7 @@ window.MemberDetail = {
       };
       const groupName = groupNames[groupKey] || groupKey;
       
-      const apiBase = window.API_BASE || 'https://sakamichi-blog-translator.srzwyuu.workers.dev';
+      const apiBase = App.config.apiBaseUrl || window.API_BASE_URL || 'https://sakamichi-blog-translator.srzwyuu.workers.dev';
       const url = `${apiBase}/api/blogs?group=${encodeURIComponent(groupName)}&member=${encodeURIComponent(memberName)}&limit=50`;
       
       const response = await fetch(url);
