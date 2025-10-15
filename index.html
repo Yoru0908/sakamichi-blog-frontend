@@ -1309,6 +1309,14 @@
           if (window.BlogDetailSidebar) {
             await window.BlogDetailSidebar.init(data.blog);
           }
+          
+          // 初始化双语控件（内容加载完成后，延迟确保DOM渲染）
+          if (window.BilingualControl) {
+            console.log('[loadBlogContent] 初始化双语控件');
+            setTimeout(() => {
+              window.bilingualControl = new BilingualControl();
+            }, 100);  // 延迟100ms确保DOM完全渲染
+          }
         }
       } catch (error) {
         console.error('加载内容失败:', error);
