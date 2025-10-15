@@ -954,7 +954,7 @@
         </article>
         
         <!-- 右侧：成员信息和日历 -->
-        <aside class="member-sidebar-detail" style="position: sticky; top: 80px; height: fit-content;">
+        <aside class="member-sidebar-detail" style="position: sticky; top: 80px; height: fit-content; overflow: visible;">
           <!-- 成员信息卡片 -->
           <div style="background: white; border-radius: 8px; padding: 24px; margin-bottom: 20px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <div style="width: 240px; height: 300px; overflow: hidden; background: #f5f5f5; margin: 0 auto 16px; clip-path: polygon(0 0, 100% 0, 100% 80%, 75% 100%, 0 100%);">
@@ -967,7 +967,7 @@
           </div>
           
           <!-- 日历 -->
-          <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          <div style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: visible;">
             <h3 style="font-size: 14px; font-weight: bold; margin-bottom: 16px;">カレンダー</h3>
             <div style="margin-bottom: 12px;">
               <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -980,7 +980,7 @@
                 <span style="font-size: 12px; color: #666;">土</span>
               </div>
             </div>
-            <div id="detailCalendarDates">
+            <div id="detailCalendarDates" style="overflow: visible;">
               <!-- 日历内容将在这里动态加载 -->
             </div>
           </div>
