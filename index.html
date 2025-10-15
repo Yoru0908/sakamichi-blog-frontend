@@ -1216,6 +1216,12 @@
         console.log('[loadBlogContentWithData] 初始化侧边栏');
         await window.BlogDetailSidebar.init(blog);
       }
+      
+      // 初始化双语控件（内容加载完成后）
+      if (window.BilingualControl) {
+        console.log('[loadBlogContentWithData] 初始化双语控件');
+        window.bilingualControl = new BilingualControl();
+      }
     }
 
     // 加载博客完整内容(从API获取)
