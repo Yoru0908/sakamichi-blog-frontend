@@ -93,32 +93,24 @@ function getBlogsPerPage() {
 // 去重函数：移除恢复的重复博客
 function removeDuplicateBlogs(blogs) {
   const blogMap = new Map();
-  const restoredBlogs = [];
   
-  // 首先处理所有博客
+  // 使用 blog.id 作为唯一键（不同日期的博客可能标题相同）
   blogs.forEach(blog => {
-    // 检查是否是恢复的博客（ID中包含restore）
-    const isRestored = blog.id && blog.id.includes('restore');
-    
-    if (isRestored) {
-      restoredBlogs.push(blog);
+    if (blog.id) {
+      // 如果同一个ID出现多次，保留第一个（通常是更完整的数据）
+      if (!blogMap.has(blog.id)) {
+        blogMap.set(blog.id, blog);
+      } else {
+        console.log(`发现重复ID（跳过）: ${blog.id} - ${blog.title}`);
+      }
     } else {
-      // 使用标题和成员名作为唯一标识
-      const key = `${blog.title}_${blog.member}`;
-      blogMap.set(key, blog);
-    }
-  });
-  
-  // 检查恢复的博客是否有重复
-  const uniqueBlogs = [];
-  restoredBlogs.forEach(blog => {
-    const key = `${blog.title}_${blog.member}`;
-    if (!blogMap.has(key)) {
-      // 没有重复，保留这个恢复的博客
-      uniqueBlogs.push(blog);
-      blogMap.set(key, blog);
-    } else {
-      console.log(`发现重复博客（删除恢复版）: ${blog.title} - ${blog.member}`);
+      // 防御性：如果没有ID，使用 title+member+date 组合
+      const key = `${blog.title}_${blog.member}_${blog.publish_date}`;
+      if (!blogMap.has(key)) {
+        blogMap.set(key, blog);
+      } else {
+        console.log(`发现重复博客（无ID，跳过）: ${blog.title} - ${blog.member}`);
+      }
     }
   });
   
