@@ -379,16 +379,16 @@ class BilingualControl {
       desktopSelector.remove();
     }
     
-    // 移除移动端FAB
-    const mobileFab = document.getElementById('bilingualFab');
-    if (mobileFab) {
-      mobileFab.remove();
+    // 移除移动端FAB容器
+    const fabContainer = document.getElementById('fabContainer');
+    if (fabContainer) {
+      fabContainer.remove();
     }
     
-    // 移除移动端模态框
-    const mobileModal = document.getElementById('bilingualModal');
-    if (mobileModal) {
-      mobileModal.remove();
+    // 移除移动端遮罩层
+    const fabOverlay = document.getElementById('fabOverlay');
+    if (fabOverlay) {
+      fabOverlay.remove();
     }
     
     // 清理事件监听器（通过移除DOM元素自动清理）

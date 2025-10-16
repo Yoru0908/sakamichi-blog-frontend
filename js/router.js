@@ -105,6 +105,11 @@ window.Router = {
     const blogDetail = document.getElementById('blogDetail');
     if (blogDetail) {
       console.log('[Router] 移除详情页');
+      // 先销毁双语控件实例
+      if (window.bilingualControl && typeof window.bilingualControl.destroy === 'function') {
+        window.bilingualControl.destroy();
+        window.bilingualControl = null;
+      }
       blogDetail.remove();
     }
 
@@ -189,6 +194,11 @@ window.Router = {
     // 隐藏博客详情页
     const blogDetail = document.getElementById('blogDetail');
     if (blogDetail) {
+      // 先销毁双语控件实例
+      if (window.bilingualControl && typeof window.bilingualControl.destroy === 'function') {
+        window.bilingualControl.destroy();
+        window.bilingualControl = null;
+      }
       blogDetail.remove();
     }
     
