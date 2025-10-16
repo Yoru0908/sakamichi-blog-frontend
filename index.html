@@ -17,7 +17,9 @@
   <!-- 核心配置模块（必须最先加载） -->
   <script src="js/group-config.js"></script>
   
-  <!-- 成员数据 -->
+  <!-- 🆕 成员数据API -->
+  <script type="module" src="js/members-api.js"></script>
+  <!-- ⚠️ 保留作为回退 -->
   <script src="members-data.js"></script>
 
   <!-- 结构化内容渲染器 -->
@@ -355,8 +357,19 @@
         const data = await response.json();
         
         if (data.success) {
-          // 从 MEMBERS_DATA 获取团体的完整成员列表
-          const groupData = MEMBERS_DATA[group];
+          // 🆕 从后端API获取团体的完整成员列表
+          let groupData;
+          try {
+            const membersResponse = await fetch(`${apiBase}/api/members/${group}`);
+            if (membersResponse.ok) {
+              groupData = await membersResponse.json();
+            }
+          } catch (e) {
+            // 回退到本地数据
+            console.warn('API获取失败，使用本地数据', e);
+            groupData = window.MEMBERS_DATA ? { generations: window.MEMBERS_DATA[group]?.generations } : null;
+          }
+          
           let totalMembers = 0;
           let allMembers = [];
           let memberLastUpdate = {};
@@ -441,7 +454,7 @@
           populateMemberSelect(groupData, memberLastUpdate);
           
           // 填充メンバー别ブログ网格（显示完整成员列表，按期别）
-          renderMemberGrid(allMembers, membersWithBlogs);
+          await renderMemberGrid(allMembers, membersWithBlogs);
         }
       } catch (error) {
         console.error('加载团体信息失败:', error);
@@ -502,12 +515,23 @@
     }
 
     // 渲染メンバー別ブログ网格（按期别）
-    function renderMemberGrid(members, membersWithBlogs = []) {
+    async function renderMemberGrid(members, membersWithBlogs = []) {
       const grid = document.getElementById('memberGrid');
       grid.innerHTML = '';
       
-      // 获取当前团体的期别数据
-      const groupData = MEMBERS_DATA[App.state.group];
+      // 🆕 从后端API获取当前团体的期别数据
+      let groupData;
+      try {
+        const apiBase = window.API_BASE_URL || 'https://sakamichi-blog-translator.srzwyuu.workers.dev';
+        const response = await fetch(`${apiBase}/api/members/${App.state.group}`);
+        if (response.ok) {
+          groupData = await response.json();
+        }
+      } catch (e) {
+        // 回退到本地数据
+        console.warn('API获取失败，使用本地数据', e);
+        groupData = window.MEMBERS_DATA ? { generations: window.MEMBERS_DATA[App.state.group]?.generations } : null;
+      }
       if (!groupData) {
         // 如果没有期别数据，使用原来的方式
         members.forEach(member => {
