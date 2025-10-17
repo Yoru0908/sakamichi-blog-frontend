@@ -366,9 +366,11 @@ window.loadBlogs = async function(append = false) {
         window.totalPages = paginationInfo.totalPages;
       }
 
-      if (typeof paginationInfo.currentPage === 'number') {
-        window.currentPage = paginationInfo.currentPage;
-      }
+      // ❌ 移除：不要让 API 返回的页码覆盖当前页码
+      // 页码应该由路由和用户操作控制，不是 API
+      // if (typeof paginationInfo.currentPage === 'number') {
+      //   window.currentPage = paginationInfo.currentPage;
+      // }
     } else {
       throw new Error(data.error || '加载博客失败');
     }

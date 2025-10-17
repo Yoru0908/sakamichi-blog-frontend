@@ -86,6 +86,8 @@ window.Router = {
     App.state.group = group;
     window.currentPage = 1;  // 重置为第1页
     window.currentSearch = '';
+    window.hasMore = true;   // 重置无限滚动状态
+    window.allBlogs = [];    // 清空缓存的博客
 
     // 重置分页
     if (window.Pagination) {
