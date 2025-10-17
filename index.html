@@ -348,7 +348,7 @@
     }
 
     // 加载团体信息
-    async function loadGroupInfo(group) {
+    window.loadGroupInfo = async function loadGroupInfo(group) {
       try {
         const groupName = window.GroupConfig?.getDisplayName(group) || group;
         // 获取更多博客以确保所有成员的最后更新日期都能获取到
@@ -356,17 +356,21 @@
         const response = await fetch(`${apiBase}/api/blogs?group=${encodeURIComponent(groupName)}&limit=500`);
         const data = await response.json();
         
-        if (data.success) {
+        if (data.success && data.blogs) {
           // 🆕 从后端API获取团体的完整成员列表
           let groupData;
           try {
             const membersResponse = await fetch(`${apiBase}/api/members/${group}`);
+            console.log('[loadGroupInfo] members API 响应状态:', membersResponse.status);
             if (membersResponse.ok) {
               groupData = await membersResponse.json();
+              console.log('[loadGroupInfo] members API 返回数据:', groupData);
+            } else {
+              console.error('[loadGroupInfo] members API 请求失败:', membersResponse.status);
             }
           } catch (e) {
             // 回退到本地数据
-            console.warn('API获取失败，使用本地数据', e);
+            console.warn('[loadGroupInfo] API获取失败，使用本地数据', e);
             groupData = window.MEMBERS_DATA ? { generations: window.MEMBERS_DATA[group]?.generations } : null;
           }
           
@@ -375,11 +379,15 @@
           let memberLastUpdate = {};
           
           if (groupData && groupData.generations) {
+            console.log('[loadGroupInfo] 找到期别数据，期数:', groupData.generations.length);
             // 计算所有期别的总成员数
             groupData.generations.forEach(generation => {
               totalMembers += generation.members.length;
               allMembers.push(...generation.members);
             });
+            console.log('[loadGroupInfo] 总成员数:', totalMembers, '成员列表:', allMembers.slice(0, 5), '...');
+          } else {
+            console.error('[loadGroupInfo] ❌ 没有期别数据！groupData:', groupData);
           }
           
           // 计算每个成员的最后更新日期
@@ -516,7 +524,19 @@
 
     // 渲染メンバー別ブログ网格（按期别）
     async function renderMemberGrid(members, membersWithBlogs = []) {
+      console.log('[renderMemberGrid] 调用，当前团体:', App.state.group, 'members数:', members.length, '有博客的成员数:', membersWithBlogs.length);
       const grid = document.getElementById('memberGrid');
+      if (!grid) {
+        console.error('[renderMemberGrid] ❌ 找不到 memberGrid 元素！');
+        return;
+      }
+      
+      // ⚠️ 确保 App.state.group 已设置
+      if (!App.state.group || App.state.group === 'all') {
+        console.warn('[renderMemberGrid] ⚠️ App.state.group 未正确设置或为 all，跳过渲染');
+        return;
+      }
+      
       grid.innerHTML = '';
       
       // 🆕 从后端API获取当前团体的期别数据
@@ -524,12 +544,14 @@
       try {
         const apiBase = window.API_BASE_URL || 'https://api.sakamichi-tools.cn';
         const response = await fetch(`${apiBase}/api/members/${App.state.group}`);
+        console.log('[renderMemberGrid] members API 状态:', response.status);
         if (response.ok) {
           groupData = await response.json();
+          console.log('[renderMemberGrid] 获取到期别数据，期数:', groupData.generations?.length);
         }
       } catch (e) {
         // 回退到本地数据
-        console.warn('API获取失败，使用本地数据', e);
+        console.warn('[renderMemberGrid] API获取失败，使用本地数据', e);
         groupData = window.MEMBERS_DATA ? { generations: window.MEMBERS_DATA[App.state.group]?.generations } : null;
       }
       if (!groupData) {
@@ -554,15 +576,17 @@
       }
       
       // 按期别显示
-      groupData.generations.forEach(generation => {
+      console.log('[renderMemberGrid] 开始按期别渲染，期数:', groupData.generations.length);
+      groupData.generations.forEach((generation, genIndex) => {
         // 期别标题
         const genTitle = document.createElement('div');
         genTitle.className = 'col-span-full text-sm font-bold text-gray-700 mt-4 mb-2 px-2';
         genTitle.textContent = generation.name;
         grid.appendChild(genTitle);
+        console.log(`[renderMemberGrid] 渲染期别 ${genIndex + 1}: ${generation.name}, 成员数: ${generation.members.length}`);
         
         // 该期成员
-        generation.members.forEach(member => {
+        generation.members.forEach((member, memberIndex) => {
           const item = document.createElement('div');
           item.className = 'member-item';
           item.textContent = member;
@@ -573,12 +597,18 @@
           }
           
           item.onclick = () => {
+            console.log('[renderMemberGrid] 点击成员:', member);
             // 使用 Router 导航到成员页面
             Router.navigate(`#${App.state.group}/member/${encodeURIComponent(member)}`);
           };
           grid.appendChild(item);
+          
+          if (memberIndex === 0) {
+            console.log(`[renderMemberGrid] 第一个成员示例: ${member}, 有博客: ${membersWithBlogs.includes(member)}`);
+          }
         });
       });
+      console.log('[renderMemberGrid] ✅ 渲染完成，grid子元素数:', grid.children.length);
     }
 
     // 按成员筛选（从下拉框）
