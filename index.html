@@ -417,10 +417,13 @@
           document.getElementById('memberCount').textContent = totalMembers;
           
           // 准备完整的成员列表（包括没有博客的成员）
+          // ⚠️ 标准化名字：移除空格以匹配 members API 的格式
           const membersWithBlogs = [...new Set(data.blogs
             .map(blog => blog.member)
             .filter(member => member && member !== '未知成员' && !member.includes('未知'))
+            .map(member => member.replace(/\s+/g, ''))  // 移除所有空格
           )].sort();
+          console.log('[loadGroupInfo] 有博客的成员（标准化后）:', membersWithBlogs.slice(0, 5), '...');
           
           // 更新今日更新数（使用日本时区）
           const now = new Date();
