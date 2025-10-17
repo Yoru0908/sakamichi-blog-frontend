@@ -209,7 +209,7 @@ window.BlogDetailSidebar = {
   async loadMemberBlogs(blog) {
     try {
       // 使用统一的 API 配置
-      const apiBase = App.config.apiBaseUrl || window.API_BASE_URL || 'https://sakamichi-blog-translator.srzwyuu.workers.dev';
+      const apiBase = App.config.apiBaseUrl || window.API_BASE_URL || 'https://api.sakamichi-tools.cn';
       const groupName = encodeURIComponent(blog.group_name);
       const memberName = encodeURIComponent(blog.member);
       

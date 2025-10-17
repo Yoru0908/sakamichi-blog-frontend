@@ -1,4 +1,5 @@
-const FALLBACK_WORKER_API_URL = 'https://sakamichi-blog-translator.srzwyuu.workers.dev';
+// ✅ 使用自定义域名，绕过 GFW DNS 污染
+const FALLBACK_WORKER_API_URL = 'https://api.sakamichi-tools.cn';
 const LOCAL_API_URL = 'http://localhost:8787';
 
 function determineInitialApiBaseUrl() {

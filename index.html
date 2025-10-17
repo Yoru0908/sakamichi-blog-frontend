@@ -352,7 +352,7 @@
       try {
         const groupName = window.GroupConfig?.getDisplayName(group) || group;
         // 获取更多博客以确保所有成员的最后更新日期都能获取到
-        const apiBase = window.API_BASE_URL || 'https://sakamichi-blog-translator.srzwyuu.workers.dev';
+        const apiBase = window.API_BASE_URL || 'https://api.sakamichi-tools.cn';
         const response = await fetch(`${apiBase}/api/blogs?group=${encodeURIComponent(groupName)}&limit=500`);
         const data = await response.json();
         
@@ -522,7 +522,7 @@
       // 🆕 从后端API获取当前团体的期别数据
       let groupData;
       try {
-        const apiBase = window.API_BASE_URL || 'https://sakamichi-blog-translator.srzwyuu.workers.dev';
+        const apiBase = window.API_BASE_URL || 'https://api.sakamichi-tools.cn';
         const response = await fetch(`${apiBase}/api/members/${App.state.group}`);
         if (response.ok) {
           groupData = await response.json();
@@ -1263,7 +1263,7 @@
     // 加载博客完整内容(从API获取)
     async function loadBlogContent(blogId) {
       try {
-        const apiBase = window.API_BASE_URL || 'https://sakamichi-blog-translator.srzwyuu.workers.dev';
+        const apiBase = window.API_BASE_URL || 'https://api.sakamichi-tools.cn';
         const response = await fetch(`${apiBase}/api/blogs/${blogId}`);
         const data = await response.json();
         
@@ -1368,7 +1368,7 @@
         if (contentDiv) {
           contentDiv.innerHTML = '<p class="text-red-500">加载失败，请稍后重试</p>';
           console.error('详细错误信息:', error.message);
-          const apiBase = window.API_BASE_URL || 'https://sakamichi-blog-translator.srzwyuu.workers.dev';
+          const apiBase = window.API_BASE_URL || 'https://api.sakamichi-tools.cn';
           console.error('API URL:', `${apiBase}/api/blogs/${blogId}`);
         }
       }

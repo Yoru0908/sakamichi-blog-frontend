@@ -7,7 +7,7 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "https://sakamichi-blog-translator.srzwyuu.workers.dev/api/:splat"
+  to = "https://api.sakamichi-tools.cn/api/:splat"
   status = 200
 
 [[headers]]

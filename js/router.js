@@ -233,7 +233,8 @@ window.Router = {
     if (window.showBlogDetail) {
       try {
         // 先获取博客数据
-        const response = await fetch(`https://sakamichi-blog-translator.srzwyuu.workers.dev/api/blogs/${blogId}`);
+        const apiBase = window.API_BASE_URL || 'https://api.sakamichi-tools.cn';
+        const response = await fetch(`${apiBase}/api/blogs/${blogId}`);
         const data = await response.json();
 
         if (data.success && data.blog) {

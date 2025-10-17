@@ -28,7 +28,7 @@ wrangler pages deploy . --project-name=sakamichi-blog
 前端调用后端 Workers API：
 
 ```javascript
-const API_BASE = 'https://sakamichi-blog-translator.srzwyuu.workers.dev';
+const API_BASE = 'https://api.sakamichi-tools.cn';
 ```
 
 ### API 端点
@@ -60,7 +60,7 @@ const API_BASE = 'https://sakamichi-blog-translator.srzwyuu.workers.dev';
 
 - 后端仓库: https://github.com/Yoru0908/sakamichi-blog-backend
 - Pages URL: https://c9ab90cd.sakamichi-blog.pages.dev
-- Workers API: https://sakamichi-blog-translator.srzwyuu.workers.dev
+- Workers API: https://api.sakamichi-tools.cn
 
 ## 📄 License
 

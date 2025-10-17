@@ -555,7 +555,7 @@ window.MemberPage = {
       console.log(`[MemberPage] 加载博客 - 成员: ${memberName}, 团体: ${groupName}`);
       
       // 构建API URL
-      const apiBase = window.API_BASE_URL || 'https://sakamichi-blog-translator.srzwyuu.workers.dev';
+      const apiBase = window.API_BASE_URL || 'https://api.sakamichi-tools.cn';
       let url = `${apiBase}/api/blogs?member=${encodeURIComponent(memberName)}&limit=${pageSize}&offset=${offset}`;
       
       // 只有非all时才添加团体筛选

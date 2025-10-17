@@ -3,7 +3,7 @@
  * 从后端统一获取成员信息
  */
 
-const API_BASE_URL = 'https://sakamichi-blog-translator.srzwyuu.workers.dev';
+const API_BASE_URL = 'https://api.sakamichi-tools.cn';
 
 // 缓存成员数据（1小时）
 const membersCache = new Map();
