@@ -698,3 +698,40 @@
 .dark-theme video {
   transition: opacity 0.3s ease;
 }
+
+/* ================================
+   简繁切换按钮 - 暗色主题
+   ================================ */
+
+/* PC端简繁切换按钮 */
+.dark-theme .lang-toggle-btn {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.dark-theme .lang-toggle-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+/* 移动端简繁切换 */
+.dark-theme .mobile-lang-toggle {
+  border-top-color: var(--border-color);
+}
+
+.dark-theme .lang-toggle-btn-mobile {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.dark-theme .lang-toggle-btn-mobile:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent-primary);
+}
+
+.dark-theme .lang-toggle-btn-mobile svg {
+  color: var(--text-primary);
+}

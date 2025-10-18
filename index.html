@@ -20,17 +20,23 @@
   <!-- 🆕 成员数据API -->
   <script type="module" src="js/members-api.js"></script>
   <!-- ⚠️ 保留作为回退 -->
-  <script src="members-data.js"></script>
+  <script src="js/members-data.js"></script>
 
   <!-- 结构化内容渲染器 -->
-  <script src="structured-renderer.js"></script>
+  <script src="js/structured-renderer.js"></script>
 
   <!-- 图片下载库 -->
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   
+  <!-- OpenCC 简繁转换库 -->
+  <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>
+  
   <!-- 主题切换模块 -->
   <script src="js/theme-toggle.js"></script>
+  
+  <!-- 简繁切换模块 -->
+  <script src="js/language-toggle.js"></script>
   
   <!-- 核心功能模块 -->
   <script src="js/pagination.js"></script>
@@ -121,6 +127,11 @@
             </svg>
           </button>
           
+          <!-- PC端简繁切换按钮 -->
+          <button id="langToggleDesktop" class="lang-toggle-btn desktop-only" title="切换到繁体中文">
+            <span class="lang-text">简</span>
+          </button>
+          
           <!-- 移动端汉堡菜单按钮 -->
           <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -178,6 +189,16 @@
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
         </svg>
         <span class="theme-text">亮色模式</span>
+      </button>
+    </div>
+    
+    <!-- 移动端简繁切换 -->
+    <div class="mobile-lang-toggle">
+      <button id="langToggleMobile" class="lang-toggle-btn-mobile">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h2m-1 0v6"/>
+        </svg>
+        <span class="lang-text">简体中文</span>
       </button>
     </div>
   </div>

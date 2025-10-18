@@ -427,7 +427,7 @@ body {
   max-width: 100%;
   height: auto;
   margin: 2rem 0;
-  border-radius: 8px;
+  border-radius: 0;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -547,4 +547,77 @@ body {
   #paginationContainer {
     padding: 16px 0;
   }
+}
+
+/* ================================
+   简繁切换按钮样式
+   ================================ */
+
+/* PC端简繁切换按钮 */
+.lang-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 15px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.lang-toggle-btn:hover {
+  background: #f3f4f6;
+  border-color: #3b82f6;
+  color: #3b82f6;
+  transform: scale(1.05);
+}
+
+.lang-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+.lang-toggle-btn .lang-text {
+  font-family: "Noto Sans SC", sans-serif;
+}
+
+/* 移动端简繁切换 */
+.mobile-lang-toggle {
+  padding: 16px 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.lang-toggle-btn-mobile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+  color: #374151;
+}
+
+.lang-toggle-btn-mobile:hover {
+  background: #f9fafb;
+  border-color: #3b82f6;
+}
+
+.lang-toggle-btn-mobile svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.lang-toggle-btn-mobile .lang-text {
+  font-family: "Noto Sans SC", sans-serif;
+  font-weight: 500;
 }
