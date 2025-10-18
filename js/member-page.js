@@ -312,8 +312,8 @@ window.MemberPage = {
                 <span id="memberInitialSidebar">M</span>
               </div>
             </div>
-            <h3 id="memberNameSidebar" class="member-name-sidebar">成员姓名</h3>
-            <p id="memberKanaSidebar" class="member-kana-sidebar"></p>
+            <h3 id="memberNameSidebar" class="member-name-sidebar" lang="ja">成员姓名</h3>
+            <p id="memberKanaSidebar" class="member-kana-sidebar" lang="ja"></p>
             <a href="#" class="profile-link" onclick="event.preventDefault();">Profile</a>
           </div>
           

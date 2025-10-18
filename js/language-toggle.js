@@ -131,19 +131,16 @@
       // 标签页
       '.tab-item',
       '.mobile-nav-item',
-      // 标题
-      'h1', 'h2', 'h3',
       // 按钮和选项
       'button:not([lang="ja"])',
       'option',
-      // 成员相关
-      '.member-item',
-      '.member-name',
       // 其他界面元素
       '.page-info',
       'footer p',
       'label',
       '.dropdown-item'
+      // 注意：已移除 h1/h2/h3、.member-item、.member-name
+      // 这些包含日语内容，需要在HTML中添加 lang="ja" 属性来排除
     ];
 
     // 转换所有匹配元素
