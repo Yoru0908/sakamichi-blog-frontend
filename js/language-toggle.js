@@ -11,7 +11,8 @@
   const LANG_SIMPLIFIED = 'simplified';
   const LANG_TRADITIONAL = 'traditional';
   
-  let converter = null;
+  let converterToTw = null;  // 简→繁转换器
+  let converterToCn = null;  // 繁→简转换器
   let isOpenCCLoaded = false;
 
   // 检查 OpenCC 是否加载完成
@@ -39,9 +40,10 @@
     }
     
     try {
-      // 简体转繁体
-      converter = OpenCC.Converter({ from: 'cn', to: 'tw' });
-      console.log('[LanguageToggle] 转换器初始化成功');
+      // 初始化两个转换器
+      converterToTw = OpenCC.Converter({ from: 'cn', to: 'tw' });  // 简→繁
+      converterToCn = OpenCC.Converter({ from: 'tw', to: 'cn' });  // 繁→简
+      console.log('[LanguageToggle] 转换器初始化成功（双向）');
       return true;
     } catch (e) {
       console.error('[LanguageToggle] 转换器初始化失败:', e);
@@ -79,7 +81,9 @@
       const text = node.textContent.trim();
       if (text) {
         try {
-          node.textContent = toTraditional ? converter(text) : text;
+          // 根据方向选择合适的转换器
+          const converter = toTraditional ? converterToTw : converterToCn;
+          node.textContent = converter(text);
         } catch (e) {
           console.warn('[LanguageToggle] 转换失败:', e);
         }
@@ -106,7 +110,7 @@
 
   // 应用语言设置
   function applyLanguage(lang) {
-    if (!converter && !initConverter()) {
+    if ((!converterToTw || !converterToCn) && !initConverter()) {
       console.error('[LanguageToggle] 转换器未就绪');
       return;
     }
