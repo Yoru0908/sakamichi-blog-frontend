@@ -6,12 +6,11 @@
 
 /* ========== 固定挂载点 ========== */
 #bilingualControlMount {
-  margin: 16px 0;
   min-height: 0;
 }
 
-#bilingualControlMount:not(:empty) {
-  margin-bottom: 16px;
+#bilingualControlMount:empty {
+  display: none;
 }
 
 /* ========== 桌面端：下拉选择器 ========== */
