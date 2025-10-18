@@ -303,7 +303,7 @@ window.BlogDetailSidebar = {
 
       return `
       <li style="padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
-        <a href="#blog/${blog.id}" onclick="location.reload();" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px;">
+        <a href="#blog/${blog.id}" onclick="event.preventDefault(); if(window.Router) Router.navigate('#blog/${blog.id}'); return false;" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px; cursor: pointer;">
           <div style="width: 80px; height: 80px; border-radius: 5px; overflow: hidden; flex-shrink: 0; ${thumbnailStyle}"></div>
           <div style="flex: 1; min-width: 0;">
             <div style="font-size: 10px; color: #999; margin-bottom: 4px;">${blog.publish_date || '-'}</div>
@@ -372,7 +372,7 @@ window.BlogDetailSidebar = {
         const dateStr = `${currentYear}/${String(currentMonth).padStart(2, '0')}/${String(day).padStart(2, '0')}`;
         const targetBlog = blogs.find(b => b.publish_date && b.publish_date.startsWith(dateStr));
         if (targetBlog) {
-          html += `<div class="${classes}" onclick="location.hash='#blog/${targetBlog.id}'; location.reload();">${day}</div>`;
+          html += `<div class="${classes}" onclick="if(window.Router) Router.navigate('#blog/${targetBlog.id}');" style="cursor: pointer;">${day}</div>`;
         } else {
           html += `<div class="${classes}">${day}</div>`;
         }

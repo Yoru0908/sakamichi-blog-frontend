@@ -13,6 +13,11 @@ class BilingualControl {
       'japanese': '仅日文'
     };
     this.currentMode = this.loadSavedMode();
+    
+    // 保存事件监听器引用，用于清理
+    this.documentClickHandler = null;
+    this.keydownHandler = null;
+    
     this.init();
   }
 
@@ -41,12 +46,9 @@ class BilingualControl {
   }
 
   /**
-   * 插入桌面端下拉选择器（在下载和分享按钮左侧）
+   * 插入桌面端下拉选择器（使用固定挂载点）
    */
   insertDesktopSelector() {
-    // 尝试查找下载按钮容器 - 修正选择器
-    const downloadButton = document.querySelector('#downloadAllBtn, .action-btn.primary, .download-button, [data-action="download"]');
-    
     const selectorHTML = `
       <div class="language-selector" id="languageSelector">
         <button class="selector-button" id="selectorButton">
@@ -67,18 +69,16 @@ class BilingualControl {
       </div>
     `;
 
-    // 如果找到下载按钮，插入到它前面；否则保持原来的位置
-    if (downloadButton) {
-      downloadButton.insertAdjacentHTML('beforebegin', selectorHTML);
-      console.log('✅ 双语选择器已插入到下载按钮左侧');
-    } else {
-      // 回退方案：插入到博客内容前面
-      const blogContent = document.querySelector('.blog-content-official');
-      if (blogContent) {
-        blogContent.insertAdjacentHTML('beforebegin', selectorHTML);
-        console.log('⚠️ 未找到下载按钮，双语选择器插入到博客内容前面');
-      }
+    // ✅ 使用固定挂载点
+    const mount = document.getElementById('bilingualControlMount');
+    if (mount) {
+      mount.innerHTML = selectorHTML;
+      console.log('✅ 双语选择器已挂载到固定容器');
+      return;
     }
+    
+    // 简单回退（兼容旧版本）
+    document.querySelector('#downloadAllBtn')?.insertAdjacentHTML('beforebegin', selectorHTML);
   }
 
   /**
@@ -139,10 +139,11 @@ class BilingualControl {
       });
     });
 
-    // 桌面端：点击外部关闭
-    document.addEventListener('click', () => {
+    // 桌面端：点击外部关闭（保存引用用于清理）
+    this.documentClickHandler = () => {
       this.closeDesktopSelector();
-    });
+    };
+    document.addEventListener('click', this.documentClickHandler);
 
     // 移动端：主按钮点击
     const fabMain = document.getElementById('fabMain');
@@ -176,8 +177,8 @@ class BilingualControl {
       }
     });
 
-    // 快捷键支持
-    document.addEventListener('keydown', (e) => {
+    // 快捷键支持（保存引用用于清理）
+    this.keydownHandler = (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
       
       const keyModeMap = {
@@ -189,7 +190,8 @@ class BilingualControl {
       if (keyModeMap[e.key]) {
         this.setMode(keyModeMap[e.key]);
       }
-    });
+    };
+    document.addEventListener('keydown', this.keydownHandler);
   }
 
   /**
@@ -373,25 +375,33 @@ class BilingualControl {
   destroy() {
     console.log('🗑️ 销毁双语控件实例');
     
-    // 移除桌面端选择器
+    // ✅ 清理全局事件监听器（防止内存泄漏）
+    if (this.documentClickHandler) {
+      document.removeEventListener('click', this.documentClickHandler);
+      this.documentClickHandler = null;
+    }
+    
+    if (this.keydownHandler) {
+      document.removeEventListener('keydown', this.keydownHandler);
+      this.keydownHandler = null;
+    }
+    
+    // ✅ 清理固定挂载点内容（优先）
+    const mount = document.getElementById('bilingualControlMount');
+    if (mount) {
+      mount.innerHTML = '';
+    }
+    
+    // 清理其他可能的位置（兼容性）
     const desktopSelector = document.getElementById('languageSelector');
-    if (desktopSelector) {
+    if (desktopSelector && !mount) {
       desktopSelector.remove();
     }
     
-    // 移除移动端FAB容器
-    const fabContainer = document.getElementById('fabContainer');
-    if (fabContainer) {
-      fabContainer.remove();
-    }
+    // 清理移动端FAB
+    document.getElementById('fabContainer')?.remove();
+    document.getElementById('fabOverlay')?.remove();
     
-    // 移除移动端遮罩层
-    const fabOverlay = document.getElementById('fabOverlay');
-    if (fabOverlay) {
-      fabOverlay.remove();
-    }
-    
-    // 清理事件监听器（通过移除DOM元素自动清理）
     console.log('✅ 双语控件已销毁');
   }
 }

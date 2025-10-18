@@ -4,6 +4,16 @@
  * 完全匹配官网的换行间距
  */
 
+/* ========== 固定挂载点 ========== */
+#bilingualControlMount {
+  margin: 16px 0;
+  min-height: 0;
+}
+
+#bilingualControlMount:not(:empty) {
+  margin-bottom: 16px;
+}
+
 /* ========== 桌面端：下拉选择器 ========== */
 .language-selector {
   position: relative;
