@@ -530,7 +530,7 @@ window.MemberPage = {
    * 加载成员博客
    */
   async loadMemberBlogs(memberName, groupKey, page = 1) {
-    const pageSize = 32;
+    const pageSize = window.PAGE_SIZE;
     const offset = (page - 1) * pageSize;
     
     // 显示加载状态
@@ -555,7 +555,7 @@ window.MemberPage = {
       console.log(`[MemberPage] 加载博客 - 成员: ${memberName}, 团体: ${groupName}`);
       
       // 构建API URL
-      const apiBase = window.API_BASE_URL || 'https://api.sakamichi-tools.cn';
+      const apiBase = window.API_BASE_URL || window.API_BASE;
       let url = `${apiBase}/api/blogs?member=${encodeURIComponent(memberName)}&limit=${pageSize}&offset=${offset}`;
       
       // 只有非all时才添加团体筛选
@@ -587,7 +587,10 @@ window.MemberPage = {
         if (data.blogs[0]) {
           const lastUpdateEl = document.getElementById('memberLastUpdate');
           if (lastUpdateEl) {
-            lastUpdateEl.textContent = data.blogs[0].publish_date || '-';
+            const formattedDate = data.blogs[0].publish_date
+              ? (window.standardizeBlogDate ? window.standardizeBlogDate(data.blogs[0].publish_date) : data.blogs[0].publish_date)
+              : '-';
+            lastUpdateEl.textContent = formattedDate;
           }
         }
         
@@ -686,7 +689,7 @@ window.MemberPage = {
       <a href="#blog/${blog.id}" class="blog-list-link">
         <h3 class="blog-list-title">${blog.title || '无标题'}</h3>
         <div class="blog-list-meta">
-          <span class="blog-list-date">${blog.publish_date || ''}</span>
+          <span class="blog-list-date">${window.standardizeBlogDate ? window.standardizeBlogDate(blog.publish_date) : (blog.publish_date || '')}</span>
         </div>
         ${excerpt ? `<p class="blog-list-excerpt">${excerpt}</p>` : ''}
       </a>
@@ -801,15 +804,15 @@ window.MemberPage = {
       monthEl.textContent = `${this.currentYear}.${String(this.currentMonth).padStart(2, '0')}`;
     }
     
-    // 获取该月有博客的日期（用于标记）
+    // 获取该月有博客的日期（用于标记）- 使用通用日期工具
     const blogDatesSet = new Set();
     if (this.memberBlogs) {
-      const monthStr = `${this.currentYear}/${String(this.currentMonth).padStart(2, '0')}`;
       this.memberBlogs.forEach(blog => {
-        if (blog.publish_date && blog.publish_date.startsWith(monthStr)) {
-          const datePart = blog.publish_date.split(' ')[0];
-          const day = parseInt(datePart.split('/')[2]);
-          blogDatesSet.add(day);
+        if (blog.publish_date && window.isInMonth && window.isInMonth(blog.publish_date, this.currentYear, this.currentMonth)) {
+          const parts = window.extractDateParts(blog.publish_date);
+          if (parts) {
+            blogDatesSet.add(parts.day);
+          }
         }
       });
     }
@@ -877,13 +880,13 @@ window.MemberPage = {
    */
   getBlogDatesForMonth(year, month) {
     const dates = new Set();
-    const monthStr = `${year}/${month.toString().padStart(2, '0')}`;
     
     if (this.memberBlogs) {
       this.memberBlogs.forEach(blog => {
-        if (blog.publish_date && blog.publish_date.startsWith(monthStr)) {
-          const datePart = blog.publish_date.split(' ')[0];
-          dates.add(datePart);
+        if (blog.publish_date && window.isInMonth && window.isInMonth(blog.publish_date, year, month)) {
+          // 标准化日期后添加
+          const standardized = window.standardizeBlogDate ? window.standardizeBlogDate(blog.publish_date) : blog.publish_date;
+          dates.add(standardized.split(' ')[0]); // 只保留日期部分
         }
       });
     }
@@ -911,8 +914,11 @@ window.MemberPage = {
    * 按日期筛选
    */
   filterByDate(date) {
-    // 查找该日期的博客
-    const blog = this.memberBlogs.find(b => b.publish_date && b.publish_date.startsWith(date));
+    // 查找该日期的博客（使用通用日期匹配）
+    const blog = this.memberBlogs.find(b => {
+      if (!b.publish_date) return false;
+      return window.isSameDate ? window.isSameDate(b.publish_date, date) : b.publish_date.includes(date);
+    });
     if (blog) {
       // 直接跳转到普通博客详情页
       window.location.hash = `#blog/${blog.id}`;
@@ -992,14 +998,14 @@ window.MemberPage = {
     const list = document.getElementById('monthDropdownList');
     if (!list) return;
     
-    // 获取博客中所有的年月
+    // 获取博客中所有的年月（使用通用日期工具）
     const availableMonths = new Set();
     if (this.memberBlogs) {
       this.memberBlogs.forEach(blog => {
         if (blog.publish_date) {
-          const match = blog.publish_date.match(/^(\d{4})\/(\d{2})/);
-          if (match) {
-            availableMonths.add(`${match[1]}.${match[2]}`);
+          const parts = window.extractDateParts ? window.extractDateParts(blog.publish_date) : null;
+          if (parts) {
+            availableMonths.add(`${parts.year}.${String(parts.month).padStart(2, '0')}`);
           }
         }
       });

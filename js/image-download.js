@@ -9,7 +9,7 @@ async function downloadImageAsBlob(url) {
   
   // 方案1: 通过后端代理下载（推荐）
   try {
-    const apiBase = App.config.apiBaseUrl || window.API_BASE_URL || 'https://api.sakamichi-tools.cn';
+    const apiBase = App.config.apiBaseUrl || window.API_BASE_URL || window.API_BASE;
     const proxyUrl = `${apiBase}/api/proxy/image?url=${encodeURIComponent(url)}`;
     console.log(`🔄 使用代理URL: ${proxyUrl}`);
     

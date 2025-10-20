@@ -14,7 +14,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- 核心配置模块（必须最先加载） -->
+  <!-- 全局配置（必须最先加载） -->
+  <script src="js/config.js"></script>
+  
+  <!-- 核心配置模块 -->
   <script src="js/group-config.js"></script>
   
   <!-- 🆕 成员数据API -->
@@ -373,7 +376,7 @@
       try {
         const groupName = window.GroupConfig?.getDisplayName(group) || group;
         // 获取更多博客以确保所有成员的最后更新日期都能获取到
-        const apiBase = window.API_BASE_URL || 'https://api.sakamichi-tools.cn';
+        const apiBase = window.API_BASE_URL || window.API_BASE;
         const response = await fetch(`${apiBase}/api/blogs?group=${encodeURIComponent(groupName)}&limit=500`);
         const data = await response.json();
         
@@ -457,26 +460,18 @@
           
           const todayBlogs = data.blogs.filter(blog => {
             if (!blog.publish_date) return false;
-            // 标准化日期：将 "2025/10/09" 或 "2025.10.9" 转为 "2025-10-09"
-            const normalized = blog.publish_date
-              .replace(/\//g, '-')
-              .replace(/\./g, '-')
-              .split(' ')[0]; // 只取日期部分
             
-            // 补齐单数字月份/日期为双数字 (2025-10-9 -> 2025-10-09)
-            const parts = normalized.split('-');
-            if (parts.length === 3) {
-              const year = parts[0];
-              const month = parts[1].padStart(2, '0');
-              const day = parts[2].padStart(2, '0');
-              const standardDate = `${year}-${month}-${day}`;
-              const isToday = standardDate === today;
-              if (isToday) {
-                console.log('[今日更新] 找到今天的博客:', blog.member, blog.title, blog.publish_date);
-              }
-              return isToday;
+            // 使用通用日期解析函数
+            const blogDate = window.parseBlogDate ? window.parseBlogDate(blog.publish_date) : new Date(blog.publish_date);
+            if (!blogDate) return false;
+            
+            const blogDateStr = blogDate.toISOString().split('T')[0];
+            const isToday = blogDateStr === today;
+            
+            if (isToday) {
+              console.log('[今日更新] 找到今天的博客:', blog.member, blog.title, blog.publish_date);
             }
-            return normalized === today;
+            return isToday;
           });
           
           console.log('[今日更新] 今日更新数:', todayBlogs.length);
@@ -566,7 +561,7 @@
       // 🆕 从后端API获取当前团体的期别数据
       let groupData;
       try {
-        const apiBase = window.API_BASE_URL || 'https://api.sakamichi-tools.cn';
+        const apiBase = window.API_BASE_URL || window.API_BASE;
         const response = await fetch(`${apiBase}/api/members/${App.state.group}`);
         console.log('[renderMemberGrid] members API 状态:', response.status);
         if (response.ok) {
@@ -898,11 +893,16 @@
         }
       }
       
+      // 标准化日期格式：统一为 2025.10.19 HH:MM
+      const formattedDate = blog.publish_date 
+        ? (window.standardizeBlogDate ? window.standardizeBlogDate(blog.publish_date) : blog.publish_date)
+        : '未知日期';
+      
       item.innerHTML = `
         <div class="blog-card-image" style="${imageStyle}"></div>
         <div class="blog-card-content">
           <div class="member-name mb-2" lang="ja">${blog.member || '未知成员'}</div>
-          <div class="blog-meta mb-2">${blog.publish_date || '未知日期'}</div>
+          <div class="blog-meta mb-2">${formattedDate}·${blog.group_name || ''}</div>
           <h3 class="blog-title" lang="ja">${blog.title || '无标题'}</h3>
         </div>
       `;
@@ -959,7 +959,7 @@
             <div class="flex items-center gap-4 text-gray-600">
               <span class="font-medium">${blog.member}</span>
               <span>·</span>
-              <span>${blog.publish_date}</span>
+              <span>${window.standardizeBlogDate ? window.standardizeBlogDate(blog.publish_date) : blog.publish_date}</span>
               <span>·</span>
               <span class="text-sm">${window.GroupConfig?.getDisplayName(blog.group_name) || blog.group_name}</span>
             </div>
@@ -1320,7 +1320,7 @@
     // 加载博客完整内容(从API获取)
     async function loadBlogContent(blogId) {
       try {
-        const apiBase = window.API_BASE_URL || 'https://api.sakamichi-tools.cn';
+        const apiBase = window.API_BASE_URL || window.API_BASE;
         const response = await fetch(`${apiBase}/api/blogs/${blogId}`);
         const data = await response.json();
         
@@ -1425,7 +1425,7 @@
         if (contentDiv) {
           contentDiv.innerHTML = '<p class="text-red-500">加载失败，请稍后重试</p>';
           console.error('详细错误信息:', error.message);
-          const apiBase = window.API_BASE_URL || 'https://api.sakamichi-tools.cn';
+          const apiBase = window.API_BASE_URL || window.API_BASE;
           console.error('API URL:', `${apiBase}/api/blogs/${blogId}`);
         }
       }

@@ -209,11 +209,11 @@ window.BlogDetailSidebar = {
   async loadMemberBlogs(blog) {
     try {
       // 使用统一的 API 配置
-      const apiBase = App.config.apiBaseUrl || window.API_BASE_URL || 'https://api.sakamichi-tools.cn';
+      const apiBase = App.config.apiBaseUrl || window.API_BASE_URL || window.API_BASE;
       const groupName = encodeURIComponent(blog.group_name);
       const memberName = encodeURIComponent(blog.member);
       
-      const response = await fetch(`${apiBase}/api/blogs?group=${groupName}&member=${memberName}&limit=10`);
+      const response = await fetch(`${apiBase}/api/blogs?group=${groupName}&member=${memberName}&limit=${window.SIDEBAR_LIMIT}`);
       const data = await response.json();
       
       if (data.success && data.blogs) {
@@ -306,7 +306,7 @@ window.BlogDetailSidebar = {
         <a href="#blog/${blog.id}" onclick="event.preventDefault(); if(window.Router) Router.navigate('#blog/${blog.id}'); return false;" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px; cursor: pointer;">
           <div style="width: 80px; height: 80px; border-radius: 5px; overflow: hidden; flex-shrink: 0; ${thumbnailStyle}"></div>
           <div style="flex: 1; min-width: 0;">
-            <div style="font-size: 10px; color: #999; margin-bottom: 4px;">${blog.publish_date || '-'}</div>
+            <div style="font-size: 10px; color: #999; margin-bottom: 4px;">${window.standardizeBlogDate ? window.standardizeBlogDate(blog.publish_date) : (blog.publish_date || '-')}</div>
             <div style="font-size: 12px; color: #333; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
               ${blog.title || '无标题'}
             </div>
@@ -328,14 +328,15 @@ window.BlogDetailSidebar = {
     const currentYear = today.getFullYear();
     const currentMonth = today.getMonth() + 1;
     
-    // 获取当月有博客的日期
+    // 获取当月有博客的日期（使用通用日期工具）
     const blogDates = new Set();
-    const monthStr = `${currentYear}/${String(currentMonth).padStart(2, '0')}`;
     
     blogs.forEach(blog => {
-      if (blog.publish_date && blog.publish_date.startsWith(monthStr)) {
-        const day = parseInt(blog.publish_date.split('/')[2]);
-        blogDates.add(day);
+      if (blog.publish_date && window.isInMonth && window.isInMonth(blog.publish_date, currentYear, currentMonth)) {
+        const parts = window.extractDateParts(blog.publish_date);
+        if (parts) {
+          blogDates.add(parts.day);
+        }
       }
     });
     
@@ -369,8 +370,12 @@ window.BlogDetailSidebar = {
       if (hasBlog) classes += ' has-blog';
       
       if (hasBlog) {
-        const dateStr = `${currentYear}/${String(currentMonth).padStart(2, '0')}/${String(day).padStart(2, '0')}`;
-        const targetBlog = blogs.find(b => b.publish_date && b.publish_date.startsWith(dateStr));
+        // 使用通用日期匹配（支持任意格式）
+        const targetBlog = blogs.find(b => {
+          if (!b.publish_date) return false;
+          const parts = window.extractDateParts(b.publish_date);
+          return parts && parts.year === currentYear && parts.month === currentMonth && parts.day === day;
+        });
         if (targetBlog) {
           html += `<div class="${classes}" onclick="if(window.Router) Router.navigate('#blog/${targetBlog.id}');" style="cursor: pointer;">${day}</div>`;
         } else {

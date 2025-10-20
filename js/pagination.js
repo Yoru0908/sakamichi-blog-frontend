@@ -5,7 +5,7 @@
 
 window.Pagination = {
   totalBlogs: 0,
-  blogsPerPage: 32,
+  blogsPerPage: window.PAGE_SIZE,
   
   /**
    * 初始化分页

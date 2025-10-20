@@ -3,11 +3,11 @@
  * 从后端统一获取成员信息
  */
 
-const API_BASE_URL = 'https://api.sakamichi-tools.cn';
+const API_BASE_URL = window.API_BASE;
 
 // 缓存成员数据（1小时）
 const membersCache = new Map();
-const CACHE_TTL = 60 * 60 * 1000; // 1小时
+const CACHE_TTL = window.CACHE_TTL; // 1小时
 
 /**
  * 获取指定团体的成员数据（按期别分组）

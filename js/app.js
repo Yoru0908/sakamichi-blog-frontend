@@ -1,6 +1,6 @@
 // ✅ 使用自定义域名，绕过 GFW DNS 污染
-const FALLBACK_WORKER_API_URL = 'https://api.sakamichi-tools.cn';
-const LOCAL_API_URL = 'http://localhost:8787';
+const FALLBACK_WORKER_API_URL = window.API_BASE;
+const LOCAL_API_URL = window.LOCAL_API;
 
 function determineInitialApiBaseUrl() {
   try {
@@ -51,7 +51,7 @@ async function ensureApiBaseUrl() {
     try {
       // 添加5秒超时
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      const timeoutId = setTimeout(() => controller.abort(), window.API_TIMEOUT);
       
       const response = await fetch(`${candidate}/api/health`, { 
         cache: 'no-store',
@@ -596,30 +596,45 @@ function showSearchResults(results) {
   });
 }
 
-// 成员名搜索建议
+// 成员名搜索建议（使用缓存数据，无需API请求）
 async function getMemberSuggestions(query) {
   if (query.length < 2) {
     return [];
   }
 
   try {
-    const apiBase = window.API_BASE_URL || API_BASE_URL;
-    const response = await fetch(`${apiBase}/api/members?search=${encodeURIComponent(query)}`);
-    const data = await response.json();
-
-    if (data.success) {
-      return data.data.slice(0, 5).map(member => ({
-        name: member.name,
-        displayName: member.displayName,
-        fanNickname: member.fanNickname,
-        groupName: member.groupName,
-        avatar: member.avatar_url
-      }));
+    // ✅ 使用已有的成员数据（从缓存或API获取一次）
+    const { getAllMembers } = await import('./members-api.js');
+    const allMembers = await getAllMembers();
+    
+    // 将团体键值对转换为成员数组
+    const membersList = [];
+    for (const [groupKey, members] of Object.entries(allMembers)) {
+      const groupMap = {
+        'nogizaka': '乃木坂46',
+        'sakurazaka': '樱坂46',
+        'hinatazaka': '日向坂46'
+      };
+      
+      members.forEach(name => {
+        membersList.push({
+          name: name,
+          displayName: name,
+          groupName: groupMap[groupKey],
+          group_name: groupMap[groupKey]
+        });
+      });
     }
-
-    return [];
+    
+    // 前端搜索过滤
+    const results = membersList.filter(member =>
+      member.name.includes(query) ||
+      (member.displayName && member.displayName.includes(query))
+    ).slice(0, 5);
+    
+    return results;
   } catch (error) {
-      console.error('获取成员建议失败:', error);
+    console.error('获取成员建议失败:', error);
     return [];
   }
 }
@@ -841,10 +856,10 @@ function showError(message) {
 
   document.body.appendChild(errorDiv);
 
-  // 3秒后自动移除
+  // 自动移除
   setTimeout(() => {
     errorDiv.remove();
-  }, 3000);
+  }, window.TOAST_DURATION);
 }
 
 // 自动刷新

@@ -235,7 +235,7 @@ window.Router = {
     if (window.showBlogDetail) {
       try {
         // 先获取博客数据
-        const apiBase = window.API_BASE_URL || 'https://api.sakamichi-tools.cn';
+        const apiBase = window.API_BASE_URL || window.API_BASE;
         const response = await fetch(`${apiBase}/api/blogs/${blogId}`);
         const data = await response.json();
 

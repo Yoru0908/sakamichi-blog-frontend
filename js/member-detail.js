@@ -398,7 +398,10 @@ window.MemberDetail = {
   renderBlogDetail(blog, memberName, groupKey) {
     // 更新标题和元信息
     document.getElementById('detailBlogTitle').textContent = blog.title || '无标题';
-    document.getElementById('detailBlogDate').textContent = blog.publish_date || '-';
+    const formattedDate = blog.publish_date 
+      ? (window.standardizeBlogDate ? window.standardizeBlogDate(blog.publish_date) : blog.publish_date)
+      : '-';
+    document.getElementById('detailBlogDate').textContent = formattedDate;
     document.getElementById('detailBlogMember').textContent = memberName;
     
     // 更新面包屑
@@ -534,8 +537,12 @@ window.MemberDetail = {
    * 检查某天是否有博客
    */
   checkHasBlog(year, month, day) {
-    const dateStr = `${year}/${String(month).padStart(2, '0')}/${String(day).padStart(2, '0')}`;
-    return this.memberBlogs.some(blog => blog.publish_date && blog.publish_date.startsWith(dateStr));
+    // 使用通用日期匹配（支持任意格式）
+    return this.memberBlogs.some(blog => {
+      if (!blog.publish_date) return false;
+      const parts = window.extractDateParts ? window.extractDateParts(blog.publish_date) : null;
+      return parts && parts.year === year && parts.month === month && parts.day === day;
+    });
   },
   
   /**
@@ -555,7 +562,7 @@ window.MemberDetail = {
     entriesEl.innerHTML = recentBlogs.map(blog => `
       <li class="recent-entry">
         <a href="#blog/${blog.id}" onclick="event.preventDefault(); MemberDetail.switchToBlog(${JSON.stringify(blog).replace(/"/g, '&quot;')});" style="text-decoration: none;">
-          <div class="recent-entry-date">${blog.publish_date || '-'}</div>
+          <div class="recent-entry-date">${window.standardizeBlogDate ? window.standardizeBlogDate(blog.publish_date) : (blog.publish_date || '-')}</div>
           <div class="recent-entry-title">${blog.title || '无标题'}</div>
         </a>
       </li>
@@ -574,8 +581,8 @@ window.MemberDetail = {
       };
       const groupName = groupNames[groupKey] || groupKey;
       
-      const apiBase = App.config.apiBaseUrl || window.API_BASE_URL || 'https://api.sakamichi-tools.cn';
-      const url = `${apiBase}/api/blogs?group=${encodeURIComponent(groupName)}&member=${encodeURIComponent(memberName)}&limit=50`;
+      const apiBase = App.config.apiBaseUrl || window.API_BASE_URL || window.API_BASE;
+      const url = `${apiBase}/api/blogs?group=${encodeURIComponent(groupName)}&member=${encodeURIComponent(memberName)}&limit=${window.DETAIL_LIMIT}`;
       
       const response = await fetch(url);
       const data = await response.json();
@@ -601,7 +608,11 @@ window.MemberDetail = {
    * 根据日期加载博客
    */
   async loadBlogByDate(date) {
-    const blog = this.memberBlogs.find(b => b.publish_date && b.publish_date.startsWith(date));
+    // 使用通用日期匹配（支持任意格式比较）
+    const blog = this.memberBlogs.find(b => {
+      if (!b.publish_date) return false;
+      return window.isSameDate ? window.isSameDate(b.publish_date, date) : b.publish_date.includes(date);
+    });
     if (blog) {
       this.switchToBlog(blog);
     }
