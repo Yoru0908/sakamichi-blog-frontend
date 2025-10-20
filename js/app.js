@@ -276,12 +276,16 @@ window.loadBlogs = async function(append = false) {
     // 🚀 检查缓存（仅在非追加、无搜索时使用）
     if (!append && !App.state.search) {
       const cachedBlogs = getCachedBlogs(App.state.group, App.state.page);
-      if (cachedBlogs) {
+      if (cachedBlogs && cachedBlogs.length > 0) {
+        console.log('[loadBlogs] 使用缓存，跳过API请求');
         displayBlogs(cachedBlogs);
         App.state.loading = false;
         hideLoading();
-        console.log('[loadBlogs] 使用缓存，跳过API请求');
         return;
+      } else if (cachedBlogs && cachedBlogs.length === 0) {
+        console.log('[loadBlogs] 缓存为空数组，清除缓存重新请求');
+        // 清除这个无效的缓存
+        blogCache.delete(`${App.state.group}_${App.state.page}`);
       }
     }
 
