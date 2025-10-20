@@ -239,15 +239,16 @@ function updateLastUpdateTime() {
 
 // ==================== 博客缓存 ====================
 // 全局缓存（内存Map）- 20行简单方案
-const blogCache = new Map();
-const CACHE_TTL = 5 * 60 * 1000; // 5分钟
+// 临时禁用以修复语法错误
+const blogCacheMap = new Map();
+const blogCacheTTL = 5 * 60 * 1000; // 5分钟
 
 // 获取缓存
 function getCachedBlogs(group, page = 1) {
   const key = `${group}_${page}`;
-  const cached = blogCache.get(key);
+  const cached = blogCacheMap.get(key);
   
-  if (cached && Date.now() - cached.time < CACHE_TTL) {
+  if (cached && Date.now() - cached.time < blogCacheTTL) {
     console.log(`[Cache] ✅ 命中: ${key} (${cached.data.length}篇)`);
     return cached.data;
   }
@@ -257,7 +258,7 @@ function getCachedBlogs(group, page = 1) {
 // 设置缓存
 function setCachedBlogs(group, page, data) {
   const key = `${group}_${page}`;
-  blogCache.set(key, { data, time: Date.now() });
+  blogCacheMap.set(key, { data, time: Date.now() });
   console.log(`[Cache] 💾 存储: ${key} (${data.length}篇)`);
 }
 
@@ -285,7 +286,7 @@ window.loadBlogs = async function(append = false) {
       } else if (cachedBlogs && cachedBlogs.length === 0) {
         console.log('[loadBlogs] 缓存为空数组，清除缓存重新请求');
         // 清除这个无效的缓存
-        blogCache.delete(`${App.state.group}_${App.state.page}`);
+        blogCacheMap.delete(`${App.state.group}_${App.state.page}`);
       }
     }
 
