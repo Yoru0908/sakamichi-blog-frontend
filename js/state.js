@@ -56,6 +56,11 @@ window.App.bilingual = {
   Class: null          // BilingualControl类
 };
 
+// ===== SEO 管理 =====
+window.App.seo = {
+  manager: null         // SEOManager 实例（由 seo-manager.js 初始化后设置）
+};
+
 // ===== ✅ 已全部迁移到 App.state，不再需要向后兼容层 =====
 // 旧的 window.currentPage, window.currentSearch 等变量已废弃
 // 所有代码已统一使用 App.state.page, App.state.search 等

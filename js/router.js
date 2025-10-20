@@ -97,6 +97,15 @@ window.Router = {
     App.state.search = '';
     App.state.hasMore = true;   // 重置无限滚动状态
     App.state.blogs = [];    // 清空缓存的博客
+    
+    // 🎯 SEO 更新（模块化）
+    if (App.seo && App.seo.manager) {
+      if (group === 'all') {
+        App.seo.manager.updateHomeMeta();
+      } else {
+        App.seo.manager.updateGroupMeta(group);
+      }
+    }
 
     // 重置分页
     if (window.Pagination) {
@@ -214,6 +223,11 @@ window.Router = {
     // 设置统一状态
     App.state.group = group;
     App.state.member = member;
+    
+    // 🎯 SEO 更新（模块化）
+    if (App.seo && App.seo.manager) {
+      App.seo.manager.updateMemberMeta(member, group);
+    }
     
     // 隐藏博客详情页
     const blogDetail = document.getElementById('blogDetail');

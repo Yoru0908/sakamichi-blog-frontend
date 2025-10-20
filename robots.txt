@@ -1,0 +1,56 @@
+# 坂道博客翻译系统 - Robots.txt
+# 更新时间: 2025-01-21
+
+# 所有搜索引擎
+User-agent: *
+Allow: /
+Allow: /css/
+Allow: /js/
+Allow: /assets/
+
+# 禁止爬取的目录
+Disallow: /api/
+Disallow: /admin/
+Disallow: /test/
+Disallow: /*.json$
+
+# Sitemap 位置
+Sitemap: https://blog.sakamichi-tools.cn/sitemap.xml
+Sitemap: https://blog.sakamichi-tools.cn/sitemap-blogs.xml
+
+# 爬取延迟（秒）
+Crawl-delay: 1
+
+# Google 搜索引擎（特殊规则）
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Bing 搜索引擎
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# 百度搜索引擎
+User-agent: Baiduspider
+Allow: /
+Crawl-delay: 2
+
+# 搜狗搜索引擎
+User-agent: Sogou web spider
+Allow: /
+Crawl-delay: 2
+
+# 360搜索引擎
+User-agent: 360Spider
+Allow: /
+Crawl-delay: 2
+
+# Yandex 搜索引擎
+User-agent: Yandex
+Allow: /
+Crawl-delay: 1
+
+# 禁止某些爬虫（如果需要）
+# User-agent: BadBot
+# Disallow: /

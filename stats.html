@@ -3,7 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>博客统计分析 - Demo</title>
+  <title>数据统计 - 坂道博客翻译</title>
+  
+  <!-- ✅ 网站图标 -->
+  <link rel="icon" type="image/jpeg" href="/images/sakamichi.jpg">
+  <link rel="apple-touch-icon" href="/images/sakamichi.jpg">
+  <meta name="theme-color" content="#742581">
+  
+  <!-- ✅ 性能优化：预连接 -->
+  <link rel="preconnect" href="https://api.sakamichi-tools.cn">
   
   <!-- DaisyUI + Tailwind CSS -->
   <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
@@ -25,7 +33,11 @@
   
   <!-- 配置文件 -->
   <script src="js/config.js"></script>
+  <script src="js/state.js"></script>
   <script src="js/group-config.js"></script>
+  
+  <!-- 🎯 SEO 管理器 -->
+  <script src="js/seo-manager.js"></script>
 
   <!-- 主题切换模块 -->
   <script src="js/theme-toggle.js"></script>
@@ -997,6 +1009,11 @@
     }
     
     loadAllGroups();
+    
+    // 🎯 统计页面 SEO 更新（模块化）
+    if (App.seo && App.seo.manager) {
+      App.seo.manager.updateStatsMeta();
+    }
   </script>
 </body>
 </html>
