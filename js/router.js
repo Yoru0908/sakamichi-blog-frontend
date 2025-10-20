@@ -80,6 +80,10 @@ window.Router = {
         App.state.group === group &&
         !App.state.member) {  // 确保不是从成员页返回
       console.log('[Router] 已经在当前团体页面，跳过重新加载');
+      // 确保隐藏loading
+      if (window.hideLoading) {
+        window.hideLoading();
+      }
       return;
     }
     
@@ -181,14 +185,22 @@ window.Router = {
     }
 
     // 加载博客列表（使用平滑过渡动画）
-    if (window.smoothTransition && window.loadBlogs) {
-      console.log('[Router] 使用平滑过渡加载博客, currentGroup:', App.state.group);
-      await window.smoothTransition(async () => {
+    try {
+      if (window.smoothTransition && window.loadBlogs) {
+        console.log('[Router] 使用平滑过渡加载博客, currentGroup:', App.state.group);
+        await window.smoothTransition(async () => {
+          await window.loadBlogs();
+        });
+      } else if (window.loadBlogs) {
+        console.log('[Router] 直接加载博客, currentGroup:', App.state.group);
         await window.loadBlogs();
-      });
-    } else if (window.loadBlogs) {
-      console.log('[Router] 直接加载博客, currentGroup:', App.state.group);
-      await window.loadBlogs();
+      }
+    } catch (error) {
+      console.error('[Router] 加载博客失败:', error);
+      // 确保隐藏loading
+      if (window.hideLoading) {
+        window.hideLoading();
+      }
     }
   },
   
