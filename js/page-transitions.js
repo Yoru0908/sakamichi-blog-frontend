@@ -7,32 +7,33 @@
 let isTransitioning = false;
 
 /**
- * 平滑切换内容
+ * 平滑切换内容（优化版：快速+流畅）
  * @param {Function} callback - 切换内容的回调函数
- * @param {number} duration - 动画持续时间(ms)
+ * @param {number} fadeOutDuration - 淡出动画时间(ms)
+ * @param {number} fadeInDuration - 淡入动画时间(ms)
  */
-async function smoothTransition(callback, duration = 750) {
+async function smoothTransition(callback, fadeOutDuration = 300, fadeInDuration = 250) {
   if (isTransitioning) return;
 
   isTransitioning = true;
   const container = document.getElementById('blogsContainer');
 
   if (container) {
-    // 淡出当前内容 - 使用cubic-bezier缓动
-    container.style.transition = `opacity ${duration}ms cubic-bezier(0.4, 0, 0.2, 1), transform ${duration}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+    // 🚀 优化1：使用更快的缓动曲线（ease-out）
+    container.style.transition = `opacity ${fadeOutDuration}ms ease-out, transform ${fadeOutDuration}ms ease-out`;
     container.style.opacity = '0';
-    container.style.transform = 'translateY(-10px)';
+    container.style.transform = 'translateY(-8px)'; // 减小移动距离，更快
+    
+    // 🚀 优化2：淡出动画和API请求并行执行
+    // 不等待淡出完成，立即开始加载
+    const fadeOutPromise = new Promise(resolve => setTimeout(resolve, fadeOutDuration));
+    const loadPromise = callback ? callback() : Promise.resolve();
+    
+    // 等待两者都完成（哪个慢等哪个）
+    await Promise.all([fadeOutPromise, loadPromise]);
 
-    // 等待淡出完成
-    await new Promise(resolve => setTimeout(resolve, duration));
-
-    // 执行内容切换
-    if (callback) {
-      await callback();
-    }
-
-    // 重置 transition，准备淡入
-    container.style.transition = `opacity ${duration}ms cubic-bezier(0.4, 0, 0.2, 1), transform ${duration}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+    // 🚀 优化3：更快的淡入动画
+    container.style.transition = `opacity ${fadeInDuration}ms ease-in, transform ${fadeInDuration}ms ease-in`;
     
     // 强制重排，确保transition生效
     void container.offsetHeight;
@@ -41,8 +42,8 @@ async function smoothTransition(callback, duration = 750) {
     container.style.opacity = '1';
     container.style.transform = 'translateY(0)';
 
-    // 等待淡入完成
-    await new Promise(resolve => setTimeout(resolve, duration));
+    // 只等待淡入完成（更短）
+    await new Promise(resolve => setTimeout(resolve, fadeInDuration));
   } else {
     // 如果没有容器，直接执行回调
     if (callback) {
