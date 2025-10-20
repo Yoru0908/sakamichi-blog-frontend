@@ -63,6 +63,11 @@ window.Router = {
    * 显示团体页面
    */
   async showGroupPage(group) {
+    // 🚀 立即显示loading，提升感知响应速度
+    if (window.showLoading) {
+      window.showLoading();
+    }
+    
     console.log('[Router] 显示团体页面:', group);
     console.log('[Router] 当前状态:', {
       currentView: this.currentView,
