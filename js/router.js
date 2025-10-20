@@ -84,14 +84,19 @@ window.Router = {
 
     // 设置统一状态
     App.state.group = group;
-    window.currentPage = 1;  // 重置为第1页
-    window.currentSearch = '';
-    window.hasMore = true;   // 重置无限滚动状态
-    window.allBlogs = [];    // 清空缓存的博客
+    App.state.page = 1;  // 重置为第1页
+    App.state.search = '';
+    App.state.hasMore = true;   // 重置无限滚动状态
+    App.state.blogs = [];    // 清空缓存的博客
 
     // 重置分页
     if (window.Pagination) {
       window.Pagination.reset();
+    }
+    
+    // ✅ 重置成员筛选器UI
+    if (window.resetMemberFilter) {
+      window.resetMemberFilter();
     }
 
     console.log('[Router] 设置状态 App.state.group:', App.state.group);

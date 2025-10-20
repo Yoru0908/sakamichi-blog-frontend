@@ -239,9 +239,9 @@ function updateLastUpdateTime() {
 
 // 加载博客列表
 window.loadBlogs = async function(append = false) {
-  if (window.isLoading) return;
+  if (App.state.loading) return;
 
-  window.isLoading = true;
+  App.state.loading = true;
   
   // 只在非追加模式下显示全屏加载状态
   if (!append) {
@@ -253,7 +253,7 @@ window.loadBlogs = async function(append = false) {
     const blogsPerPage = getBlogsPerPage();
     
     // 计算偏移量
-    const offset = (window.currentPage - 1) * blogsPerPage;
+    const offset = (App.state.page - 1) * blogsPerPage;
     
     const params = new URLSearchParams({
       limit: blogsPerPage,
@@ -267,8 +267,8 @@ window.loadBlogs = async function(append = false) {
       console.log(`[loadBlogs] 筛选团体: ${App.state.group} -> API: ${apiName}`);
     }
 
-    if (window.currentSearch) {
-      params.append('member', window.currentSearch);
+    if (App.state.search) {
+      params.append('member', App.state.search);
     }
 
     const apiBase = window.API_BASE_URL || API_BASE_URL;
@@ -322,13 +322,13 @@ window.loadBlogs = async function(append = false) {
         // 设置无限滚动状态
         const blogsPerPage = getBlogsPerPage();
         if (typeof paginationInfo.hasMore === 'boolean') {
-          window.hasMore = paginationInfo.hasMore;
+          App.state.hasMore = paginationInfo.hasMore;
         } else {
-          window.hasMore = uniqueBlogs.length >= blogsPerPage;
+          App.state.hasMore = uniqueBlogs.length >= blogsPerPage;
         }
 
         // 设置无限滚动
-        if (window.hasMore && !append) {
+        if (App.state.hasMore && !append) {
           // 显示哨兵元素（IntersectionObserver需要可见元素）
           const sentinel = document.getElementById('scrollSentinel');
           if (sentinel) {
@@ -341,7 +341,7 @@ window.loadBlogs = async function(append = false) {
               window.setupInfiniteScroll();
             }
           }, 100);
-        } else if (!window.hasMore) {
+        } else if (!App.state.hasMore) {
           // 没有更多内容时隐藏哨兵
           const sentinel = document.getElementById('scrollSentinel');
           if (sentinel) {
@@ -364,9 +364,9 @@ window.loadBlogs = async function(append = false) {
 
       const blogsPerPage = getBlogsPerPage();
       if (typeof totalCount === 'number') {
-        window.totalPages = Math.max(1, Math.ceil(totalCount / blogsPerPage));
+        App.state.totalPages = Math.max(1, Math.ceil(totalCount / blogsPerPage));
       } else if (typeof paginationInfo.totalPages === 'number') {
-        window.totalPages = paginationInfo.totalPages;
+        App.state.totalPages = paginationInfo.totalPages;
       }
 
       // ❌ 移除：不要让 API 返回的页码覆盖当前页码
@@ -381,7 +381,7 @@ window.loadBlogs = async function(append = false) {
     console.error('[loadBlogs] 加载失败:', error);
     showError(`加载博客失败: ${error.message}`);
   } finally {
-    window.isLoading = false;
+    App.state.loading = false;
     
     // 只在非追加模式下隐藏加载状态
     if (!append) {
@@ -480,8 +480,8 @@ function filterByGroup(group) {
 // 搜索功能
 function handleSearch(event) {
   if (event.key === 'Enter') {
-    currentSearch = event.target.value.trim();
-    currentPage = 1;
+    App.state.search = event.target.value.trim();
+    App.state.page = 1;
     loadBlogs();
   }
 }
@@ -499,7 +499,7 @@ async function performSearch(query) {
     const params = new URLSearchParams({
       q: query,
       limit: 50,
-      group: currentGroup !== 'all' ? currentGroup : ''
+      group: App.state.group !== 'all' ? App.state.group : ''
     });
 
     const apiBase = window.API_BASE_URL || API_BASE_URL;
@@ -853,7 +853,7 @@ function startAutoRefresh() {
     loadStats();
 
     // 如果用户在首页，也刷新博客列表
-    if (currentPage === 1 && !currentSearch) {
+    if (App.state.page === 1 && !App.state.search) {
       loadBlogs();
     }
   }, 5 * 60 * 1000);
@@ -882,7 +882,7 @@ window.setupInfiniteScroll = function() {
   scrollObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting && window.hasMore && !isLoadingMore && !window.isLoading) {
+        if (entry.isIntersecting && App.state.hasMore && !isLoadingMore && !App.state.loading) {
           console.log('[InfiniteScroll] 触发加载更多');
           loadMoreBlogs();
         }
@@ -903,7 +903,7 @@ window.setupInfiniteScroll = function() {
 
 // 加载更多博客（用于无限滚动）
 async function loadMoreBlogs() {
-  if (isLoadingMore || !window.hasMore || window.isLoading) {
+  if (isLoadingMore || !App.state.hasMore || App.state.loading) {
     return;
   }
 
@@ -918,13 +918,13 @@ async function loadMoreBlogs() {
 
   try {
     // 增加页码
-    window.currentPage++;
+    App.state.page++;
 
     // 使用 append=true 来追加博客
     await window.loadBlogs(true);
   } catch (error) {
     console.error('[InfiniteScroll] 加载更多失败:', error);
-    window.hasMore = false;
+    App.state.hasMore = false;
   } finally {
     isLoadingMore = false;
 
@@ -934,7 +934,7 @@ async function loadMoreBlogs() {
     }
     
     // 如果没有更多内容，隐藏哨兵
-    if (!window.hasMore) {
+    if (!App.state.hasMore) {
       const sentinel = document.getElementById('scrollSentinel');
       if (sentinel) {
         sentinel.classList.add('hidden');

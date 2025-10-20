@@ -110,6 +110,7 @@
             placeholder="搜索成员或标题..." 
             class="input input-bordered input-sm w-64"
             style="height: 36px;"
+            onkeyup="handleSearchInput(event)"
           />
           
           <!-- PC端主题切换按钮 -->
@@ -164,6 +165,7 @@
         id="mobileSearchInput" 
         placeholder="搜索成员或标题..." 
         class="mobile-search-input"
+        onkeyup="handleSearchInput(event)"
       />
     </div>
     
@@ -322,7 +324,7 @@
 
   <script>
     // ❌ 已删除 API 配置 - 使用 app.js 中的 window.API_BASE_URL（带健康检查）
-    // ❌ 已删除全局变量 - 使用 app.js 中的 window.currentPage, window.currentGroup 等
+    // ✅ 已迁移全局变量 - 统一使用 App.state.page, App.state.group, App.state.search 等
     // ❌ 已删除团体配置 - 使用 js/group-config.js 模块中的 window.GroupConfig
 
     // 切换团体
@@ -335,10 +337,10 @@
       
       // 设置统一状态
       App.state.group = group;
-      window.currentPage = 1;  // ✅ 从1开始，避免负偏移
-      window.currentSearch = '';
-      window.hasMore = true;
-      window.isLoading = false;
+      App.state.page = 1;  // ✅ 从1开始，避免负偏移
+      App.state.search = '';
+      App.state.hasMore = true;
+      App.state.loading = false;
       
       // 不再使用 history.pushState，Router 会处理路由
       
@@ -633,20 +635,149 @@
     // 按成员筛选（从下拉框）
     function filterByMember() {
       const select = document.getElementById('memberSelect');
-      window.currentSearch = select.value;
-      window.currentPage = 1;  // ✅ 从1开始，避免负偏移
-      window.hasMore = true;
-      window.isLoading = false;
+      const memberName = select.value;
+      
+      console.log('[filterByMember] 筛选成员:', memberName || '全部成员');
+      
+      // ✅ 使用统一状态管理
+      App.state.search = memberName;
+      App.state.page = 1;
+      App.state.hasMore = true;
+      App.state.loading = false;
+      
+      // ✅ 清空容器，显示加载状态
+      const container = document.getElementById('blogsContainer');
+      if (container) {
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">正在加载...</div>';
+      }
       
       // 更新 URL 状态
       history.replaceState({ 
         view: 'list', 
         group: App.state.group, 
-        member: currentMember 
-      }, '', `#${App.state.group}${currentMember ? '/' + encodeURIComponent(currentMember) : ''}`);
+        member: memberName || '' 
+      }, '', `#${App.state.group}${memberName ? '/' + encodeURIComponent(memberName) : ''}`);
       
       // 重新加载数据
       loadBlogs();
+    }
+    
+    // 重置筛选器（团体切换时调用）
+    window.resetMemberFilter = function() {
+      const select = document.getElementById('memberSelect');
+      if (select) {
+        select.value = '';
+        console.log('[resetMemberFilter] 筛选器已重置');
+      }
+    }
+
+    // 处理搜索输入（顶部搜索框）
+    function handleSearchInput(event) {
+      if (event.key === 'Enter') {
+        const query = event.target.value.trim();
+        console.log('[handleSearchInput] 搜索:', query);
+        
+        if (query) {
+          // 调用搜索API
+          performRealSearch(query);
+        } else {
+          // 清空搜索，重新加载博客列表
+          App.state.search = '';
+          App.state.page = 1;
+          loadBlogs();
+        }
+      }
+    }
+
+    // 调用真正的搜索API
+    async function performRealSearch(query) {
+      try {
+        // 显示加载状态
+        const container = document.getElementById('blogsContainer');
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">正在搜索...</div>';
+        
+        // 构建API URL
+        const apiBase = window.API_BASE_URL || 'https://api.sakamichi-tools.cn';
+        const params = new URLSearchParams({
+          q: query,
+          limit: 50
+        });
+        
+        // 添加团体筛选
+        if (App.state.group !== 'all') {
+          const groupNames = {
+            'nogizaka': '乃木坂46',
+            'sakurazaka': '樱坂46',
+            'hinatazaka': '日向坂46'
+          };
+          params.append('group', groupNames[App.state.group] || '');
+        }
+        
+        const url = `${apiBase}/api/search?${params}`;
+        console.log('[performRealSearch] 请求URL:', url);
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        console.log('[performRealSearch] 搜索结果:', data);
+        
+        if (data.success && data.data) {
+          // 显示搜索结果
+          displaySearchResults(data.data, query, data.count);
+        } else {
+          throw new Error(data.error || '搜索失败');
+        }
+      } catch (error) {
+        console.error('[performRealSearch] 搜索失败:', error);
+        const container = document.getElementById('blogsContainer');
+        container.innerHTML = `
+          <div style="text-align: center; padding: 40px;">
+            <p style="color: #f56565;">搜索失败: ${error.message}</p>
+            <p style="color: #999; margin-top: 10px;">请稍后重试</p>
+          </div>
+        `;
+      }
+    }
+
+    // 显示搜索结果
+    function displaySearchResults(blogs, query, count) {
+      const container = document.getElementById('blogsContainer');
+      container.innerHTML = '';
+      
+      // 显示搜索提示
+      const header = document.createElement('div');
+      header.style.cssText = 'padding: 20px 0; border-bottom: 1px solid #e2e8f0; margin-bottom: 20px;';
+      header.innerHTML = `
+        <h3 style="font-size: 18px; font-weight: 600; color: #2d3748;">
+          搜索结果："${query}" <span style="color: #718096;">(找到 ${count} 篇博客)</span>
+        </h3>
+      `;
+      container.appendChild(header);
+      
+      if (blogs.length === 0) {
+        container.innerHTML += `
+          <div style="text-align: center; padding: 60px 20px;">
+            <svg style="width: 64px; height: 64px; margin: 0 auto 20px; color: #cbd5e0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <h3 style="font-size: 16px; font-weight: 500; color: #2d3748; margin-bottom: 8px;">未找到结果</h3>
+            <p style="color: #718096;">没有找到与"${query}"相关的博客</p>
+          </div>
+        `;
+        return;
+      }
+      
+      // 使用已有的 renderBlogItem 渲染博客卡片
+      blogs.forEach(blog => {
+        const blogCard = window.renderBlogItem(blog);
+        container.appendChild(blogCard);
+      });
+      
+      // 触发滚动动画
+      if (window.observeElements) {
+        const cards = container.querySelectorAll('.blog-card');
+        setTimeout(() => window.observeElements(Array.from(cards)), 50);
+      }
     }
 
     // 渲染博客内容 - 直接使用blog-renderer.js中的renderMarkdown
@@ -1435,11 +1566,11 @@
 
     // 侧边栏功能已移至 blog-detail-sidebar.js 模块
     
-    // ❌ 已删除状态变量 - 使用 app.js 中的 window.hasMore, window.totalPages 等
+    // ✅ 已迁移状态变量 - 统一使用 App.state.hasMore, App.state.totalPages 等
     // ❌ 已删除 loadMoreBlogs() - 使用 app.js 中的 window.loadBlogs(append=true)
     // ❌ 已删除 setupInfiniteScroll() - 使用 app.js 中的 window.setupInfiniteScroll()
 
-    // ❌ 已删除搜索变量 - 使用 app.js 中的 window.currentSearch
+    // ✅ 已迁移搜索变量 - 统一使用 App.state.search
     // ❌ 已删除本地搜索 (filterBlogs) - 使用 app.js 中的服务端搜索 (performSearch + enhanceSearchInput)
 
     // ========== 下载和分享功能 ==========

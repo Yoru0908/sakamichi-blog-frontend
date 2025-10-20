@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>博客统计分析 - Demo</title>
+  
+  <!-- DaisyUI + Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- 现有CSS文件 -->
+  <link rel="stylesheet" href="css/main-styles.css">
+  <link rel="stylesheet" href="css/transitions.css">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- 配置文件 -->
+  <script src="js/config.js"></script>
+  <script src="js/group-config.js"></script>
+  
+  <style>
+    body {
+      font-family: 'Noto Sans SC', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f5f5f5;
+    }
+    
+    .stat-card {
+      background: white;
+      border-radius: 0;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    
+    .stat-number {
+      font-size: 48px;
+      font-weight: bold;
+      line-height: 1.2;
+    }
+    
+    .stat-label {
+      font-size: 14px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+    
+    .stat-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-top: 8px;
+    }
+    
+    .group-tab {
+      padding: 12px 24px;
+      border: none;
+      background: white;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s;
+      border-bottom: 2px solid transparent;
+    }
+    
+    .group-tab:hover {
+      background: #f9fafb;
+    }
+    
+    .group-tab.active {
+      color: #3b82f6;
+      border-bottom-color: #3b82f6;
+    }
+    
+    .chart-container {
+      position: relative;
+      height: 400px;
+      background: white;
+      padding: 24px;
+      border-radius: 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="max-w-7xl mx-auto p-6">
+    <!-- 页面标题 -->
+    <h1 class="text-4xl font-bold text-center mb-8" style="color: #1f2937;">
+      博客统计分析
+    </h1>
+    
+    <!-- 筛选栏 -->
+    <div class="bg-white shadow-sm p-6 mb-6" style="box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+      <div class="flex flex-wrap items-center gap-4">
+        <div class="flex items-center gap-2">
+          <label class="text-sm font-medium text-gray-700">年份</label>
+          <select id="yearSelect" onchange="onFilterChange()" style="padding: 8px 16px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; cursor: pointer; width: 120px;">
+            <option value="2025" selected>2025年</option>
+            <option value="2024">2024年</option>
+            <option value="2023">2023年</option>
+          </select>
+        </div>
+        
+        <div class="flex items-center gap-2">
+          <label class="text-sm font-medium text-gray-700">月份</label>
+          <select id="monthSelect" onchange="onFilterChange()" style="padding: 8px 16px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; cursor: pointer; width: 120px;">
+            <option value="all">全年</option>
+            <option value="1">1月</option>
+            <option value="2">2月</option>
+            <option value="3">3月</option>
+            <option value="4">4月</option>
+            <option value="5">5月</option>
+            <option value="6">6月</option>
+            <option value="7">7月</option>
+            <option value="8">8月</option>
+            <option value="9">9月</option>
+            <option value="10" selected>10月</option>
+            <option value="11">11月</option>
+            <option value="12">12月</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- 团体标签 -->
+      <div class="flex gap-2 mt-6 border-b">
+        <button class="group-tab active" data-group="all" onclick="switchGroup('all')">
+          全部团体
+        </button>
+        <button class="group-tab" data-group="nogizaka" onclick="switchGroup('nogizaka')">
+          乃木坂46
+        </button>
+        <button class="group-tab" data-group="sakurazaka" onclick="switchGroup('sakurazaka')">
+          樱坂46
+        </button>
+        <button class="group-tab" data-group="hinatazaka" onclick="switchGroup('hinatazaka')">
+          日向坂46
+        </button>
+      </div>
+    </div>
+    
+    <!-- 统计卡片 -->
+    <div id="statsCards" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <!-- Loading状态 -->
+      <div class="stat-card col-span-full text-center py-8">
+        <div class="text-gray-500">正在加载统计数据...</div>
+      </div>
+    </div>
+    
+    <!-- 图表 -->
+    <div class="chart-container">
+      <h2 class="text-xl font-bold mb-4" style="color: #1f2937;" id="chartTitle">
+        成员博客统计图表 - 乃木坂46 (前20名)
+      </h2>
+      <canvas id="memberChart"></canvas>
+    </div>
+  </div>
+
+  <script>
+    // ✅ 使用真实API获取数据
+    let realData = {};
+    let isLoading = false;
+    
+    // 临时mock数据（API加载前使用）
+    const mockData = {
+      all: {
+        members: 81,
+        activeMembers: 81,
+        totalMembers: 84,
+        blogs: 4500,
+        avgBlogs: 50,
+        topMembers: [
+          { name: '池田瑛紗', count: 200 },
+          { name: '菅原咲月', count: 130 },
+          { name: '岩本蓮加', count: 110 },
+          { name: '山下美月', count: 100 },
+          { name: '賀喜遥香', count: 95 },
+          { name: '遠藤さくら', count: 90 },
+          { name: '田村真佑', count: 85 },
+          { name: '筒井あやめ', count: 80 },
+          { name: '柴田柚菜', count: 75 },
+          { name: '小川彩', count: 70 },
+          { name: '黒見明香', count: 65 },
+          { name: '五百城茉央', count: 60 },
+          { name: '金川紗耶', count: 58 },
+          { name: '中西アルノ', count: 55 },
+          { name: '林瑠奈', count: 52 },
+          { name: '弓木奈於', count: 50 },
+          { name: '井上和', count: 48 },
+          { name: '奥田いろは', count: 45 },
+          { name: '冨里奈央', count: 42 },
+          { name: '矢久保美緒', count: 40 }
+        ]
+      },
+      nogizaka: {
+        members: 20,
+        activeMembers: 20,
+        totalMembers: 38,
+        blogs: 1612,
+        avgBlogs: 48.8,
+        topMembers: [
+          { name: '池田瑛紗', count: 200 },
+          { name: '菅原咲月', count: 130 },
+          { name: '岩本蓮加', count: 110 },
+          { name: '山下美月', count: 100 },
+          { name: '賀喜遥香', count: 95 },
+          { name: '遠藤さくら', count: 90 },
+          { name: '田村真佑', count: 85 },
+          { name: '筒井あやめ', count: 80 },
+          { name: '柴田柚菜', count: 75 },
+          { name: '小川彩', count: 70 },
+          { name: '黒見明香', count: 65 },
+          { name: '五百城茉央', count: 60 },
+          { name: '金川紗耶', count: 58 },
+          { name: '中西アルノ', count: 55 },
+          { name: '林瑠奈', count: 52 },
+          { name: '弓木奈於', count: 50 },
+          { name: '井上和', count: 48 },
+          { name: '奥田いろは', count: 45 },
+          { name: '冨里奈央', count: 42 },
+          { name: '矢久保美緒', count: 40 }
+        ]
+      },
+      sakurazaka: {
+        members: 28,
+        activeMembers: 28,
+        totalMembers: 28,
+        blogs: 1450,
+        avgBlogs: 45.3,
+        topMembers: [
+          { name: '森田ひかる', count: 150 },
+          { name: '山﨑天', count: 120 },
+          { name: '守屋麗奈', count: 105 },
+          { name: '田村保乃', count: 98 },
+          { name: '松田里奈', count: 92 },
+          { name: '藤吉夏鈴', count: 88 },
+          { name: '井上梨名', count: 82 },
+          { name: '大園玲', count: 78 },
+          { name: '小池美波', count: 75 },
+          { name: '増本綺良', count: 70 },
+          { name: '中嶋優月', count: 68 },
+          { name: '大沼晶保', count: 65 },
+          { name: '小田倉麗奈', count: 62 },
+          { name: '遠藤理子', count: 58 },
+          { name: '的野美青', count: 55 },
+          { name: '谷口愛季', count: 52 },
+          { name: '石森璃花', count: 50 },
+          { name: '村井優', count: 48 },
+          { name: '山下瞳月', count: 45 },
+          { name: '武元唯衣', count: 42 }
+        ]
+      },
+      hinatazaka: {
+        members: 36,
+        activeMembers: 36,
+        totalMembers: 29,
+        blogs: 1438,
+        avgBlogs: 57.5,
+        topMembers: [
+          { name: '小坂菜緒', count: 180 },
+          { name: '加藤史帆', count: 145 },
+          { name: '齊藤京子', count: 125 },
+          { name: '潮紗理菜', count: 110 },
+          { name: '佐々木久美', count: 105 },
+          { name: '上村ひなの', count: 98 },
+          { name: '高瀬愛奈', count: 92 },
+          { name: '濱岸ひより', count: 88 },
+          { name: '丹生明里', count: 82 },
+          { name: '森本茉莉', count: 78 },
+          { name: '正源司陽子', count: 75 },
+          { name: '山口陽世', count: 70 },
+          { name: '平尾帆夏', count: 68 },
+          { name: '宮地すみれ', count: 65 },
+          { name: '石塚瑶季', count: 62 },
+          { name: '平岡海月', count: 58 },
+          { name: '岸帆夏', count: 55 },
+          { name: '清水理央', count: 52 },
+          { name: '竹内希来里', count: 50 },
+          { name: '渡辺莉奈', count: 48 }
+        ]
+      }
+    };
+    
+    let currentGroup = 'nogizaka';
+    let chart = null;
+    
+    const groupColors = {
+      all: '#6b7280',
+      nogizaka: '#742581',
+      sakurazaka: '#F19DB5',
+      hinatazaka: '#7BC7E8'
+    };
+    
+    const groupNames = {
+      all: '全部团体',
+      nogizaka: '乃木坂46',
+      sakurazaka: '樱坂46',
+      hinatazaka: '日向坂46'
+    };
+    
+    // 更新图表
+    function updateChart(data, color) {
+      const ctx = document.getElementById('memberChart').getContext('2d');
+      
+      if (chart) {
+        chart.destroy();
+      }
+      
+      // 检查数据是否为空
+      if (!data || data.length === 0) {
+        console.warn('[Stats] 没有数据可以显示图表');
+        return;
+      }
+      
+      chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: data.map(m => m.name),
+          datasets: [{
+            label: '博客数量',
+            data: data.map(m => m.count),
+            backgroundColor: color,
+            borderRadius: 6,
+            barThickness: 30
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              padding: 12,
+              titleFont: { size: 14 },
+              bodyFont: { size: 13 },
+              callbacks: {
+                label: function(context) {
+                  return `博客数: ${context.parsed.y}篇`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: {
+                font: { size: 11 },
+                maxRotation: 45,
+                minRotation: 45
+              },
+              grid: {
+                display: false
+              }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: {
+                font: { size: 12 },
+                stepSize: 1,
+                callback: function(value) {
+                  // 只显示整数
+                  if (Number.isInteger(value)) {
+                    return value + '篇';
+                  }
+                  return '';
+                }
+              },
+              grid: {
+                color: '#f3f4f6'
+              }
+            }
+          }
+        }
+      });
+    }
+    
+    // 从真实API加载数据
+    async function loadRealData(group) {
+      const apiBase = window.API_BASE || 'https://api.sakamichi-tools.cn';
+      
+      // 处理group名称
+      let groupDisplayName;
+      if (group === 'all') {
+        groupDisplayName = 'all';
+      } else {
+        groupDisplayName = window.GroupConfig?.getDisplayName(group) || group;
+      }
+      
+      console.log(`[Stats] 加载${groupDisplayName}数据...`);
+      
+      try {
+        isLoading = true;
+        
+        let allBlogs = [];
+        let totalMembersCount = 0; // 真实的总成员数
+        let currentMembersList = []; // 在籍成员名单
+        
+        // 如果是全部团体，需要分别加载三个团体
+        if (group === 'all') {
+          const groups = ['nogizaka', 'sakurazaka', 'hinatazaka'];
+          for (const g of groups) {
+            const gName = window.GroupConfig?.getDisplayName(g) || g;
+            
+            // 加载博客数据
+            const response = await fetch(
+              `${apiBase}/api/blogs?group=${encodeURIComponent(gName)}&limit=2000`
+            );
+            const data = await response.json();
+            if (data.success && data.blogs) {
+              allBlogs = allBlogs.concat(data.blogs);
+            }
+            
+            // 加载完整成员列表
+            try {
+              const membersResponse = await fetch(`${apiBase}/api/members/${g}`);
+              if (membersResponse.ok) {
+                const membersData = await membersResponse.json();
+                // 统计总成员数并保存成员名单
+                if (membersData.generations) {
+                  membersData.generations.forEach(gen => {
+                    totalMembersCount += gen.members.length;
+                    currentMembersList.push(...gen.members);
+                  });
+                }
+              }
+            } catch (error) {
+              console.warn(`[Stats] 获取${g}成员列表失败:`, error);
+            }
+          }
+        } else {
+          // 加载博客数据
+          const response = await fetch(
+            `${apiBase}/api/blogs?group=${encodeURIComponent(groupDisplayName)}&limit=2000`
+          );
+          const data = await response.json();
+          if (data.success && data.blogs) {
+            allBlogs = data.blogs;
+          }
+          
+          // 加载完整成员列表
+          try {
+            const membersResponse = await fetch(`${apiBase}/api/members/${group}`);
+            if (membersResponse.ok) {
+              const membersData = await membersResponse.json();
+              // 统计总成员数并保存成员名单
+              if (membersData.generations) {
+                membersData.generations.forEach(gen => {
+                  totalMembersCount += gen.members.length;
+                  currentMembersList.push(...gen.members);
+                });
+              }
+            }
+          } catch (error) {
+            console.warn(`[Stats] 获取${group}成员列表失败:`, error);
+          }
+        }
+        
+        if (allBlogs.length > 0) {
+          console.log(`[Stats] 成功加载 ${allBlogs.length} 篇博客`);
+          
+          // 按年月筛选
+          const filteredBlogs = filterBlogsByDate(allBlogs);
+          console.log(`[Stats] 筛选后 ${filteredBlogs.length} 篇博客`);
+          console.log(`[Stats] 在籍成员数: ${currentMembersList.length}`, currentMembersList.slice(0, 5), '...');
+          
+          // 统计成员数据
+          const memberStats = {};
+          const notFoundMembers = new Set(); // 记录找不到的成员
+          
+          // 创建无空格的成员名单用于匹配
+          const normalizedMembersList = currentMembersList.map(name => name.replace(/\s+/g, ''));
+          
+          // ⚠️ 特殊成员列表（不计入统计）
+          const specialMembers = ['ポカ']; // 日向坂46吉祥物
+          
+          filteredBlogs.forEach(blog => {
+            const member = blog.member;
+            if (!member) return;
+            
+            // 跳过特殊成员（不计入统计）
+            if (specialMembers.includes(member)) {
+              return;
+            }
+            
+            // ✅ 标准化名字（去掉空格）
+            const normalizedMember = member.replace(/\s+/g, '');
+            
+            // 检查成员是否在名单中（去空格比较）
+            if (currentMembersList.length > 0) {
+              const memberIndex = normalizedMembersList.indexOf(normalizedMember);
+              if (memberIndex === -1) {
+                // 不报错，只记录到 notFoundMembers（可能是特殊成员）
+                notFoundMembers.add(member);
+                return; // 跳过不在名单中的成员
+              }
+              // 使用标准化的名字（无空格）作为key
+              const standardName = currentMembersList[memberIndex];
+              
+              if (!memberStats[standardName]) {
+                memberStats[standardName] = { name: standardName, count: 0 };
+              }
+              memberStats[standardName].count++;
+            } else {
+              // 如果没有成员名单，使用标准化后的名字
+              if (!memberStats[normalizedMember]) {
+                memberStats[normalizedMember] = { name: normalizedMember, count: 0 };
+              }
+              memberStats[normalizedMember].count++;
+            }
+          });
+          
+          // 输出找不到的成员（排除特殊成员）
+          const reallyNotFound = Array.from(notFoundMembers).filter(m => !specialMembers.includes(m));
+          if (reallyNotFound.length > 0) {
+            console.warn(`[Stats] ⚠️ 以下成员在成员列表中找不到 (共${reallyNotFound.length}人):`, reallyNotFound);
+            console.warn('[Stats] 这可能是名字格式不匹配的问题');
+          }
+          
+          // 记录特殊成员（仅作信息展示）
+          const foundSpecial = Array.from(notFoundMembers).filter(m => specialMembers.includes(m));
+          if (foundSpecial.length > 0) {
+            console.log(`[Stats] ℹ️ 检测到特殊成员博客（不计入统计）:`, foundSpecial);
+          }
+          
+          // 排序取前20
+          const topMembers = Object.values(memberStats)
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 20);
+          
+          console.log(`[Stats] Top 20 成员:`, topMembers.map(m => `${m.name}:${m.count}`).join(', '));
+          
+          // 计算统计数据
+          const activeMembers = Object.keys(memberStats).length; // 发了博客的成员数
+          const totalBlogs = filteredBlogs.length;
+          const avgBlogs = activeMembers > 0 ? (totalBlogs / activeMembers).toFixed(1) : 0;
+          
+          realData[group] = {
+            activeMembers: activeMembers, // 发了博客的成员数
+            totalMembers: totalMembersCount || activeMembers, // 真实总成员数
+            members: activeMembers, // 为了兼容性保留
+            blogs: totalBlogs,
+            avgBlogs: parseFloat(avgBlogs),
+            topMembers: topMembers,
+            allBlogs: allBlogs // 保存原始数据用于重新筛选
+          };
+          
+          console.log(`[Stats] ${groupDisplayName} 统计完成:`, {
+            activeMembers: activeMembers,
+            totalMembers: totalMembersCount,
+            blogs: totalBlogs,
+            avgBlogs: avgBlogs,
+            topMembersCount: topMembers.length
+          });
+          
+          // ❌ 删除自动更新，避免闪烁
+          // 只在初始化完成或手动切换团体时更新
+          
+        } else {
+          console.error('[Stats] 没有获取到博客数据');
+        }
+        
+      } catch (error) {
+        console.error(`[Stats] 加载${groupDisplayName}数据失败:`, error);
+        alert(`加载数据失败: ${error.message}\n\n将使用模拟数据展示`);
+      } finally {
+        isLoading = false;
+      }
+    }
+    
+    // 按日期筛选博客
+    function filterBlogsByDate(blogs) {
+      const year = document.getElementById('yearSelect').value;
+      const month = document.getElementById('monthSelect').value;
+      
+      return blogs.filter(blog => {
+        if (!blog.publish_date) return false;
+        
+        const date = blog.formatted_date || blog.publish_date;
+        
+        // 提取年份和月份
+        const match = date.match(/(\d{4})\.(\d{1,2})/);
+        if (!match) return false;
+        
+        const blogYear = match[1];
+        const blogMonth = parseInt(match[2]);
+        
+        // 年份筛选
+        if (blogYear !== year) return false;
+        
+        // 月份筛选
+        if (month !== 'all' && blogMonth !== parseInt(month)) return false;
+        
+        return true;
+      });
+    }
+    
+    // 时间筛选改变时触发
+    function onFilterChange() {
+      console.log('[Stats] 时间筛选改变，重新统计...');
+      
+      // 如果有原始数据，重新统计
+      if (realData[currentGroup] && realData[currentGroup].allBlogs) {
+        const allBlogs = realData[currentGroup].allBlogs;
+        const filteredBlogs = filterBlogsByDate(allBlogs);
+        
+        // 重新统计
+        const memberStats = {};
+        filteredBlogs.forEach(blog => {
+          const member = blog.member;
+          if (!member) return;
+          
+          if (!memberStats[member]) {
+            memberStats[member] = { name: member, count: 0 };
+          }
+          memberStats[member].count++;
+        });
+        
+        const topMembers = Object.values(memberStats)
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 20);
+        
+        const activeMembers = Object.keys(memberStats).length;
+        const totalBlogs = filteredBlogs.length;
+        const avgBlogs = activeMembers > 0 ? (totalBlogs / activeMembers).toFixed(1) : 0;
+        
+        // 更新当前数据（保留totalMembers）
+        realData[currentGroup] = {
+          ...realData[currentGroup],
+          activeMembers: activeMembers,
+          members: activeMembers,
+          blogs: totalBlogs,
+          avgBlogs: parseFloat(avgBlogs),
+          topMembers: topMembers
+        };
+        
+        updateStats();
+      } else {
+        // 没有数据，重新加载
+        loadRealData(currentGroup);
+      }
+    }
+    
+    // 渲染卡片
+    function renderStatsCards() {
+      const container = document.getElementById('statsCards');
+      const year = document.getElementById('yearSelect').value;
+      const month = document.getElementById('monthSelect').value;
+      const monthText = month === 'all' ? '全年' : `${month}月`;
+      const periodText = `${year}年${monthText}`;
+      
+      if (currentGroup === 'all') {
+        // 全部团体：显示三个团体的详细信息
+        const groups = ['nogizaka', 'sakurazaka', 'hinatazaka'];
+        // ✅ 修复：使用realData或fallback到mockData
+        const totalBlogs = groups.reduce((sum, g) => {
+          const gData = realData[g] || mockData[g];
+          return sum + (gData?.blogs || 0);
+        }, 0);
+        const totalMembers = groups.reduce((sum, g) => {
+          const gData = realData[g] || mockData[g];
+          return sum + (gData?.totalMembers || gData?.members || 0);
+        }, 0);
+        const activeMembers = groups.reduce((sum, g) => {
+          const gData = realData[g] || mockData[g];
+          return sum + (gData?.activeMembers || gData?.members || 0);
+        }, 0);
+        const avgBlogs = activeMembers > 0 ? (totalBlogs / activeMembers).toFixed(1) : '0.0';
+        
+        container.innerHTML = `
+          <!-- 总成员数 -->
+          <div class="stat-card">
+            <div class="stat-label">总成员数</div>
+            <div class="stat-number" style="color: #3b82f6;">
+              <span>${totalMembers || 100}</span><span style="font-size: 24px; margin-left: 4px;">人</span>
+            </div>
+            <div style="margin-top: 16px; space-y-2;">
+              ${groups.map(g => {
+                const gData = realData[g] || mockData[g];
+                const gColor = groupColors[g];
+                const activeCount = gData.activeMembers || gData.members;
+                const totalCount = gData.totalMembers || gData.members;
+                return `
+                  <div class="flex justify-between items-center py-1">
+                    <span class="text-sm text-gray-700">${groupNames[g]}</span>
+                    <span class="text-lg font-bold px-3 py-1" style="background: ${gColor}20; color: ${gColor}; border-radius: 6px;">${activeCount}/${totalCount}人</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+          
+          <!-- 总博客数 -->
+          <div class="stat-card">
+            <div class="stat-label">总博客数</div>
+            <div class="stat-number" style="color: #f59e0b;">
+              <span>${totalBlogs}</span><span style="font-size: 24px; margin-left: 4px;">篇</span>
+            </div>
+            <div style="margin-top: 16px; space-y-2;">
+              ${groups.map(g => {
+                const gData = realData[g] || mockData[g];
+                const gColor = groupColors[g];
+                return `
+                  <div class="flex justify-between items-center py-1">
+                    <span class="text-sm text-gray-700">${groupNames[g]}</span>
+                    <span class="text-lg font-bold px-3 py-1" style="background: ${gColor}20; color: ${gColor}; border-radius: 6px;">${gData.blogs}篇</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+          
+          <!-- 查询时段 -->
+          <div class="stat-card">
+            <div class="stat-label">查询时段</div>
+            <div class="stat-badge" style="background: #d1fae5; color: #065f46; margin: 12px 0;">${periodText}</div>
+            <div style="margin-top: 16px; space-y-2;">
+              <div class="flex justify-between items-center py-1">
+                <span class="text-sm text-gray-700">平均博客数</span>
+                <span class="text-lg font-bold px-3 py-1" style="background: #10b98120; color: #10b981; border-radius: 6px;">${avgBlogs}篇/人</span>
+              </div>
+              ${groups.map(g => {
+                const gData = realData[g] || mockData[g];
+                const gColor = groupColors[g];
+                return `
+                  <div class="flex justify-between items-center py-1">
+                    <span class="text-sm text-gray-700">${groupNames[g]}平均</span>
+                    <span class="text-lg font-bold px-3 py-1" style="background: ${gColor}20; color: ${gColor}; border-radius: 6px;">${gData.avgBlogs}篇/人</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      } else {
+        // 单个团体：显示简单卡片
+        const data = realData[currentGroup] || mockData[currentGroup];
+        const color = groupColors[currentGroup];
+        const groupName = groupNames[currentGroup];
+        const activeCount = data.activeMembers || data.members;
+        const totalCount = data.totalMembers || data.members;
+        
+        container.innerHTML = `
+          <!-- 总成员数 -->
+          <div class="stat-card">
+            <div class="stat-label">总成员数</div>
+            <div class="stat-number" style="color: #3b82f6;">
+              <span>${activeCount}/${totalCount}</span><span style="font-size: 24px; margin-left: 4px;">人</span>
+            </div>
+            <div class="stat-badge" style="background: #dbeafe; color: #1e40af;">
+              ${groupName}
+            </div>
+          </div>
+          
+          <!-- 总博客数 -->
+          <div class="stat-card">
+            <div class="stat-label">总博客数</div>
+            <div class="stat-number" style="color: #f59e0b;">
+              <span>${data.blogs}</span><span style="font-size: 24px; margin-left: 4px;">篇</span>
+            </div>
+            <div class="stat-badge" style="background: #fef3c7; color: #92400e;">
+              ${data.blogs}篇
+            </div>
+          </div>
+          
+          <!-- 查询时段 -->
+          <div class="stat-card">
+            <div class="stat-label">查询时段</div>
+            <div style="margin-top: 12px;">
+              <div class="flex justify-between items-center mb-3">
+                <span class="text-sm text-gray-600">平均博客数</span>
+                <span class="text-xl font-bold" style="color: #10b981;">${data.avgBlogs}篇/人</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">${groupName}平均</span>
+                <span class="text-xl font-bold" style="color: #10b981;">${data.avgBlogs}篇/人</span>
+              </div>
+            </div>
+            <div class="stat-badge" style="background: #d1fae5; color: #065f46;">
+              ${periodText}
+            </div>
+          </div>
+        `;
+      }
+    }
+    
+    // 修改updateStats使用真实数据
+    function updateStats() {
+      // 优先使用真实数据，否则使用mock数据
+      const data = realData[currentGroup] || mockData[currentGroup];
+      const color = groupColors[currentGroup];
+      const groupName = groupNames[currentGroup];
+      
+      console.log(`[Stats] updateStats - Group: ${currentGroup}`, {
+        hasRealData: !!realData[currentGroup],
+        topMembersCount: data.topMembers?.length || 0,
+        totalBlogs: data.blogs
+      });
+      
+      if (!realData[currentGroup]) {
+        console.log(`[Stats] 使用模拟数据展示 ${groupName}`);
+      }
+      
+      // 渲染卡片
+      renderStatsCards();
+      
+      // 更新图表标题
+      document.getElementById('chartTitle').textContent = `成员博客统计图表 - ${groupName} (前20名)`;
+      
+      // 更新图表
+      console.log(`[Stats] 准备更新图表，数据长度: ${data.topMembers?.length || 0}`);
+      updateChart(data.topMembers, color);
+    }
+    
+    // 修改switchGroup加载真实数据
+    function switchGroup(group) {
+      currentGroup = group;
+      
+      // 更新标签状态
+      document.querySelectorAll('.group-tab').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.dataset.group === group) {
+          tab.classList.add('active');
+        }
+      });
+      
+      // 如果没有真实数据，先加载
+      if (!realData[group] && !isLoading) {
+        loadRealData(group);
+      } else {
+        updateStats();
+      }
+    }
+    
+    // 初始化 - 等待第一个团体数据加载完成后再显示
+    console.log('[Stats] 初始化统计页面...');
+    currentGroup = 'all'; // 默认显示全部团体
+    
+    // 异步加载所有团体数据
+    async function loadAllGroups() {
+      console.log('[Stats] 开始加载所有团体数据...');
+      // 先加载各个团体的数据
+      await loadRealData('nogizaka');
+      await loadRealData('sakurazaka');
+      await loadRealData('hinatazaka');
+      // 最后加载all数据并显示
+      await loadRealData('all');
+      console.log('[Stats] 所有团体数据加载完成！');
+      // ✅ 数据加载完成后才第一次显示
+      updateStats();
+    }
+    
+    loadAllGroups();
+  </script>
+</body>
+</html>

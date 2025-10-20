@@ -56,45 +56,10 @@ window.App.bilingual = {
   Class: null          // BilingualControl类
 };
 
-// ===== 向后兼容：保留旧的全局变量引用 =====
-// 使用 getter/setter 实现双向同步
-Object.defineProperties(window, {
-  currentPage: {
-    get() { return App.state.page; },
-    set(val) { App.state.page = val; },
-    configurable: true
-  },
-  currentGroup: {
-    get() { return App.state.group; },
-    set(val) { App.state.group = val; },
-    configurable: true
-  },
-  currentSearch: {
-    get() { return App.state.search; },
-    set(val) { App.state.search = val; },
-    configurable: true
-  },
-  isLoading: {
-    get() { return App.state.loading; },
-    set(val) { App.state.loading = val; },
-    configurable: true
-  },
-  hasMore: {
-    get() { return App.state.hasMore; },
-    set(val) { App.state.hasMore = val; },
-    configurable: true
-  },
-  totalPages: {
-    get() { return App.state.totalPages; },
-    set(val) { App.state.totalPages = val; },
-    configurable: true
-  },
-  allBlogs: {
-    get() { return App.state.blogs; },
-    set(val) { App.state.blogs = val; },
-    configurable: true
-  }
-});
+// ===== ✅ 已全部迁移到 App.state，不再需要向后兼容层 =====
+// 旧的 window.currentPage, window.currentSearch 等变量已废弃
+// 所有代码已统一使用 App.state.page, App.state.search 等
 
 console.log('[state.js] ✅ 统一状态管理已初始化');
 console.log('[state.js] 初始状态:', App.state);
+console.log('[state.js] ⚠️ 提醒: 旧的 window.currentPage 等变量已废弃，请使用 App.state.*');
