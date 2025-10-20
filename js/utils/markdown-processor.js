@@ -37,7 +37,8 @@ const MarkdownProcessor = {
           match.includes('.webp')) {
         return match;
       }
-      return `<a href="${match}" target="_blank" class="text-blue-600 hover:underline">${match}</a>`;
+      // ✅ 添加内联样式确保链接可点击
+      return `<a href="${match}" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: underline; cursor: pointer; word-break: break-all;">${match}</a>`;
     });
   },
 
