@@ -907,7 +907,7 @@ function startAutoRefresh() {
 
 // 无限滚动相关
 let scrollObserver;
-let isLoadingMore = false;
+// ✅ 已迁移到 App.state.loadingMore（不再使用局部变量）
 
 // 设置无限滚动
 window.setupInfiniteScroll = function() {
@@ -928,7 +928,7 @@ window.setupInfiniteScroll = function() {
   scrollObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting && App.state.hasMore && !isLoadingMore && !App.state.loading) {
+        if (entry.isIntersecting && App.state.hasMore && !App.state.loadingMore && !App.state.loading) {
           console.log('[InfiniteScroll] 触发加载更多');
           loadMoreBlogs();
         }
@@ -949,12 +949,12 @@ window.setupInfiniteScroll = function() {
 
 // 加载更多博客（用于无限滚动）
 async function loadMoreBlogs() {
-  if (isLoadingMore || !App.state.hasMore || App.state.loading) {
+  if (App.state.loadingMore || !App.state.hasMore || App.state.loading) {
     return;
   }
 
   console.log('[InfiniteScroll] 开始加载更多博客');
-  isLoadingMore = true;
+  App.state.loadingMore = true;
 
   // 显示加载指示器
   const loadingIndicator = document.getElementById('loadingIndicator');
@@ -972,7 +972,7 @@ async function loadMoreBlogs() {
     console.error('[InfiniteScroll] 加载更多失败:', error);
     App.state.hasMore = false;
   } finally {
-    isLoadingMore = false;
+    App.state.loadingMore = false;
 
     // 加载完成后隐藏指示器
     if (loadingIndicator) {

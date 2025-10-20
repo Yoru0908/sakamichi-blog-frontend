@@ -16,7 +16,9 @@
   
   <!-- 现有CSS文件 -->
   <link rel="stylesheet" href="css/main-styles.css">
+  <link rel="stylesheet" href="css/mobile.css">
   <link rel="stylesheet" href="css/transitions.css">
+  <link rel="stylesheet" href="css/dark-theme.css">
   
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -24,6 +26,15 @@
   <!-- 配置文件 -->
   <script src="js/config.js"></script>
   <script src="js/group-config.js"></script>
+
+  <!-- 主题切换模块 -->
+  <script src="js/theme-toggle.js"></script>
+
+  <!-- 简繁切换模块 -->
+  <script src="js/language-toggle.js"></script>
+
+  <!-- 移动端菜单 -->
+  <script src="js/mobile-menu.js"></script>
   
   <style>
     body {
@@ -96,7 +107,128 @@
   </style>
 </head>
 <body>
-  <div class="max-w-7xl mx-auto p-6">
+  <!-- Header -->
+  <header class="bg-white shadow-sm sticky top-0 z-50 border-b">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between" style="height: 56px;">
+        <!-- 左侧：标题 + 返回链接 -->
+        <div class="flex items-center gap-8">
+          <a href="index.html" class="text-xl font-bold whitespace-nowrap flex items-center gap-2 text-blue-600 hover:text-blue-800">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            坂道博客翻译
+          </a>
+
+          <!-- 统计页面标题 -->
+          <h1 class="text-lg font-medium text-gray-600">数据统计分析</h1>
+        </div>
+
+        <!-- 右侧：主题切换 + 简繁切换 -->
+        <div class="flex items-center gap-3">
+          <!-- PC端主题切换按钮 -->
+          <button id="themeToggleDesktop" class="theme-toggle-btn desktop-only" title="切换主题">
+            <svg class="theme-icon-light" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3"/>
+              <line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/>
+              <line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+            <svg class="theme-icon-dark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+
+          <!-- PC端简繁切换按钮 -->
+          <button id="langToggleDesktop" class="lang-toggle-btn desktop-only" title="切换到繁体中文">
+            <span class="lang-text">简</span>
+          </button>
+
+          <!-- 移动端汉堡菜单按钮 -->
+          <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 移动端侧边栏菜单 -->
+  <div class="mobile-overlay" onclick="toggleMobileMenu()"></div>
+  <div class="mobile-sidebar">
+    <div class="mobile-sidebar-header">
+      <h2>菜单</h2>
+      <button class="mobile-sidebar-close" onclick="toggleMobileMenu()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="mobile-sidebar-nav">
+      <div class="mobile-nav-item">
+        <a href="index.html" class="flex items-center gap-2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          返回主页
+        </a>
+      </div>
+      <div class="mobile-nav-item" data-group="all">
+        <a href="index.html#all">全部</a>
+      </div>
+      <div class="mobile-nav-item" data-group="nogizaka">
+        <a href="index.html#nogizaka">乃木坂46</a>
+      </div>
+      <div class="mobile-nav-item" data-group="sakurazaka">
+        <a href="index.html#sakurazaka">樱坂46</a>
+      </div>
+      <div class="mobile-nav-item" data-group="hinatazaka">
+        <a href="index.html#hinatazaka">日向坂46</a>
+      </div>
+    </nav>
+
+    <!-- 移动端主题切换 -->
+    <div class="mobile-theme-toggle">
+      <button id="themeToggleMobile" class="theme-toggle-btn-mobile">
+        <svg class="theme-icon-light" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg class="theme-icon-dark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <span class="theme-text">亮色模式</span>
+      </button>
+    </div>
+
+    <!-- 移动端简繁切换 -->
+    <div class="mobile-lang-toggle">
+      <button id="langToggleMobile" class="lang-toggle-btn-mobile">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h2m-1 0v6"/>
+        </svg>
+        <span class="lang-text">简体中文</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-8 max-w-7xl">
     <!-- 页面标题 -->
     <h1 class="text-4xl font-bold text-center mb-8" style="color: #1f2937;">
       博客统计分析
@@ -166,7 +298,7 @@
       </h2>
       <canvas id="memberChart"></canvas>
     </div>
-  </div>
+  </main>
 
   <script>
     // ✅ 使用真实API获取数据
@@ -296,18 +428,19 @@
     let currentGroup = 'nogizaka';
     let chart = null;
     
+    // ✅ 复用主应用的官方标准配置（group-config.js）
     const groupColors = {
       all: '#6b7280',
-      nogizaka: '#742581',
-      sakurazaka: '#F19DB5',
-      hinatazaka: '#7BC7E8'
+      nogizaka: window.GroupConfig?.getColor('nogizaka') || '#742581',
+      sakurazaka: window.GroupConfig?.getColor('sakurazaka') || '#F19DB5',
+      hinatazaka: window.GroupConfig?.getColor('hinatazaka') || '#7BC7E8'
     };
     
     const groupNames = {
       all: '全部团体',
-      nogizaka: '乃木坂46',
-      sakurazaka: '樱坂46',
-      hinatazaka: '日向坂46'
+      nogizaka: window.GroupConfig?.getDisplayName('nogizaka') || '乃木坂46',
+      sakurazaka: window.GroupConfig?.getDisplayName('sakurazaka') || '樱坂46',
+      hinatazaka: window.GroupConfig?.getDisplayName('hinatazaka') || '日向坂46'
     };
     
     // 更新图表
@@ -390,7 +523,7 @@
     
     // 从真实API加载数据
     async function loadRealData(group) {
-      const apiBase = window.API_BASE || 'https://api.sakamichi-tools.cn';
+      const apiBase = window.API_BASE_URL || window.API_BASE || 'https://api.sakamichi-tools.cn';
       
       // 处理group名称
       let groupDisplayName;

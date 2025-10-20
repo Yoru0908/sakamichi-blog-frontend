@@ -10,21 +10,21 @@ window.GroupConfig = {
       key: 'nogizaka',
       name: '乃木坂46',
       apiName: '乃木坂46',  // API使用的名称
-      color: '#a855f7',
+      color: '#742581',  // 官方紫色（乃木坂标准色）
       baseUrl: 'https://www.nogizaka46.com'
     },
     'sakurazaka': {
       key: 'sakurazaka',
       name: '樱坂46',
       apiName: '樱坂46',  // API使用的名称（简体）
-      color: '#f59e0b',
+      color: '#F19DB5',  // 官方粉色（樱坂标准色）
       baseUrl: 'https://sakurazaka46.com'
     },
     'hinatazaka': {
       key: 'hinatazaka',
       name: '日向坂46',
       apiName: '日向坂46',  // API使用的名称
-      color: '#3b82f6',
+      color: '#7BC7E8',  // 官方蓝色（日向坂标准色）
       baseUrl: 'https://www.hinatazaka46.com'
     }
   },
