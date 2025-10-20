@@ -31,7 +31,10 @@ window.App.state = {
   totalPages: 1,        // 总页数
   
   // 缓存
-  blogs: []             // 缓存的博客数据
+  blogs: [],            // 缓存的博客数据
+  
+  // 无限滚动
+  scrollObserver: null  // IntersectionObserver实例
 };
 
 // ===== 应用配置 =====

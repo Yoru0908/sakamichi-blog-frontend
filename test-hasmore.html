@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>测试hasMore逻辑</title>
+</head>
+<body>
+  <h1>测试各团体的hasMore返回值</h1>
+  <button onclick="testNogizaka()">测试乃木坂</button>
+  <button onclick="testSakurazaka()">测试樱坂</button>
+  <button onclick="testHinatazaka()">测试日向坂</button>
+  <pre id="result"></pre>
+
+  <script>
+    const API_BASE = 'https://api.sakamichi-tools.cn';
+
+    async function testGroup(group, name) {
+      const result = document.getElementById('result');
+      result.textContent += `\n\n=== 测试 ${name} ===\n`;
+      
+      try {
+        const url = `${API_BASE}/api/blogs?group=${group}&page=1&limit=32`;
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        result.textContent += `总博客数: ${data.total}\n`;
+        result.textContent += `返回数量: ${data.blogs?.length}\n`;
+        result.textContent += `pagination对象: ${JSON.stringify(data.pagination, null, 2)}\n`;
+        result.textContent += `hasMore类型: ${typeof data.pagination?.hasMore}\n`;
+        result.textContent += `hasMore值: ${data.pagination?.hasMore}\n`;
+      } catch (error) {
+        result.textContent += `错误: ${error.message}\n`;
+      }
+    }
+
+    function testNogizaka() {
+      testGroup('nogizaka', '乃木坂46');
+    }
+
+    function testSakurazaka() {
+      testGroup('sakurazaka', '樱坂46');
+    }
+
+    function testHinatazaka() {
+      testGroup('hinatazaka', '日向坂46');
+    }
+  </script>
+</body>
+</html>

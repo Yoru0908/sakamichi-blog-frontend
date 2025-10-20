@@ -3,7 +3,12 @@
  * 统一管理博客列表的分页逻辑
  */
 
-window.Pagination = {
+// 创建 App.pagination 命名空间
+if (typeof window.App === 'undefined') {
+  window.App = {};
+}
+
+App.pagination = {
   totalBlogs: 0,
   blogsPerPage: window.PAGE_SIZE,
   
@@ -217,3 +222,8 @@ window.Pagination = {
     }
   }
 };
+
+// 向后兼容层（过渡期）
+window.Pagination = App.pagination;
+
+console.log('[pagination.js] ✅ 分页组件已迁移到 App.pagination');

@@ -91,11 +91,18 @@ window.Router = {
     this.currentView = 'group';
     App.state.member = '';  // 清除成员状态
 
+    // 🔧 路由切换时滚动到顶部
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
     // 设置统一状态
     App.state.group = group;
     App.state.page = 1;  // 重置为第1页
     App.state.search = '';
-    App.state.hasMore = true;   // 重置无限滚动状态
+    // 🔧 修复：只有'all'使用无限滚动，具体团体使用翻页
+    App.state.hasMore = (group === 'all');
     App.state.blogs = [];    // 清空缓存的博客
     
     // 🎯 SEO 更新（模块化）
@@ -108,8 +115,8 @@ window.Router = {
     }
 
     // 重置分页
-    if (window.Pagination) {
-      window.Pagination.reset();
+    if (App.pagination) {
+      App.pagination.reset();
     }
     
     // ✅ 重置成员筛选器UI

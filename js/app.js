@@ -156,8 +156,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // 初始化 UI 模块（核心系统就绪后才初始化）
     console.log('[App] 开始初始化 UI 模块...');
-    if (window.Pagination) {
-      window.Pagination.init();
+    if (App.pagination) {
+      App.pagination.init();
       console.log('[App] 分页组件初始化完成');
     }
     if (window.MemberPage) {
@@ -361,8 +361,8 @@ window.loadBlogs = async function(append = false) {
       // 更新分页 - 只在非'all'页面显示分页
       if (App.state.group === 'all') {
         // #all 页面使用无限滚动，隐藏分页
-        if (window.Pagination) {
-          window.Pagination.hide();
+        if (App.pagination) {
+          App.pagination.hide();
         }
 
         // 设置无限滚动状态
@@ -396,8 +396,19 @@ window.loadBlogs = async function(append = false) {
         }
       } else {
         // 其他页面使用分页
-        if (window.Pagination) {
-          window.Pagination.update(uniqueBlogs.length, totalCount);
+        // 🔧 清理无限滚动Observer
+        if (App.state.scrollObserver) {
+          App.state.scrollObserver.disconnect();
+          App.state.scrollObserver = null;
+        }
+        // 隐藏哨兵元素
+        const sentinel = document.getElementById('scrollSentinel');
+        if (sentinel) {
+          sentinel.classList.add('hidden');
+        }
+        
+        if (App.pagination) {
+          App.pagination.update(uniqueBlogs.length, totalCount);
         }
       }
 
@@ -804,15 +815,15 @@ function updateLoadMoreButton() {
 
 // 更新分页组件（已移至 Pagination 模块）
 function updatePagination() {
-  if (window.Pagination) {
-    window.Pagination.render();
+  if (App.pagination) {
+    App.pagination.render();
   }
 }
 
 // 跳转到指定页（已移至 Pagination 模块）
 function goToPage(page) {
-  if (window.Pagination) {
-    window.Pagination.goToPage(page);
+  if (App.pagination) {
+    App.pagination.goToPage(page);
   }
 }
 
@@ -906,17 +917,16 @@ function startAutoRefresh() {
   }, 5 * 60 * 1000);
 }
 
-// 无限滚动相关
-let scrollObserver;
-// ✅ 已迁移到 App.state.loadingMore（不再使用局部变量）
+// ✅ scrollObserver 已迁移到 App.state.scrollObserver
+// ✅ loadingMore 已迁移到 App.state.loadingMore
 
 // 设置无限滚动
 window.setupInfiniteScroll = function() {
   console.log('[InfiniteScroll] 设置无限滚动');
 
   // 清理旧的观察器
-  if (scrollObserver) {
-    scrollObserver.disconnect();
+  if (App.state.scrollObserver) {
+    App.state.scrollObserver.disconnect();
   }
 
   // 只在 #all 页面启用无限滚动
@@ -926,7 +936,7 @@ window.setupInfiniteScroll = function() {
   }
 
   // 创建观察器来检测容器底部
-  scrollObserver = new IntersectionObserver(
+  App.state.scrollObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting && App.state.hasMore && !App.state.loadingMore && !App.state.loading) {
@@ -943,7 +953,7 @@ window.setupInfiniteScroll = function() {
   // 观察哨兵元素
   const sentinel = document.getElementById('scrollSentinel');
   if (sentinel) {
-    scrollObserver.observe(sentinel);
+    App.state.scrollObserver.observe(sentinel);
     console.log('[InfiniteScroll] 已设置哨兵观察器');
   }
 };
