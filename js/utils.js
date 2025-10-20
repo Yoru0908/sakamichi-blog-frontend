@@ -32,116 +32,78 @@ function copyToClipboard(text) {
   document.body.removeChild(textarea);
 }
 
-// 格式化日期
+// 格式化日期 - 统一博客日期格式
+// 输入: "2025/10/19", "2025.10.19 22:45", "2025-10-19", "2025.10.19 22:45:00"
+// 输出: "2025.10.19" 或 "2025.10.19 22:45"（保留时间，去掉秒）
 function formatDate(dateStr) {
-  if (!dateStr) return '';
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('zh-CN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  });
-}
+  if (!dateStr) return '未知日期';
 
-// 标准化博客日期时间格式（用于显示）
-// 输入: "2025/10/19", "2025.10.19 22:45", "2025-10-19T22:45:00Z"
-// 输出: "2025.10.19 22:45" 或 "2025.10.19"（无时间时）
-function standardizeBlogDate(dateStr) {
-  if (!dateStr) return '';
-  
-  // 统一分隔符：2025/10/19 或 2025-10-19 → 2025.10.19
-  let normalized = dateStr
-    .replace(/\//g, '.')  // 斜杠 → 点
-    .replace(/-/g, '.');  // 横杠 → 点
-  
-  // 提取日期和时间部分
-  // 支持格式: "2025.10.19 22:45", "2025.10.19T22:45:00Z", "2025.10.19"
-  const match = normalized.match(/(\d{4}\.\d{1,2}\.\d{1,2})[\sT]?(\d{1,2}:\d{2})?/);
-  
-  if (!match) {
-    // 如果无法解析，返回原值（降级处理）
-    console.warn('[standardizeBlogDate] 无法解析日期:', dateStr);
-    return dateStr;
+  try {
+    // 统一分隔符
+    let normalized = dateStr.replace(/[\/\-]/g, '.');
+    
+    // 分离日期和时间部分
+    const parts = normalized.split(' ');
+    const datePart = parts[0];
+    let timePart = parts.slice(1).join(' ');
+    
+    // 处理时间部分：去掉秒数（如果有）
+    if (timePart && timePart.includes(':')) {
+      // 分割时间：12:05:00 → ['12', '05', '00']
+      const timeParts = timePart.split(':');
+      if (timeParts.length >= 2) {
+        // 只保留小时和分钟：12:05
+        timePart = `${timeParts[0]}:${timeParts[1]}`;
+      }
+    }
+    
+    // 处理日期部分：补零
+    const [year, month, day] = datePart.split('.');
+    if (year && month && day) {
+      const formatted = `${year}.${month.padStart(2, '0')}.${day.padStart(2, '0')}`;
+      return timePart ? `${formatted} ${timePart}` : formatted;
+    }
+    
+    return normalized;
+  } catch (e) {
+    console.warn('[formatDate] 格式化失败:', dateStr, e);
+    return dateStr; // 降级返回原值
   }
-  
-  const datePart = match[1];  // 2025.10.19
-  const timePart = match[2];   // 22:45 或 undefined
-  
-  // 格式化日期部分，确保月日为两位数
-  const [year, month, day] = datePart.split('.');
-  const formattedDate = `${year}.${month.padStart(2, '0')}.${day.padStart(2, '0')}`;
-  
-  // 如果有时间部分，拼接；否则只返回日期
-  return timePart ? `${formattedDate} ${timePart}` : formattedDate;
 }
 
-// 解析日期为Date对象（用于比较、计算）
-// 输入: "2025/10/19", "2025.10.19", "2025-10-19"
-// 输出: Date对象
+// 兼容旧名称（向后兼容）
+function standardizeBlogDate(dateStr) {
+  return formatDate(dateStr);
+}
+
+// 以下函数保留以兼容现有代码，但推荐使用formatDate
 function parseBlogDate(dateStr) {
   if (!dateStr) return null;
-  
-  // 统一分隔符为横杠（Date构造函数兼容的格式）
-  const normalized = dateStr
-    .replace(/\//g, '-')
-    .replace(/\./g, '-');
-  
-  // 提取日期部分（去掉时间）
-  const datePart = normalized.split(/[\sT]/)[0];
-  
-  // 补零：2025-9-5 → 2025-09-05
-  const parts = datePart.split('-');
-  if (parts.length === 3) {
-    const [year, month, day] = parts;
-    const standardDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-    return new Date(standardDate);
+  try {
+    const normalized = dateStr.replace(/[\/\.]/g, '-').split(/[\sT]/)[0];
+    return new Date(normalized);
+  } catch (e) {
+    return null;
   }
-  
-  return new Date(dateStr);
 }
 
-// 提取年月字符串（用于日历）
-// 输入: "2025/10/19 22:45" 或 "2025.10.19"
-// 输出: { year: 2025, month: 10, day: 19 }
 function extractDateParts(dateStr) {
   if (!dateStr) return null;
-  
-  // 统一分隔符
-  const normalized = dateStr
-    .replace(/\//g, '.')
-    .replace(/-/g, '.');
-  
-  // 提取日期部分
-  const datePart = normalized.split(/[\sT]/)[0];
-  const parts = datePart.split('.');
-  
+  const normalized = dateStr.replace(/[\/\-]/g, '.');
+  const parts = normalized.split(/[\sT]/)[0].split('.');
   if (parts.length >= 3) {
-    return {
-      year: parseInt(parts[0]),
-      month: parseInt(parts[1]),
-      day: parseInt(parts[2])
-    };
+    return { year: parseInt(parts[0]), month: parseInt(parts[1]), day: parseInt(parts[2]) };
   }
-  
   return null;
 }
 
-// 检查日期是否匹配（用于日历高亮）
-// 支持任意格式的日期字符串比较
-function isSameDate(dateStr1, dateStr2) {
-  if (!dateStr1 || !dateStr2) return false;
-  
-  const parts1 = extractDateParts(dateStr1);
-  const parts2 = extractDateParts(dateStr2);
-  
-  if (!parts1 || !parts2) return false;
-  
-  return parts1.year === parts2.year &&
-         parts1.month === parts2.month &&
-         parts1.day === parts2.day;
+function isSameDate(date1, date2) {
+  if (!date1 || !date2) return false;
+  const d1 = formatDate(date1).split(' ')[0];
+  const d2 = formatDate(date2).split(' ')[0];
+  return d1 === d2;
 }
 
-// 检查日期是否在某年某月（用于日历筛选）
 function isInMonth(dateStr, year, month) {
   const parts = extractDateParts(dateStr);
   return parts && parts.year === year && parts.month === month;
@@ -226,6 +188,23 @@ function extractImageUrls(content) {
   return urls;
 }
 
+// ✨ 数据源处理：统一格式化博客数据
+// 在所有数据获取点调用，避免重复格式化
+function processBlogData(blog) {
+  if (!blog) return blog;
+  
+  return {
+    ...blog,
+    formatted_date: formatDate(blog.publish_date)
+  };
+}
+
+// 批量处理博客数据
+function processBlogsData(blogs) {
+  if (!Array.isArray(blogs)) return blogs;
+  return blogs.map(processBlogData);
+}
+
 // 导出给全局使用
 window.showToast = showToast;
 window.copyToClipboard = copyToClipboard;
@@ -239,3 +218,5 @@ window.throttle = throttle;
 window.debounce = debounce;
 window.detectContentFormat = detectContentFormat;
 window.extractImageUrls = extractImageUrls;
+window.processBlogData = processBlogData;
+window.processBlogsData = processBlogsData;

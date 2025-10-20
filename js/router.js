@@ -240,9 +240,13 @@ window.Router = {
         const data = await response.json();
 
         if (data.success && data.blog) {
+          // ✨ 数据源处理：统一格式化日期
+          const processedBlog = window.processBlogData 
+            ? window.processBlogData(data.blog) 
+            : data.blog;
           console.log('[Router] 调用showBlogDetail，传递博客数据避免重复请求');
           // 传递 blogData 参数，避免 loadBlogContent 重复请求
-          window.showBlogDetail(data.blog, false, data.blog);
+          window.showBlogDetail(processedBlog, false, processedBlog);
         } else {
           console.error('[Router] 博客不存在:', blogId);
           // 返回主页

@@ -217,13 +217,17 @@ window.BlogDetailSidebar = {
       const data = await response.json();
       
       if (data.success && data.blogs) {
-        this.memberBlogs = data.blogs;
+        // ✨ 数据源处理：统一格式化日期
+        const processedBlogs = window.processBlogsData 
+          ? window.processBlogsData(data.blogs) 
+          : data.blogs;
+        this.memberBlogs = processedBlogs;
 
         // 渲染NEW ENTRY
-        this.renderNewEntries(data.blogs.slice(0, 5));
+        this.renderNewEntries(processedBlogs.slice(0, 5));
 
         // 渲染日历
-        this.renderCalendar(data.blogs);
+        this.renderCalendar(processedBlogs);
 
         // 设置 View More 链接
         this.setupViewMoreLink(blog);
@@ -306,7 +310,7 @@ window.BlogDetailSidebar = {
         <a href="#blog/${blog.id}" onclick="event.preventDefault(); if(window.Router) Router.navigate('#blog/${blog.id}'); return false;" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px; cursor: pointer;">
           <div style="width: 80px; height: 80px; border-radius: 5px; overflow: hidden; flex-shrink: 0; ${thumbnailStyle}"></div>
           <div style="flex: 1; min-width: 0;">
-            <div style="font-size: 10px; color: #999; margin-bottom: 4px;">${window.standardizeBlogDate ? window.standardizeBlogDate(blog.publish_date) : (blog.publish_date || '-')}</div>
+            <div style="font-size: 10px; color: #999; margin-bottom: 4px;">${blog.formatted_date || blog.publish_date || '-'}</div>
             <div style="font-size: 12px; color: #333; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
               ${blog.title || '无标题'}
             </div>

@@ -579,17 +579,21 @@ window.MemberPage = {
       }
       
       if (data.success && data.blogs && data.blogs.length > 0) {
+        // ✨ 数据源处理：统一格式化日期
+        const processedBlogs = window.processBlogsData 
+          ? window.processBlogsData(data.blogs) 
+          : data.blogs;
+        
         // 更新博客数量
-        const blogCount = data.count || data.blogs.length;
+        const blogCount = data.count || processedBlogs.length;
         // 博客数量不再显示在页面上
         
         // 更新最后更新时间（如果元素存在）
-        if (data.blogs[0]) {
+        if (processedBlogs[0]) {
           const lastUpdateEl = document.getElementById('memberLastUpdate');
           if (lastUpdateEl) {
-            const formattedDate = data.blogs[0].publish_date
-              ? (window.standardizeBlogDate ? window.standardizeBlogDate(data.blogs[0].publish_date) : data.blogs[0].publish_date)
-              : '-';
+            // ✅ 现在可以直接使用formatted_date
+            const formattedDate = processedBlogs[0].formatted_date || processedBlogs[0].publish_date || '-';
             lastUpdateEl.textContent = formattedDate;
           }
         }
@@ -598,7 +602,7 @@ window.MemberPage = {
         const container = document.getElementById('memberBlogsContainer');
         console.log('[MemberPage] 容器找到:', !!container);
         console.log('[MemberPage] renderBlogItem存在:', !!window.renderBlogItem);
-        console.log('[MemberPage] 博客数量:', data.blogs.length);
+        console.log('[MemberPage] 博客数量:', processedBlogs.length);
         
         // ✅ 清空容器，避免重复显示
         if (container) {
@@ -606,7 +610,7 @@ window.MemberPage = {
         }
         
         const cards = [];
-        data.blogs.forEach((blog, index) => {
+        processedBlogs.forEach((blog, index) => {
           // 使用主页面的博客卡片渲染
           if (window.renderBlogItem) {
             const card = window.renderBlogItem(blog);
@@ -642,7 +646,7 @@ window.MemberPage = {
         console.log('[MemberPage] 容器父元素:', container.parentElement);
         
         // 更新日历
-        this.updateCalendar(data.blogs);
+        this.updateCalendar(processedBlogs);
         
         // 更新分页
         if (data.count > pageSize) {
@@ -689,7 +693,7 @@ window.MemberPage = {
       <a href="#blog/${blog.id}" class="blog-list-link">
         <h3 class="blog-list-title">${blog.title || '无标题'}</h3>
         <div class="blog-list-meta">
-          <span class="blog-list-date">${window.standardizeBlogDate ? window.standardizeBlogDate(blog.publish_date) : (blog.publish_date || '')}</span>
+          <span class="blog-list-date">${blog.formatted_date || blog.publish_date || ''}</span>
         </div>
         ${excerpt ? `<p class="blog-list-excerpt">${excerpt}</p>` : ''}
       </a>
@@ -884,9 +888,9 @@ window.MemberPage = {
     if (this.memberBlogs) {
       this.memberBlogs.forEach(blog => {
         if (blog.publish_date && window.isInMonth && window.isInMonth(blog.publish_date, year, month)) {
-          // 标准化日期后添加
-          const standardized = window.standardizeBlogDate ? window.standardizeBlogDate(blog.publish_date) : blog.publish_date;
-          dates.add(standardized.split(' ')[0]); // 只保留日期部分
+          // ✅ 阶段3：直接使用预处理的 formatted_date
+          const dateStr = blog.formatted_date || blog.publish_date;
+          dates.add(dateStr.split(' ')[0]); // 只保留日期部分
         }
       });
     }

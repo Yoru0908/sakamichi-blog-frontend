@@ -286,7 +286,10 @@ window.loadBlogs = async function(append = false) {
     console.log('[loadBlogs] 响应数据:', data);
 
     if (data.success && data.blogs) {
-      const blogs = data.blogs;
+      // ✨ 数据源处理：统一格式化日期
+      const blogs = window.processBlogsData 
+        ? window.processBlogsData(data.blogs) 
+        : data.blogs;
       console.log(`[loadBlogs] 成功加载 ${blogs.length} 篇博客`);
 
       // 去重处理
@@ -457,28 +460,8 @@ function getTranslatedContentPreview(blog) {
   return '暂无翻译内容';
 }
 
-// 格式化日期
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffTime = now - date;
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-  if (diffDays === 0) {
-    const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
-    if (diffHours === 0) {
-      const diffMinutes = Math.floor(diffTime / (1000 * 60));
-      return diffMinutes <= 1 ? '刚刚' : `${diffMinutes}分钟前`;
-    }
-    return `${diffHours}小时前`;
-  } else if (diffDays === 1) {
-    return '昨天';
-  } else if (diffDays < 7) {
-    return `${diffDays}天前`;
-  } else {
-    return date.toLocaleDateString('zh-CN');
-  }
-}
+// ❌ 删除旧的formatDate函数（已被utils.js中的新函数替代）
+// 旧函数显示相对时间（"7分钟前"），新函数显示完整日期（"2025.10.19"）
 
 // 筛选功能
 function filterByGroup(group) {

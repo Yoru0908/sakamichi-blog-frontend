@@ -398,9 +398,8 @@ window.MemberDetail = {
   renderBlogDetail(blog, memberName, groupKey) {
     // 更新标题和元信息
     document.getElementById('detailBlogTitle').textContent = blog.title || '无标题';
-    const formattedDate = blog.publish_date 
-      ? (window.standardizeBlogDate ? window.standardizeBlogDate(blog.publish_date) : blog.publish_date)
-      : '-';
+    // ✅ 阶段3：直接使用预处理的 formatted_date
+    const formattedDate = blog.formatted_date || blog.publish_date || '-';
     document.getElementById('detailBlogDate').textContent = formattedDate;
     document.getElementById('detailBlogMember').textContent = memberName;
     
@@ -562,7 +561,7 @@ window.MemberDetail = {
     entriesEl.innerHTML = recentBlogs.map(blog => `
       <li class="recent-entry">
         <a href="#blog/${blog.id}" onclick="event.preventDefault(); MemberDetail.switchToBlog(${JSON.stringify(blog).replace(/"/g, '&quot;')});" style="text-decoration: none;">
-          <div class="recent-entry-date">${window.standardizeBlogDate ? window.standardizeBlogDate(blog.publish_date) : (blog.publish_date || '-')}</div>
+          <div class="recent-entry-date">${blog.formatted_date || blog.publish_date || '-'}</div>
           <div class="recent-entry-title">${blog.title || '无标题'}</div>
         </a>
       </li>

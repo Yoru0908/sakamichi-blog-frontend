@@ -893,16 +893,14 @@
         }
       }
       
-      // 标准化日期格式：统一为 2025.10.19 HH:MM
-      const formattedDate = blog.publish_date 
-        ? (window.standardizeBlogDate ? window.standardizeBlogDate(blog.publish_date) : blog.publish_date)
-        : '未知日期';
+      // ✅ 阶段3：直接使用预处理的 formatted_date
+      const formattedDate = blog.formatted_date || blog.publish_date || '未知日期';
       
       item.innerHTML = `
         <div class="blog-card-image" style="${imageStyle}"></div>
         <div class="blog-card-content">
           <div class="member-name mb-2" lang="ja">${blog.member || '未知成员'}</div>
-          <div class="blog-meta mb-2">${formattedDate}·${blog.group_name || ''}</div>
+          <div class="blog-meta mb-2">${formattedDate} ${blog.group_name || ''}</div>
           <h3 class="blog-title" lang="ja">${blog.title || '无标题'}</h3>
         </div>
       `;
@@ -959,7 +957,7 @@
             <div class="flex items-center gap-4 text-gray-600">
               <span class="font-medium">${blog.member}</span>
               <span>·</span>
-              <span>${window.standardizeBlogDate ? window.standardizeBlogDate(blog.publish_date) : blog.publish_date}</span>
+              <span>${blog.formatted_date || blog.publish_date || '未知日期'}</span>
               <span>·</span>
               <span class="text-sm">${window.GroupConfig?.getDisplayName(blog.group_name) || blog.group_name}</span>
             </div>
@@ -1325,19 +1323,23 @@
         const data = await response.json();
         
         if (data.success && data.blog) {
+          // ✨ 数据源处理：统一格式化日期
+          const processedBlog = window.processBlogData 
+            ? window.processBlogData(data.blog) 
+            : data.blog;
           // 存储当前博客数据供下载和分享使用
-          App.view.currentBlog = data.blog;
-          console.log('Loaded blog data:', data.blog);
+          App.view.currentBlog = processedBlog;
+          console.log('Loaded blog data:', processedBlog);
           
           // 更新原文链接 - 修复URL格式
           const originalLink = document.querySelector('.more-btn');
           if (originalLink) {
-            if (data.blog.original_url) {
-              originalLink.href = data.blog.original_url;
-              console.log('设置原文链接:', data.blog.original_url);
+            if (processedBlog.original_url) {
+              originalLink.href = processedBlog.original_url;
+              console.log('设置原文链接:', processedBlog.original_url);
             } else {
               // 如果没有original_url，根据ID和团体构建URL
-              const blogId = data.blog.id;
+              const blogId = processedBlog.id;
               let baseUrl = '';
               
               if (blogId.includes('nogizaka')) {
