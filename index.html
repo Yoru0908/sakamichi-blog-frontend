@@ -1041,10 +1041,8 @@
       if (blog.translated_content) {
         const imageMatch = blog.translated_content.match(/!\[.*?\]\((https?:\/\/[^\)]+)\)/);
         if (imageMatch && imageMatch[1]) {
-          // 🚀 使用ImageKit压缩图片 (250KB → 25KB)
-          const originalUrl = imageMatch[1];
-          const thumbnailUrl = `https://ik.imagekit.io/demo/tr:w-400,q-75/${originalUrl}`;
-          imageStyle = `background-image: url('${thumbnailUrl}'); background-size: cover; background-position: center;`;
+          // 暂时使用原图（CDN方案待优化）
+          imageStyle = `background-image: url('${imageMatch[1]}'); background-size: cover; background-position: center;`;
         }
       }
       
