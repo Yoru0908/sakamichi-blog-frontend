@@ -1037,12 +1037,12 @@
       };
       
       // 提取第一张图片（从translated_content或使用默认渐变）
-      let imageStyle = 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);';
+      let imageHtml = '';
       if (blog.translated_content) {
         const imageMatch = blog.translated_content.match(/!\[.*?\]\((https?:\/\/[^\)]+)\)/);
         if (imageMatch && imageMatch[1]) {
-          // 暂时使用原图（CDN方案待优化）
-          imageStyle = `background-image: url('${imageMatch[1]}'); background-size: cover; background-position: center;`;
+          // 使用<img>标签 + 浏览器原生懒加载
+          imageHtml = `<img src="${imageMatch[1]}" alt="${blog.title}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">`;
         }
       }
       
@@ -1050,7 +1050,9 @@
       const formattedDate = blog.formatted_date || blog.publish_date || '未知日期';
       
       item.innerHTML = `
-        <div class="blog-card-image" style="${imageStyle}"></div>
+        <div class="blog-card-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+          ${imageHtml}
+        </div>
         <div class="blog-card-content">
           <div class="member-name mb-2" lang="ja">${blog.member || '未知成员'}</div>
           <div class="blog-meta mb-2">${formattedDate} ${blog.group_name || ''}</div>
