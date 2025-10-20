@@ -1,0 +1,26 @@
+{
+  "name": "sakamichi-blog-frontend",
+  "version": "1.0.0",
+  "description": "坂道博客翻译系统 - 前端",
+  "scripts": {
+    "serve": "python3 -m http.server 8000",
+    "lighthouse": "npm run lighthouse:mobile && npm run lighthouse:desktop",
+    "lighthouse:mobile": "lighthouse http://localhost:8000 --screenEmulation.mobile --view",
+    "lighthouse:desktop": "lighthouse http://localhost:8000 --preset=desktop --view",
+    "lighthouse:full": "./性能测试/lighthouse-compare.sh http://localhost:8000",
+    "lighthouse:prod": "./性能测试/lighthouse-compare.sh https://blog.sakamichi-tools.cn",
+    "test:perf": "lighthouse http://localhost:8000 --only-categories=performance --view",
+    "test:seo": "lighthouse http://localhost:8000 --only-categories=seo --view",
+    "test:a11y": "lighthouse http://localhost:8000 --only-categories=accessibility --view"
+  },
+  "keywords": [
+    "sakamichi",
+    "blog",
+    "translation"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "lighthouse": "^11.0.0"
+  }
+}

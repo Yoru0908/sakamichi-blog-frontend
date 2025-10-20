@@ -68,7 +68,14 @@ function renderStructuredContent(content, images = []) {
       // 如果提供了图片数组，使用对应的URL
       if (images && images[imageNum - 1]) {
         const imageUrl = images[imageNum - 1];
-        result.push(`<img src="${imageUrl}" alt="图片${imageNum}" class="w-full my-4 rounded-lg" loading="lazy" />`);
+        
+        // 🚀 性能优化：首屏图片（前8张）使用 eager loading
+        // 前8个博客卡片在首屏立即显示，必须立即加载图片
+        const loadingStrategy = imageNum <= 8 
+          ? 'loading="eager" fetchpriority="high"'  // 首屏8张图片立即加载
+          : 'loading="lazy"';  // 其他图片懒加载
+        
+        result.push(`<img src="${imageUrl}" alt="图片${imageNum}" class="w-full my-4 rounded-lg" ${loadingStrategy} />`);
       } else {
         // 否则使用占位符
         result.push(`<!-- Image ${imageNum} placeholder -->`);

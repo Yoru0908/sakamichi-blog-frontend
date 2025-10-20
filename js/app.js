@@ -442,9 +442,9 @@ function displayBlogs(blogs) {
   container.innerHTML = '';
 
   const cards = [];
-  blogs.forEach(blog => {
-    // 使用官网卡片样式
-    const blogCard = window.renderBlogItem(blog);
+  blogs.forEach((blog, index) => {
+    // 使用官网卡片样式 + Cloudinary优化
+    const blogCard = window.renderBlogItem(blog, index);
     container.appendChild(blogCard);
     cards.push(blogCard);
   });
@@ -458,11 +458,12 @@ function displayBlogs(blogs) {
 // 追加博客
 function appendBlogs(blogs) {
   const container = document.getElementById('blogsContainer');
+  const currentCount = container.children.length;
 
   const cards = [];
-  blogs.forEach(blog => {
-    // 使用官网卡片样式
-    const blogCard = window.renderBlogItem(blog);
+  blogs.forEach((blog, index) => {
+    // 使用官网卡片样式 + Cloudinary优化
+    const blogCard = window.renderBlogItem(blog, currentCount + index);
     container.appendChild(blogCard);
     cards.push(blogCard);
   });
@@ -595,8 +596,8 @@ function displaySearchResults(results, query) {
   container.appendChild(searchHeader);
 
   // 显示搜索结果
-  results.forEach(blog => {
-    const blogCard = window.renderBlogItem(blog);
+  results.forEach((blog, index) => {
+    const blogCard = window.renderBlogItem(blog, index);
     blogCard.classList.add('ring-2', 'ring-blue-200'); // 高亮搜索结果
     container.appendChild(blogCard);
   });
@@ -619,8 +620,8 @@ function showSearchResults(results) {
     return;
   }
 
-  results.forEach(blog => {
-    const blogCard = window.renderBlogItem(blog);
+  results.forEach((blog, index) => {
+    const blogCard = window.renderBlogItem(blog, index);
     container.appendChild(blogCard);
   });
 }

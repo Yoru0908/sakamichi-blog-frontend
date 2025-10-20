@@ -11,7 +11,7 @@
 }
 
 body {
-  font-family: "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN W3", "Hiragino Sans", "MS PGothic", "メイリオ", Meiryo, "Yu Gothic", YuGothic, -apple-system, BlinkMacSystemFont, "Noto Sans JP", "Noto Sans SC", "Segoe UI", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Noto Sans SC", "Noto Sans JP", "Microsoft YaHei UI", "Yu Gothic UI", "Microsoft YaHei", "Yu Gothic", sans-serif;
   background-color: #fafafa;
   color: #333;
   line-height: 1.6;

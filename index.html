@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="坂道博客翻译 - 乃木坂46、樱坂46、日向坂46成员博客中文翻译，每日更新，提供双语对照阅读">
   <title>坂道博客翻译 - 乃木坂46/樱坂46/日向坂46博客中文翻译</title>
   
   <!-- ✅ 网站图标 (静态资源，保留在 HTML) -->
@@ -18,61 +19,56 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3218605960303034"
      crossorigin="anonymous"></script>
   
-  <!-- DaisyUI + Tailwind CSS -->
+  <!-- DaisyUI (已包含 Tailwind CSS 功能) -->
   <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- 全局配置（必须最先加载） -->
   <script src="js/config.js"></script>
   
   <!-- 核心配置模块 -->
-  <script src="js/group-config.js"></script>
+  <script src="js/group-config.js" defer></script>
   
   <!-- 🆕 成员数据API -->
   <script type="module" src="js/members-api.js"></script>
   <!-- ⚠️ 保留作为回退 -->
-  <script src="js/members-data.js"></script>
+  <script src="js/members-data.js" defer></script>
 
   <!-- 结构化内容渲染器 -->
-  <script src="js/structured-renderer.js"></script>
+  <script src="js/structured-renderer.js" defer></script>
 
-  <!-- 图片下载库 -->
-  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  <!-- 图片下载库 - 🚀 defer 延迟加载 -->
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js" defer></script>
   
-  <!-- OpenCC 简繁转换库 -->
-  <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>
+  <!-- OpenCC 简繁转换库 - 🚀 延迟加载 (539KB) -->
+  <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js" defer></script>
   
   <!-- 主题切换模块 -->
-  <script src="js/theme-toggle.js"></script>
+  <script src="js/theme-toggle.js" defer></script>
   
   <!-- 简繁切换模块 -->
-  <script src="js/language-toggle.js"></script>
+  <script src="js/language-toggle.js" defer></script>
   
   <!-- 核心功能模块 -->
-  <script src="js/pagination.js"></script>
-  <script src="js/router.js"></script>
-  <script src="js/scroll-animations.js"></script>
+  <script src="js/pagination.js" defer></script>
+  <script src="js/router.js" defer></script>
+  <script src="js/scroll-animations.js" defer></script>
   
   <!-- 成员页面模块 -->
-  <script src="js/member-default-images.js"></script>
-  <script src="js/member-page.js"></script>
-  <script src="js/member-detail.js"></script>
-  <script src="js/blog-detail-sidebar.js"></script>
+  <script src="js/member-default-images.js" defer></script>
+  <script src="js/member-page.js" defer></script>
+  <script src="js/member-detail.js" defer></script>
+  <script src="js/blog-detail-sidebar.js" defer></script>
   
-  <!-- CSS模块 -->
-  <link rel="stylesheet" href="css/main-styles.css">
-  <link rel="stylesheet" href="css/mobile.css">
-  <link rel="stylesheet" href="css/transitions.css">
-  <link rel="stylesheet" href="css/calendar-component.css">
-  <link rel="stylesheet" href="css/dark-theme.css">
-  <!-- 双语博客样式 -->
-  <link rel="stylesheet" href="css/bilingual.css">
+  <!-- 🚀 CSS文件 - 使用异步加载优化首屏性能 -->
+  <link rel="preload" href="css/main-styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="css/main-styles.css"></noscript>
+  
+  <link rel="stylesheet" href="css/mobile.css" media="(max-width: 768px)">
+  <link rel="preload" href="css/transitions.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="css/calendar-component.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="css/dark-theme.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="css/bilingual.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   
   <style>
     /* 最小必要样式 */
@@ -806,8 +802,8 @@
       }
       
       // 使用已有的 renderBlogItem 渲染博客卡片
-      blogs.forEach(blog => {
-        const blogCard = window.renderBlogItem(blog);
+      blogs.forEach((blog, index) => {
+        const blogCard = window.renderBlogItem(blog, index);
         container.appendChild(blogCard);
       });
       
@@ -1041,7 +1037,7 @@
     
     // 渲染博客项 - 官网卡片样式（纵向，带图片）
     // ✅ 保留此函数 - 用户选择使用此样式
-    App.ui.renderBlogItem = function(blog) {
+    App.ui.renderBlogItem = function(blog, index = 999) {
       const item = document.createElement('a');
       item.className = 'blog-card';
       item.href = `#blog/${blog.id}`;
@@ -1058,8 +1054,14 @@
       if (blog.translated_content) {
         const imageMatch = blog.translated_content.match(/!\[.*?\]\((https?:\/\/[^\)]+)\)/);
         if (imageMatch && imageMatch[1]) {
-          // 使用<img>标签 + 浏览器原生懒加载 + 绝对定位
-          imageHtml = `<img src="${imageMatch[1]}" alt="${blog.title}" loading="lazy" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">`;
+          // 🚀 Cloudinary图片优化（所有图片都优化）+ 性能优化（前8张预加载）
+          const originalUrl = imageMatch[1];
+          const optimizedUrl = window.getCloudinaryUrl ? window.getCloudinaryUrl(originalUrl) : originalUrl;
+          // ⚡ 前8张eager loading（立即加载），其他lazy loading（滚动加载）
+          const loadingAttr = index < 8 ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"';
+          
+          // 使用<img>标签 + 优化的加载策略 + 绝对定位
+          imageHtml = `<img src="${optimizedUrl}" alt="${blog.title}" ${loadingAttr} style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">`;
         }
       }
       
@@ -1726,16 +1728,16 @@
   
   <!-- JS模块文件（按加载顺序） -->
   <script src="js/state.js"></script>  <!-- ✅ 统一状态管理（最先加载） -->
-  <script src="js/utils.js"></script>
-  <script src="js/utils/markdown-processor.js"></script>  <!-- Markdown 统一处理器 -->
-  <script src="js/blog-renderer.js"></script>  <!-- 博客渲染器（新版）-->
-  <script src="js/app.js"></script>  <!-- 主应用逻辑 -->
-  <script src="js/share-module.js"></script>
-  <script src="js/image-download.js"></script>
-  <script src="js/page-transitions.js"></script>
-  <script src="js/mobile-menu.js"></script>
-  <script src="js/mobile-download.js"></script>
-  <script src="js/sidebar-sticky.js"></script>  <!-- 侧边栏智能固定 -->
-  <script src="js/bilingual-control-v2.js"></script>  <!-- 双语博客显示模式控制V2 -->
+  <script src="js/utils.js" defer></script>
+  <script src="js/utils/markdown-processor.js" defer></script>  <!-- Markdown 统一处理器 -->
+  <script src="js/blog-renderer.js" defer></script>  <!-- 博客渲染器（新版）-->
+  <script src="js/app.js"></script>  <!-- 主应用逻辑 - 保持同步 -->
+  <script src="js/share-module.js" defer></script>
+  <script src="js/image-download.js" defer></script>
+  <script src="js/page-transitions.js" defer></script>
+  <script src="js/mobile-menu.js" defer></script>
+  <script src="js/mobile-download.js" defer></script>
+  <script src="js/sidebar-sticky.js" defer></script>  <!-- 侧边栏智能固定 -->
+  <script src="js/bilingual-control-v2.js" defer></script>  <!-- 双语博客显示模式控制V2 -->
 </body>
 </html>

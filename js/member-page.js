@@ -611,9 +611,9 @@ window.MemberPage = {
         
         const cards = [];
         processedBlogs.forEach((blog, index) => {
-          // 使用主页面的博客卡片渲染
+          // 使用主页面的博客卡片渲染 + Cloudinary优化
           if (window.renderBlogItem) {
-            const card = window.renderBlogItem(blog);
+            const card = window.renderBlogItem(blog, index);
             console.log(`[MemberPage] 创建卡片 ${index + 1}:`, !!card);
             container.appendChild(card);
             cards.push(card);
