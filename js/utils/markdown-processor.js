@@ -5,13 +5,20 @@
 
 const MarkdownProcessor = {
   /**
-   * 处理 Markdown 图片: ![alt](url) -> <img>
+   * 处理 Markdown 图片: ![alt](url) -> <img> (带占位符优化)
    * @param {string} content - 要处理的内容
    * @returns {string} 处理后的内容
    */
   processImages(content) {
     return content.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, url) => {
-      return `<img src="${url}" alt="${alt || '图片'}" class="w-full my-4 rounded-lg" loading="lazy" />`;
+      return `
+        <div class="blog-image-wrapper my-4">
+          <img data-src="${url}" 
+               alt="${alt || '图片'}" 
+               class="w-full rounded-lg lazy-image" 
+               onload="this.classList.add('loaded')" />
+        </div>
+      `;
     });
   },
 

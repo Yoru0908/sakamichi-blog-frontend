@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>CDN速度测试</title>
+  <style>
+    body { font-family: Arial; padding: 20px; max-width: 800px; margin: 0 auto; }
+    .result { padding: 10px; margin: 10px 0; border-radius: 5px; }
+    .fast { background: #d4edda; border: 1px solid #c3e6cb; }
+    .slow { background: #f8d7da; border: 1px solid #f5c6cb; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>🧪 CDN速度测试（中国用户专用）</h1>
+  <p>点击按钮测试3个免费CDN在中国的访问速度</p>
+  <button onclick="testCDNs()">开始测试</button>
+  <div id="results"></div>
+
+  <script>
+    async function testCDNs() {
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = '<p>⏳ 测试中...</p>';
+      
+      const testImage = 'https://www.nogizaka46.com/files/46/diary/n46/MEMBER/moblog/202510/mobZvoZoV.jpg';
+      
+      const cdns = {
+        'Cloudinary（美国，中国有节点）': `https://res.cloudinary.com/demo/image/fetch/w_400,q_75,f_auto/${encodeURIComponent(testImage)}`,
+        'ImageKit（印度，亚太快）': `https://ik.imagekit.io/demo/tr:w-400,q-75/${encodeURIComponent(testImage)}`,
+        'Weserv（荷兰，全球CDN）': `https://images.weserv.nl/?url=${encodeURIComponent(testImage)}&w=400&q=75`,
+        '原图（日本）': testImage
+      };
+      
+      const results = [];
+      
+      for (const [name, url] of Object.entries(cdns)) {
+        try {
+          const start = performance.now();
+          const response = await fetch(url, { mode: 'no-cors' });
+          const time = Math.round(performance.now() - start);
+          
+          // 用Image标签再测一次（更准确）
+          await new Promise((resolve, reject) => {
+            const imgStart = performance.now();
+            const img = new Image();
+            img.onload = () => {
+              const imgTime = Math.round(performance.now() - imgStart);
+              results.push({ name, time: imgTime, url });
+              resolve();
+            };
+            img.onerror = () => {
+              results.push({ name, time: 9999, error: true, url });
+              resolve();
+            };
+            img.src = url;
+          });
+        } catch (err) {
+          results.push({ name, time: 9999, error: true, url });
+        }
+      }
+      
+      // 排序并显示结果
+      results.sort((a, b) => a.time - b.time);
+      
+      let html = '<h2>📊 测试结果：</h2>';
+      results.forEach((result, index) => {
+        const fastOrSlow = result.time < 1000 ? 'fast' : 'slow';
+        const emoji = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '📍';
+        const status = result.error ? '❌ 失败' : `✅ ${result.time}ms`;
+        
+        html += `
+          <div class="result ${fastOrSlow}">
+            <strong>${emoji} ${result.name}</strong><br>
+            ${status}<br>
+            <small style="color: #666;">${result.url.substring(0, 80)}...</small>
+          </div>
+        `;
+      });
+      
+      html += '<h3>💡 建议：</h3>';
+      const fastest = results[0];
+      if (fastest.time < 500) {
+        html += `<p style="color: green;">✅ 使用 <strong>${fastest.name}</strong>，速度很快！</p>`;
+      } else if (fastest.time < 1500) {
+        html += `<p style="color: orange;">⚠️ 使用 <strong>${fastest.name}</strong>，速度可接受。</p>`;
+      } else {
+        html += `<p style="color: red;">❌ 所有CDN都慢，建议自建压缩方案。</p>`;
+      }
+      
+      resultsDiv.innerHTML = html;
+    }
+  </script>
+</body>
+</html>

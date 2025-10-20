@@ -6,6 +6,15 @@
 // 页面切换状态
 let isTransitioning = false;
 
+// 🖼️ 智能图片预加载（6行核心代码）
+const lazyLoadObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting && e.target.dataset.src) {
+      e.target.src = e.target.dataset.src;
+    }
+  });
+}, { rootMargin: '200px' });
+
 /**
  * 平滑切换内容（优化版：快速+流畅）
  * @param {Function} callback - 切换内容的回调函数
