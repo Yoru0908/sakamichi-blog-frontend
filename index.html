@@ -61,15 +61,22 @@
   <script src="js/member-detail.js" defer></script>
   <script src="js/blog-detail-sidebar.js" defer></script>
   
-  <!-- 🚀 CSS文件 - 使用异步加载优化首屏性能 -->
-  <link rel="preload" href="css/main-styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="css/main-styles.css"></noscript>
-  
+  <!-- 🚀 CSS文件 - 关键CSS同步，非关键CSS异步 -->
+  <!-- 基础样式 - 同步加载（包含布局、网格等关键样式） -->
+  <link rel="stylesheet" href="css/main-styles.css">
   <link rel="stylesheet" href="css/mobile.css" media="(max-width: 768px)">
+  
+  <!-- 非关键CSS - 异步加载（动画、主题、组件样式） -->
   <link rel="preload" href="css/transitions.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" href="css/calendar-component.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" href="css/dark-theme.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" href="css/bilingual.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="css/transitions.css">
+    <link rel="stylesheet" href="css/calendar-component.css">
+    <link rel="stylesheet" href="css/dark-theme.css">
+    <link rel="stylesheet" href="css/bilingual.css">
+  </noscript>
   
   <style>
     /* 最小必要样式 */

@@ -20,6 +20,16 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* 桌面端隐藏移动端元素 */
+@media (min-width: 769px) {
+  .mobile-sidebar,
+  .mobile-overlay,
+  .mobile-menu-btn,
+  .mobile-search-bar {
+    display: none !important;
+  }
+}
+
 /* 侧边栏卡片 */
 .sidebar-card {
   background: white;
