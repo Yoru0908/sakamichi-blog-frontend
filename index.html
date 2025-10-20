@@ -1042,7 +1042,8 @@
         const imageMatch = blog.translated_content.match(/!\[.*?\]\((https?:\/\/[^\)]+)\)/);
         if (imageMatch && imageMatch[1]) {
           // 🚀 使用ImageKit压缩图片 (250KB → 25KB)
-          const thumbnailUrl = `https://ik.imagekit.io/demo/tr:w-400,q-75/${encodeURIComponent(imageMatch[1])}`;
+          const originalUrl = imageMatch[1];
+          const thumbnailUrl = `https://ik.imagekit.io/demo/tr:w-400,q-75/${originalUrl}`;
           imageStyle = `background-image: url('${thumbnailUrl}'); background-size: cover; background-position: center;`;
         }
       }
