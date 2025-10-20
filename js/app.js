@@ -237,6 +237,30 @@ function updateLastUpdateTime() {
   lastUpdateElement.textContent = `最后更新: ${timeString}`;
 }
 
+// ==================== 博客缓存 ====================
+// 全局缓存（内存Map）- 20行简单方案
+const blogCache = new Map();
+const CACHE_TTL = 5 * 60 * 1000; // 5分钟
+
+// 获取缓存
+function getCachedBlogs(group, page = 1) {
+  const key = `${group}_${page}`;
+  const cached = blogCache.get(key);
+  
+  if (cached && Date.now() - cached.time < CACHE_TTL) {
+    console.log(`[Cache] ✅ 命中: ${key} (${cached.data.length}篇)`);
+    return cached.data;
+  }
+  return null;
+}
+
+// 设置缓存
+function setCachedBlogs(group, page, data) {
+  const key = `${group}_${page}`;
+  blogCache.set(key, { data, time: Date.now() });
+  console.log(`[Cache] 💾 存储: ${key} (${data.length}篇)`);
+}
+
 // 加载博客列表
 window.loadBlogs = async function(append = false) {
   if (App.state.loading) return;
@@ -249,6 +273,18 @@ window.loadBlogs = async function(append = false) {
   }
 
   try {
+    // 🚀 检查缓存（仅在非追加、无搜索时使用）
+    if (!append && !App.state.search) {
+      const cachedBlogs = getCachedBlogs(App.state.group, App.state.page);
+      if (cachedBlogs) {
+        displayBlogs(cachedBlogs);
+        App.state.loading = false;
+        hideLoading();
+        console.log('[loadBlogs] 使用缓存，跳过API请求');
+        return;
+      }
+    }
+
     // 动态获取每页数量
     const blogsPerPage = getBlogsPerPage();
     
@@ -302,6 +338,11 @@ window.loadBlogs = async function(append = false) {
         const dateB = new Date(b.publish_date || 0);
         return dateB - dateA; // 降序
       });
+
+      // 💾 保存到缓存（仅在非追加、无搜索时缓存）
+      if (!append && !App.state.search) {
+        setCachedBlogs(App.state.group, App.state.page, uniqueBlogs);
+      }
 
       if (append) {
         appendBlogs(uniqueBlogs);
