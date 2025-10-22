@@ -54,13 +54,18 @@ function renderMarkdown(markdown, groupName = '') {
     }
   }
 
-  // 否则使用旧的渲染逻辑（向后兼容）
-  console.log('使用旧版渲染器（向后兼容）');
+  // ⚠️ 备用逻辑：如果执行到这里，说明博客数据可能有问题
+  console.error('⚠️ 未检测到结构化标记，使用基本渲染（备用逻辑）');
+  console.error('博客团体:', groupName);
+  console.error('内容预览:', cleanMarkdown.substring(0, 300));
+  
+  // 发送Discord通知（异步，不阻塞渲染）
+  notifyMissingStructuredTags(groupName, cleanMarkdown);
 
   // 使用已清理的内容
   let content = cleanMarkdown;
 
-  // 2-4. 使用统一的 Markdown 处理器
+  // 使用统一的 Markdown 处理器
   if (typeof MarkdownProcessor !== 'undefined') {
     content = MarkdownProcessor.process(content);
   } else {
@@ -70,174 +75,56 @@ function renderMarkdown(markdown, groupName = '') {
     content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
   }
 
-  // 5. 根据团体类型选择不同的渲染函数（旧版兼容）
-  if (groupName && groupName.includes('乃木坂')) {
-    return renderNogizakaContent(content);
-  } else if (groupName && (groupName.includes('櫻坂') || groupName.includes('樱坂'))) {
-    return renderSakurazakaContent(content);
-  } else {
-    // 日向坂46和其他：使用默认渲染
-    return renderHinatazakaContent(content);
-  }
+  // 简单换行处理
+  return content.replace(/\n/g, '<br>');
 }
 
-// 日向坂46渲染函数（默认，每行独立）
-function renderHinatazakaContent(content) {
-  const lines = content.split('\n');
-  const result = [];
+// ===== Discord通知函数 =====
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    const trimmedLine = line.trim();
-
-    // 跳过空行
-    if (trimmedLine === '') {
-      continue;
-    }
-
-    // <br>标签直接添加
-    if (trimmedLine === '<br>' || trimmedLine === '<br/>') {
-      result.push('<br>');
-    }
-    // 图片行直接添加
-    else if (line.includes('<img')) {
-      result.push(line);
-    }
-    // 所有文本行都独立显示，保持原文的行结构
-    else {
-      result.push(trimmedLine);
-      result.push('\n');
-    }
+/**
+ * 发送缺少结构化标记的通知到后端
+ * @param {string} groupName - 团体名称
+ * @param {string} content - 博客内容
+ */
+async function notifyMissingStructuredTags(groupName, content) {
+  // 本地环境跳过
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    console.log('[Discord] 本地环境，跳过通知');
+    return;
   }
 
-  return result.join('');
+  // 节流：同一团体5分钟内只发送一次
+  const cacheKey = `missing_tags_${groupName}`;
+  const lastSent = sessionStorage.getItem(cacheKey);
+  const now = Date.now();
+  if (lastSent && now - parseInt(lastSent) < 5 * 60 * 1000) {
+    console.log('[Discord] 节流中，跳过通知');
+    return;
+  }
+
+  try {
+    const response = await fetch('https://api.sakamichi-tools.cn/api/notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'missing_structured_tags',
+        group: groupName,
+        contentPreview: content.substring(0, 200),
+        url: window.location.href,
+        timestamp: new Date().toISOString()
+      })
+    });
+
+    if (response.ok) {
+      console.log('[Discord] 通知已发送');
+      sessionStorage.setItem(cacheKey, now.toString());
+    } else {
+      console.error('[Discord] 通知发送失败:', response.status);
+    }
+  } catch (error) {
+    console.error('[Discord] 通知发送异常:', error);
+  }
 }
-
-// 樱坂46渲染函数（智能合并被分割的句子）
-function renderSakurazakaContent(content) {
-  const lines = content.split('\n');
-  const result = [];
-  let i = 0;
-
-  while (i < lines.length) {
-    const line = lines[i];
-    const trimmedLine = line.trim();
-
-    // 跳过空行
-    if (trimmedLine === '') {
-      i++;
-      continue;
-    }
-
-    // <br>标签直接添加
-    if (trimmedLine === '<br>' || trimmedLine === '<br/>') {
-      result.push('<br>');
-      i++;
-    }
-    // 图片行直接添加
-    else if (line.includes('<img')) {
-      result.push(line);
-      i++;
-    }
-    // 文本行处理
-    else {
-      // 特殊处理：合并引号内容
-      if (trimmedLine.startsWith('「') && !trimmedLine.includes('」')) {
-        // 收集到」为止的所有内容
-        let mergedContent = trimmedLine;
-        i++;
-        while (i < lines.length) {
-          const nextLine = lines[i].trim();
-          if (nextLine === '' || nextLine === '<br>' || nextLine === '<br/>') {
-            i++;
-            continue;
-          }
-          mergedContent += nextLine;
-          i++;
-          if (nextLine.includes('」')) {
-            break;
-          }
-        }
-        result.push(mergedContent);
-      }
-      // 检查是否应该与前一行合并
-      else if (shouldMergeWithPrevious(trimmedLine, result)) {
-        // 合并到前一行
-        const lastIndex = result.length - 1;
-        if (lastIndex >= 0 && result[lastIndex] !== '<br>' && !result[lastIndex].includes('<img')) {
-          result[lastIndex] = result[lastIndex] + trimmedLine;
-        } else {
-          result.push(trimmedLine);
-        }
-        i++;
-      }
-      // 独立段落
-      else {
-        result.push(trimmedLine);
-        i++;
-      }
-    }
-    
-    // 在合适的位置添加换行
-    if (i < lines.length && result[result.length - 1] !== '<br>' && !result[result.length - 1]?.includes('<img')) {
-      const nextLine = lines[i]?.trim();
-      // 如果下一行不是被合并的内容，则添加换行
-      if (nextLine && !shouldMergeWithPrevious(nextLine, result)) {
-        result.push('\n');
-      }
-    }
-  }
-
-  return result.join('');
-}
-
-// 乃木坂46渲染函数（通过空行识别段落）
-function renderNogizakaContent(content) {
-  const lines = content.split('\n');
-  const result = [];
-  let currentParagraph = [];
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    const trimmedLine = line.trim();
-
-    // 空行或<br>表示段落结束
-    if (trimmedLine === '' || trimmedLine === '<br>' || trimmedLine === '<br/>') {
-      if (currentParagraph.length > 0) {
-        // 输出当前段落
-        result.push(currentParagraph.join(''));
-        result.push('<br><br>');
-        currentParagraph = [];
-      } else if (trimmedLine === '<br>' || trimmedLine === '<br/>') {
-        result.push('<br>');
-      }
-    }
-    // 图片行单独处理
-    else if (line.includes('<img')) {
-      // 先输出之前的段落
-      if (currentParagraph.length > 0) {
-        result.push(currentParagraph.join(''));
-        result.push('<br>');
-        currentParagraph = [];
-      }
-      result.push(line);
-      result.push('<br>');
-    }
-    // 收集段落内容
-    else {
-      currentParagraph.push(trimmedLine);
-    }
-  }
-
-  // 处理最后一个段落
-  if (currentParagraph.length > 0) {
-    result.push(currentParagraph.join(''));
-  }
-
-  return result.join('');
-}
-
-
 
 // ===== Phase 3: 命名空间迁移 =====
 
