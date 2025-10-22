@@ -740,8 +740,8 @@
         
         const date = blog.formatted_date || blog.publish_date;
         
-        // 提取年份和月份
-        const match = date.match(/(\d{4})\.(\d{1,2})/);
+        // 提取年份和月份（支持多种格式：2025.10.22, 2025/10/22, 2025-10-22）
+        const match = date.match(/(\d{4})[.\/\-](\d{1,2})/);
         if (!match) return false;
         
         const blogYear = match[1];
