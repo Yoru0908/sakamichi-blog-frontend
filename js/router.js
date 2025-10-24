@@ -6,6 +6,8 @@
 window.Router = {
   currentView: null,
   currentBlog: null,
+  previousPage: 1,  // 保存离开列表页时的页码
+  previousGroup: null,  // 保存离开列表页时的团体
   
   /**
    * 初始化路由
@@ -87,6 +89,10 @@ window.Router = {
       return;
     }
     
+    // 🔧 修复：判断是否从详情页返回
+    const isReturningFromDetail = this.currentView === 'blog';
+    const isSameGroup = this.previousGroup === group;
+    
     console.log('[Router] 继续执行showGroupPage，设置状态');
     this.currentView = 'group';
     App.state.member = '';  // 清除成员状态
@@ -99,7 +105,16 @@ window.Router = {
 
     // 设置统一状态
     App.state.group = group;
-    App.state.page = 1;  // 重置为第1页
+    
+    // 🔧 修复：从详情页返回同一团体时，恢复之前的页码
+    if (isReturningFromDetail && isSameGroup && this.previousPage > 1) {
+      console.log(`[Router] 从详情页返回，恢复页码: ${this.previousPage}`);
+      App.state.page = this.previousPage;  // 恢复之前的页码
+    } else {
+      console.log('[Router] 切换团体或首次进入，重置为第1页');
+      App.state.page = 1;  // 重置为第1页
+    }
+    
     App.state.search = '';
     // 🔧 修复：只有'all'使用无限滚动，具体团体使用翻页
     App.state.hasMore = (group === 'all');
@@ -114,9 +129,11 @@ window.Router = {
       }
     }
 
-    // 重置分页
-    if (App.pagination) {
-      App.pagination.reset();
+    // 🔧 修复：只在切换团体时重置分页，从详情页返回时不重置
+    if (!isReturningFromDetail || !isSameGroup) {
+      if (App.pagination) {
+        App.pagination.reset();
+      }
     }
     
     // ✅ 重置成员筛选器UI
@@ -258,6 +275,14 @@ window.Router = {
    */
   async showBlogDetail(blogId) {
     console.log('[Router] 显示博客详情:', blogId);
+    
+    // 🔧 保存当前状态，用于返回时恢复
+    if (this.currentView === 'group') {
+      this.previousPage = App.state.page || 1;
+      this.previousGroup = App.state.group;
+      console.log(`[Router] 保存列表页状态: 团体=${this.previousGroup}, 页码=${this.previousPage}`);
+    }
+    
     this.currentView = 'blog';
     this.currentBlog = blogId;
     
