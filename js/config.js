@@ -4,7 +4,7 @@
  */
 
 // ========== API 配置 ==========
-const API_BASE = 'https://sakamichi-blog-translator.srzwyuu.workers.dev';
+const API_BASE = 'https://api.sakamichi-tools.cn';
 const LOCAL_API = 'http://localhost:8787';
 
 // ========== 分页配置 ==========
