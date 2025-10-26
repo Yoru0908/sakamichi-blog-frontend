@@ -30,6 +30,14 @@ body {
   }
 }
 
+/* Header样式优化 */
+header h1 {
+  font-size: 1.375rem;
+  font-weight: 400;
+  letter-spacing: 0.025em;
+  color: #1f2937;
+}
+
 /* 侧边栏卡片 */
 .sidebar-card {
   background: white;
@@ -298,11 +306,11 @@ body {
   padding: 0.5rem 1.25rem;
   border-bottom: 2px solid transparent;
   font-weight: 400;
-  color: #888;
+  color: #6b7280;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.875rem;
-  letter-spacing: 0.03em;
+  transition: all 0.2s ease;
+  font-size: 0.9375rem;
+  letter-spacing: 0.015em;
   line-height: 1.5;
   display: inline-flex;
   align-items: center;
@@ -311,12 +319,14 @@ body {
 }
 
 .tab-item:hover {
-  color: #333;
+  color: #1f2937;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 4px 4px 0 0;
 }
 
 .tab-item.active {
-  color: #333;
-  border-bottom-color: #333;
+  color: #742581;
+  border-bottom-color: #742581;
   font-weight: 500;
 }
 

@@ -125,7 +125,7 @@
   
   <!-- Header -->
   <header class="bg-white shadow-sm sticky top-0 z-50 border-b">
-    <div class="container mx-auto px-4">
+    <div class="container mx-auto pl-0 pr-4">
       <div class="flex items-center justify-between" style="height: 56px;">
         <!-- 左侧：标题 + 标签页 -->
         <div class="flex items-center gap-8">
@@ -138,7 +138,7 @@
             <div class="tab-item" data-group="sakurazaka" onclick="Router.navigate('#sakurazaka')">樱坂46</div>
             <div class="tab-item" data-group="hinatazaka" onclick="Router.navigate('#hinatazaka')">日向坂46</div>
             <div class="tab-item" onclick="window.open('stats.html', '_blank')">数据统计</div>
-            <div class="tab-item" onclick="window.open('https://sakamichi-tools.cn/', '_blank')">生写生成器</div>
+            <div class="tab-item" onclick="window.open('https://photocard.sakamichi-tools.cn/', '_blank')">生写生成器</div>
           </div>
         </div>
         
@@ -357,13 +357,6 @@
   </main>
 
   <!-- Footer -->
-  <footer class="bg-white border-t mt-16">
-    <div class="container mx-auto px-4 py-8 text-center text-sm text-gray-600">
-      <p class="font-bold mb-2">坂道博客翻译系统</p>
-      <p>基于 Cloudflare Workers + Gemini AI 构建</p>
-    </div>
-  </footer>
-
   <script>
     // ❌ 已删除 API 配置 - 使用 app.js 中的 window.API_BASE_URL（带健康检查）
     // ✅ 已迁移全局变量 - 统一使用 App.state.page, App.state.group, App.state.search 等
@@ -1553,5 +1546,42 @@
   <script src="js/mobile-download.js" defer></script>
   <script src="js/sidebar-sticky.js" defer></script>  <!-- 侧边栏智能固定 -->
   <script src="js/bilingual-control-v2.js" defer></script>  <!-- 双语博客显示模式控制V2 -->
+
+  <!-- 方案1：现代简约风格页脚 -->
+  <footer class="mt-20 bg-gradient-to-r from-gray-50 to-gray-100 border-t border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <!-- 品牌信息 -->
+        <div class="col-span-1 md:col-span-2">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Sakamichi Tools</h3>
+        </div>
+        
+        <!-- 快速链接 -->
+        <div>
+          <h4 class="text-sm font-semibold text-gray-900 mb-4">工具</h4>
+          <ul class="space-y-2">
+            <li><a href="index.html" class="text-gray-600 hover:text-violet-600 text-sm">博客翻译</a></li>
+            <li><a href="https://photocard.sakamichi-tools.cn/" class="text-gray-600 hover:text-violet-600 text-sm">生写生成器</a></li>
+            <li><a href="https://msg.sakamichi-tools.cn/" class="text-gray-600 hover:text-violet-600 text-sm">MSG生成器</a></li>
+          </ul>
+        </div>
+        
+        <!-- 法律信息 -->
+        <div>
+          <h4 class="text-sm font-semibold text-gray-900 mb-4">法律</h4>
+          <ul class="space-y-2">
+            <li><a href="privacy.html" class="text-gray-600 hover:text-violet-600 text-sm">隐私政策</a></li>
+            <li><a href="terms.html" class="text-gray-600 hover:text-violet-600 text-sm">使用条款</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="mt-8 pt-8 border-t border-gray-200">
+        <p class="text-center text-sm text-gray-500">
+          &copy; 2025 Sakamichi Tools. Created by <a href="https://potofu.me/yoru0908" target="_blank" class="text-violet-600 hover:underline">Yoru</a>
+        </p>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
