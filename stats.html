@@ -626,93 +626,23 @@
           console.log(`[Stats] 筛选后 ${filteredBlogs.length} 篇博客`);
           console.log(`[Stats] 在籍成员数: ${currentMembersList.length}`, currentMembersList.slice(0, 5), '...');
           
-          // 统计成员数据
-          const memberStats = {};
-          const notFoundMembers = new Set(); // 记录找不到的成员
+          // 使用公共统计函数
+          const stats = calculateMemberStats(filteredBlogs, currentMembersList, totalMembersCount);
           
-          // 创建无空格的成员名单用于匹配
-          const normalizedMembersList = currentMembersList.map(name => name.replace(/\s+/g, ''));
-          
-          // ⚠️ 特殊成员列表（不计入统计）
-          const specialMembers = ['ポカ']; // 日向坂46吉祥物
-          
-          filteredBlogs.forEach(blog => {
-            const member = blog.member;
-            if (!member) return;
-            
-            // 跳过特殊成员（不计入统计）
-            if (specialMembers.includes(member)) {
-              return;
-            }
-            
-            // ✅ 标准化名字（去掉空格）
-            const normalizedMember = member.replace(/\s+/g, '');
-            
-            // 检查成员是否在名单中（去空格比较）
-            if (currentMembersList.length > 0) {
-              const memberIndex = normalizedMembersList.indexOf(normalizedMember);
-              if (memberIndex === -1) {
-                // 不报错，只记录到 notFoundMembers（可能是特殊成员）
-                notFoundMembers.add(member);
-                return; // 跳过不在名单中的成员
-              }
-              // 使用标准化的名字（无空格）作为key
-              const standardName = currentMembersList[memberIndex];
-              
-              if (!memberStats[standardName]) {
-                memberStats[standardName] = { name: standardName, count: 0 };
-              }
-              memberStats[standardName].count++;
-            } else {
-              // 如果没有成员名单，使用标准化后的名字
-              if (!memberStats[normalizedMember]) {
-                memberStats[normalizedMember] = { name: normalizedMember, count: 0 };
-              }
-              memberStats[normalizedMember].count++;
-            }
-          });
-          
-          // 输出找不到的成员（排除特殊成员）
-          const reallyNotFound = Array.from(notFoundMembers).filter(m => !specialMembers.includes(m));
-          if (reallyNotFound.length > 0) {
-            console.warn(`[Stats] ⚠️ 以下成员在成员列表中找不到 (共${reallyNotFound.length}人):`, reallyNotFound);
-            console.warn('[Stats] 这可能是名字格式不匹配的问题');
-          }
-          
-          // 记录特殊成员（仅作信息展示）
-          const foundSpecial = Array.from(notFoundMembers).filter(m => specialMembers.includes(m));
-          if (foundSpecial.length > 0) {
-            console.log(`[Stats] ℹ️ 检测到特殊成员博客（不计入统计）:`, foundSpecial);
-          }
-          
-          // 排序取前20
-          const topMembers = Object.values(memberStats)
-            .sort((a, b) => b.count - a.count)
-            .slice(0, 20);
-          
-          console.log(`[Stats] Top 20 成员:`, topMembers.map(m => `${m.name}:${m.count}`).join(', '));
-          
-          // 计算统计数据
-          const activeMembers = Object.keys(memberStats).length; // 发了博客的成员数
-          const totalBlogs = filteredBlogs.length;
-          const avgBlogs = activeMembers > 0 ? (totalBlogs / activeMembers).toFixed(1) : 0;
+          console.log(`[Stats] Top 20 成员:`, stats.topMembers.map(m => `${m.name}:${m.count}`).join(', '));
           
           realData[group] = {
-            activeMembers: activeMembers, // 发了博客的成员数
-            totalMembers: totalMembersCount || activeMembers, // 真实总成员数
-            members: activeMembers, // 为了兼容性保留
-            blogs: totalBlogs,
-            avgBlogs: parseFloat(avgBlogs),
-            topMembers: topMembers,
-            allBlogs: allBlogs // 保存原始数据用于重新筛选
+            ...stats,
+            allBlogs: allBlogs, // 保存原始数据用于重新筛选
+            currentMembersList: currentMembersList // 保存成员列表用于筛选
           };
           
           console.log(`[Stats] ${groupDisplayName} 统计完成:`, {
-            activeMembers: activeMembers,
-            totalMembers: totalMembersCount,
-            blogs: totalBlogs,
-            avgBlogs: avgBlogs,
-            topMembersCount: topMembers.length
+            activeMembers: stats.activeMembers,
+            totalMembers: stats.totalMembers,
+            blogs: stats.blogs,
+            avgBlogs: stats.avgBlogs,
+            topMembersCount: stats.topMembers.length
           });
           
           // ❌ 删除自动更新，避免闪烁
@@ -757,44 +687,114 @@
       });
     }
     
+    // 提取的公共统计函数
+    function calculateMemberStats(blogs, currentMembersList, existingTotalMembers) {
+      // 统计成员数据
+      const memberStats = {};
+      const notFoundMembers = new Set(); // 记录找不到的成员
+      
+      // 创建无空格的成员名单用于匹配
+      const normalizedMembersList = currentMembersList.map(name => name.replace(/\s+/g, ''));
+      
+      // ⚠️ 特殊成员列表（不计入统计）
+      const specialMembers = ['ポカ']; // 日向坂46吉祥物
+      
+      blogs.forEach(blog => {
+        const member = blog.member;
+        if (!member) return;
+        
+        // 跳过特殊成员（不计入统计）
+        if (specialMembers.includes(member)) {
+          return;
+        }
+        
+        // ✅ 标准化名字（去掉空格）
+        const normalizedMember = member.replace(/\s+/g, '');
+        
+        // 检查成员是否在名单中（去空格比较）
+        if (currentMembersList.length > 0) {
+          const memberIndex = normalizedMembersList.indexOf(normalizedMember);
+          if (memberIndex === -1) {
+            // 不报错，只记录到 notFoundMembers（可能是特殊成员）
+            notFoundMembers.add(member);
+            return; // 跳过不在名单中的成员
+          }
+          // 使用标准化的名字（无空格）作为key
+          const standardName = currentMembersList[memberIndex];
+          
+          if (!memberStats[standardName]) {
+            memberStats[standardName] = { name: standardName, count: 0 };
+          }
+          memberStats[standardName].count++;
+        } else {
+          // 如果没有成员名单，使用标准化后的名字
+          if (!memberStats[normalizedMember]) {
+            memberStats[normalizedMember] = { name: normalizedMember, count: 0 };
+          }
+          memberStats[normalizedMember].count++;
+        }
+      });
+      
+      // 输出找不到的成员（排除特殊成员）
+      const reallyNotFound = Array.from(notFoundMembers).filter(m => !specialMembers.includes(m));
+      if (reallyNotFound.length > 0) {
+        console.warn(`[Stats] ⚠️ 以下成员在成员列表中找不到 (共${reallyNotFound.length}人):`, reallyNotFound);
+        console.warn('[Stats] 这可能是名字格式不匹配的问题');
+      }
+      
+      // 记录特殊成员（仅作信息展示）
+      const foundSpecial = Array.from(notFoundMembers).filter(m => specialMembers.includes(m));
+      if (foundSpecial.length > 0) {
+        console.log(`[Stats] ℹ️ 检测到特殊成员博客（不计入统计）:`, foundSpecial);
+      }
+      
+      // 排序取前20
+      const topMembers = Object.values(memberStats)
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 20);
+      
+      // 计算统计数据
+      const activeMembers = Object.keys(memberStats).length; // 发了博客的成员数
+      const totalBlogs = blogs.length;
+      const avgBlogs = activeMembers > 0 ? (totalBlogs / activeMembers).toFixed(1) : 0;
+      
+      return {
+        activeMembers: activeMembers,
+        totalMembers: existingTotalMembers || activeMembers, // 保留原有总成员数
+        members: activeMembers, // 为了兼容性保留
+        blogs: totalBlogs,
+        avgBlogs: parseFloat(avgBlogs),
+        topMembers: topMembers
+      };
+    }
+    
     // 时间筛选改变时触发
     function onFilterChange() {
       console.log('[Stats] 时间筛选改变，重新统计...');
       
       // 如果有原始数据，重新统计
       if (realData[currentGroup] && realData[currentGroup].allBlogs) {
-        const allBlogs = realData[currentGroup].allBlogs;
-        const filteredBlogs = filterBlogsByDate(allBlogs);
+        // 使用公共统计函数更新当前团体
+        const stats = calculateMemberStats(
+          filterBlogsByDate(realData[currentGroup].allBlogs),
+          realData[currentGroup].currentMembersList || [],
+          realData[currentGroup].totalMembers
+        );
+        Object.assign(realData[currentGroup], stats);
         
-        // 重新统计
-        const memberStats = {};
-        filteredBlogs.forEach(blog => {
-          const member = blog.member;
-          if (!member) return;
-          
-          if (!memberStats[member]) {
-            memberStats[member] = { name: member, count: 0 };
-          }
-          memberStats[member].count++;
-        });
-        
-        const topMembers = Object.values(memberStats)
-          .sort((a, b) => b.count - a.count)
-          .slice(0, 20);
-        
-        const activeMembers = Object.keys(memberStats).length;
-        const totalBlogs = filteredBlogs.length;
-        const avgBlogs = activeMembers > 0 ? (totalBlogs / activeMembers).toFixed(1) : 0;
-        
-        // 更新当前数据（保留totalMembers）
-        realData[currentGroup] = {
-          ...realData[currentGroup],
-          activeMembers: activeMembers,
-          members: activeMembers,
-          blogs: totalBlogs,
-          avgBlogs: parseFloat(avgBlogs),
-          topMembers: topMembers
-        };
+        // 如果是全部团体，同步更新三个子团体的数据
+        if (currentGroup === 'all') {
+          ['nogizaka', 'sakurazaka', 'hinatazaka'].forEach(g => {
+            if (realData[g] && realData[g].allBlogs) {
+              const gStats = calculateMemberStats(
+                filterBlogsByDate(realData[g].allBlogs),
+                realData[g].currentMembersList || [],
+                realData[g].totalMembers
+              );
+              Object.assign(realData[g], gStats);
+            }
+          });
+        }
         
         updateStats();
       } else {
