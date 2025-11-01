@@ -772,35 +772,21 @@
     function onFilterChange() {
       console.log('[Stats] 时间筛选改变，重新统计...');
       
-      // 如果有原始数据，重新统计
-      if (realData[currentGroup] && realData[currentGroup].allBlogs) {
-        // 使用公共统计函数更新当前团体
-        const stats = calculateMemberStats(
-          filterBlogsByDate(realData[currentGroup].allBlogs),
-          realData[currentGroup].currentMembersList || [],
-          realData[currentGroup].totalMembers
-        );
-        Object.assign(realData[currentGroup], stats);
-        
-        // 如果是全部团体，同步更新三个子团体的数据
-        if (currentGroup === 'all') {
-          ['nogizaka', 'sakurazaka', 'hinatazaka'].forEach(g => {
-            if (realData[g] && realData[g].allBlogs) {
-              const gStats = calculateMemberStats(
-                filterBlogsByDate(realData[g].allBlogs),
-                realData[g].currentMembersList || [],
-                realData[g].totalMembers
-              );
-              Object.assign(realData[g], gStats);
-            }
-          });
+      // ✅ 更新所有已加载的团体数据，确保状态一致性
+      const allGroups = ['all', 'nogizaka', 'sakurazaka', 'hinatazaka'];
+      
+      allGroups.forEach(g => {
+        if (realData[g] && realData[g].allBlogs) {
+          const stats = calculateMemberStats(
+            filterBlogsByDate(realData[g].allBlogs),
+            realData[g].currentMembersList || [],
+            realData[g].totalMembers
+          );
+          Object.assign(realData[g], stats);
         }
-        
-        updateStats();
-      } else {
-        // 没有数据，重新加载
-        loadRealData(currentGroup);
-      }
+      });
+      
+      updateStats();
     }
     
     // 渲染卡片
