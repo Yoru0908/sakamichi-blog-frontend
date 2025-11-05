@@ -691,7 +691,7 @@ window.MemberPage = {
     
     li.innerHTML = `
       <a href="#blog/${blog.id}" class="blog-list-link">
-        <h3 class="blog-list-title">${blog.title || '无标题'}</h3>
+        <h3 class="blog-list-title">${blog.title || ''}</h3>
         <div class="blog-list-meta">
           <span class="blog-list-date">${blog.formatted_date || blog.publish_date || ''}</span>
         </div>

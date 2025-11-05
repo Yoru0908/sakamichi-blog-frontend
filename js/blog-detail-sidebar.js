@@ -312,7 +312,7 @@ window.BlogDetailSidebar = {
           <div style="flex: 1; min-width: 0;">
             <div style="font-size: 10px; color: #999; margin-bottom: 4px;">${blog.formatted_date || blog.publish_date || '-'}</div>
             <div style="font-size: 12px; color: #333; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-              ${blog.title || '无标题'}
+              ${blog.title || ''}
             </div>
           </div>
         </a>

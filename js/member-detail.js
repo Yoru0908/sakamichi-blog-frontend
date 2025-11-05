@@ -562,7 +562,7 @@ window.MemberDetail = {
       <li class="recent-entry">
         <a href="#blog/${blog.id}" onclick="event.preventDefault(); MemberDetail.switchToBlog(${JSON.stringify(blog).replace(/"/g, '&quot;')});" style="text-decoration: none;">
           <div class="recent-entry-date">${blog.formatted_date || blog.publish_date || '-'}</div>
-          <div class="recent-entry-title">${blog.title || '无标题'}</div>
+          <div class="recent-entry-title">${blog.title || ''}</div>
         </a>
       </li>
     `).join('');
