@@ -580,6 +580,19 @@ async function performSearch(query) {
 
 // 显示搜索结果
 function displaySearchResults(blogs, query, count) {
+  // 🔧 修复：断开无限滚动，防止加载无关内容
+  if (App.state.scrollObserver) {
+    App.state.scrollObserver.disconnect();
+    App.state.scrollObserver = null;
+  }
+
+  // 隐藏滚动哨兵
+  const scrollSentinel = document.getElementById('scrollSentinel');
+  if (scrollSentinel) scrollSentinel.style.display = 'none';
+
+  // 设置搜索模式标志
+  App.state.isSearchMode = true;
+
   // 🔧 修复：隐藏与搜索无关的内容
   const groupInfo = document.getElementById('groupInfo');
   const memberListSection = document.getElementById('memberListSection');
@@ -600,14 +613,29 @@ function displaySearchResults(blogs, query, count) {
   const header = document.createElement('div');
   header.id = 'searchResultHeader';
   header.style.cssText = 'padding: 20px 0; border-bottom: 1px solid #e2e8f0; margin-bottom: 20px;';
+
+  // 保存当前搜索关键词供日期筛选使用
+  App.state.currentSearchQuery = query;
+
   header.innerHTML = `
-    <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
       <h3 style="font-size: 18px; font-weight: 600; color: #2d3748;">
         搜索结果："${query}" <span style="color: #718096;">(找到 ${count || blogs.length} 篇博客)</span>
       </h3>
-      <button onclick="clearSearch()" style="padding: 6px 12px; font-size: 13px; color: #4a5568; background: #edf2f7; border: none; border-radius: 4px; cursor: pointer;">
-        清除搜索
-      </button>
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 4px;">
+          <label style="font-size: 13px; color: #4a5568;">从</label>
+          <input type="date" id="searchDateFrom" style="padding: 4px 8px; font-size: 13px; border: 1px solid #d1d5db; border-radius: 4px; color: #374151;">
+          <label style="font-size: 13px; color: #4a5568;">到</label>
+          <input type="date" id="searchDateTo" style="padding: 4px 8px; font-size: 13px; border: 1px solid #d1d5db; border-radius: 4px; color: #374151;">
+        </div>
+        <button onclick="applyDateFilter()" style="padding: 6px 12px; font-size: 13px; color: white; background: #3b82f6; border: none; border-radius: 4px; cursor: pointer;">
+          筛选
+        </button>
+        <button onclick="clearSearch()" style="padding: 6px 12px; font-size: 13px; color: #4a5568; background: #edf2f7; border: none; border-radius: 4px; cursor: pointer;">
+          清除搜索
+        </button>
+      </div>
     </div>
   `;
   container.parentNode.insertBefore(header, container);
@@ -643,6 +671,9 @@ function displaySearchResults(blogs, query, count) {
 
 // 清除搜索，恢复正常列表
 function clearSearch() {
+  // 清除搜索模式标志
+  App.state.isSearchMode = false;
+
   // 移除搜索标题
   const header = document.getElementById('searchResultHeader');
   if (header) header.remove();
@@ -650,6 +681,10 @@ function clearSearch() {
   // 清空搜索框
   const searchInput = document.getElementById('searchInput');
   if (searchInput) searchInput.value = '';
+
+  // 恢复滚动哨兵显示
+  const scrollSentinel = document.getElementById('scrollSentinel');
+  if (scrollSentinel) scrollSentinel.style.display = '';
 
   // 重新加载当前团体的博客
   if (window.loadBlogs) {
@@ -665,9 +700,101 @@ function clearSearch() {
   }
 }
 
+// 应用日期范围筛选
+async function applyDateFilter() {
+  const dateFrom = document.getElementById('searchDateFrom')?.value;
+  const dateTo = document.getElementById('searchDateTo')?.value;
+  const query = App.state.currentSearchQuery || '';
+
+  if (!query) {
+    alert('请先进行搜索');
+    return;
+  }
+
+  try {
+    // 显示加载状态
+    const container = document.getElementById('blogsContainer');
+    container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">正在筛选...</div>';
+
+    // 构建API URL
+    const apiBase = window.API_BASE_URL || 'https://api.sakamichi-tools.cn';
+    const params = new URLSearchParams({
+      q: query,
+      limit: 100  // 日期筛选时返回更多结果
+    });
+
+    // 添加日期范围参数
+    if (dateFrom) params.append('from', dateFrom);
+    if (dateTo) params.append('to', dateTo);
+
+    // 添加团体筛选
+    if (App.state.group !== 'all') {
+      const groupNames = {
+        'nogizaka': '乃木坂46',
+        'sakurazaka': '樱坂46',
+        'hinatazaka': '日向坂46'
+      };
+      params.append('group', groupNames[App.state.group] || '');
+    }
+
+    const url = `${apiBase}/api/search?${params}`;
+    console.log('[applyDateFilter] 请求URL:', url);
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.success && data.data) {
+      // 更新搜索结果标题中的数量
+      const countSpan = document.querySelector('#searchResultHeader h3 span');
+      if (countSpan) {
+        const dateRangeText = (dateFrom || dateTo) ?
+          ` (${dateFrom || '最早'} ~ ${dateTo || '最新'})` : '';
+        countSpan.textContent = `(找到 ${data.data.length} 篇博客${dateRangeText})`;
+      }
+
+      // 清空并填充博客容器
+      container.innerHTML = '';
+
+      if (data.data.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
+            <svg style="width: 64px; height: 64px; margin: 0 auto 20px; color: #cbd5e0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <h3 style="font-size: 16px; font-weight: 500; color: #2d3748; margin-bottom: 8px;">未找到结果</h3>
+            <p style="color: #718096;">在指定日期范围内没有找到相关博客</p>
+          </div>
+        `;
+        return;
+      }
+
+      // 使用已有的 renderBlogItem 渲染博客卡片
+      data.data.forEach((blog, index) => {
+        const blogCard = window.renderBlogItem(blog, index);
+        container.appendChild(blogCard);
+      });
+
+      // 触发滚动动画
+      if (window.observeElements) {
+        const cards = container.querySelectorAll('.blog-card');
+        setTimeout(() => window.observeElements(Array.from(cards)), 50);
+      }
+    }
+  } catch (error) {
+    console.error('[applyDateFilter] 筛选失败:', error);
+    const container = document.getElementById('blogsContainer');
+    container.innerHTML = `
+      <div style="text-align: center; padding: 40px;">
+        <p style="color: #f56565;">筛选失败: ${error.message}</p>
+      </div>
+    `;
+  }
+}
+
 // 暴露为全局函数
 window.displaySearchResults = displaySearchResults;
 window.clearSearch = clearSearch;
+window.applyDateFilter = applyDateFilter;
 
 function showSearchResults(results) {
   const container = document.getElementById('blogsContainer');
