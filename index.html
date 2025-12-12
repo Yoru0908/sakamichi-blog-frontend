@@ -936,9 +936,12 @@
       
       // 提取第一张图片（从translated_content或使用默认渐变）
       let imageHtml = '';
+      let hasImage = false;
+      
       if (blog.translated_content) {
         const imageMatch = blog.translated_content.match(/!\[.*?\]\((https?:\/\/[^\)]+)\)/);
         if (imageMatch && imageMatch[1]) {
+          hasImage = true;
           // 🚀 Cloudinary图片优化（所有图片都优化）+ 性能优化（前8张预加载）
           const originalUrl = imageMatch[1];
           const optimizedUrl = window.getCloudinaryUrl ? window.getCloudinaryUrl(originalUrl) : originalUrl;
@@ -948,6 +951,28 @@
           // 使用<img>标签 + 优化的加载策略 + 绝对定位
           imageHtml = `<img src="${optimizedUrl}" alt="${blog.title}" ${loadingAttr} style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">`;
         }
+      }
+      
+      // 🔧 修复：没有图片时显示团体主题色渐变背景和成员名首字
+      if (!hasImage) {
+        // 根据团体设置不同的渐变色
+        let gradientColor = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'; // 默认紫色
+        if (blog.group_name) {
+          if (blog.group_name.includes('乃木坂')) {
+            gradientColor = 'linear-gradient(135deg, #9b4dca 0%, #6b21a8 100%)'; // 紫色
+          } else if (blog.group_name.includes('樱坂') || blog.group_name.includes('櫻坂')) {
+            gradientColor = 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)'; // 粉色
+          } else if (blog.group_name.includes('日向坂')) {
+            gradientColor = 'linear-gradient(135deg, #60a5fa 0%, #2563eb 100%)'; // 蓝色
+          }
+        }
+        // 显示成员名首字作为占位符
+        const initial = (blog.member || '?').charAt(0);
+        imageHtml = `
+          <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: ${gradientColor}; display: flex; align-items: center; justify-content: center;">
+            <span style="font-size: 48px; color: rgba(255,255,255,0.8); font-weight: 300;">${initial}</span>
+          </div>
+        `;
       }
       
       // ✅ 阶段3：直接使用预处理的 formatted_date
