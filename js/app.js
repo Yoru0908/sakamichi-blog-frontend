@@ -52,12 +52,12 @@ async function ensureApiBaseUrl() {
       // 添加5秒超时
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), window.API_TIMEOUT);
-      
-      const response = await fetch(`${candidate}/api/health`, { 
+
+      const response = await fetch(`${candidate}/api/health`, {
         cache: 'no-store',
         signal: controller.signal
       });
-      
+
       clearTimeout(timeoutId);
 
       if (response.ok) {
@@ -94,7 +94,7 @@ function getBlogsPerPage() {
 // 去重函数：移除恢复的重复博客
 function removeDuplicateBlogs(blogs) {
   const blogMap = new Map();
-  
+
   // 使用 blog.id 作为唯一键（不同日期的博客可能标题相同）
   blogs.forEach(blog => {
     if (blog.id) {
@@ -114,22 +114,22 @@ function removeDuplicateBlogs(blogs) {
       }
     }
   });
-  
+
   // 返回所有唯一的博客
   return [...blogMap.values()];
 }
 
 // 初始化应用（注意：loadBlogs 由 Router 统一调用，这里只初始化API连接）
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', async function () {
   console.log('[App] 应用初始化开始');
 
   try {
     await ensureApiBaseUrl();
     console.log('[App] API基础URL:', API_BASE_URL);
-    
+
     // 暴露 API_BASE_URL 给其他模块
     window.API_BASE_URL = API_BASE_URL;
-    
+
     // 同步到统一配置
     App.config.apiBaseUrl = API_BASE_URL;
     console.log('[App] ✅ API配置已同步到 App.config.apiBaseUrl');
@@ -231,7 +231,7 @@ function updateLastUpdateTime() {
     console.warn('[updateLastUpdateTime] lastUpdate元素不存在，跳过更新');
     return;
   }
-  
+
   const now = new Date();
   const timeString = now.toLocaleString('zh-CN');
   lastUpdateElement.textContent = `最后更新: ${timeString}`;
@@ -247,7 +247,7 @@ const blogCacheTTL = 5 * 60 * 1000; // 5分钟
 function getCachedBlogs(group, page = 1) {
   const key = `${group}_${page}`;
   const cached = blogCacheMap.get(key);
-  
+
   if (cached && Date.now() - cached.time < blogCacheTTL) {
     console.log(`[Cache] ✅ 命中: ${key} (${cached.data.length}篇)`);
     return cached.data;
@@ -263,11 +263,11 @@ function setCachedBlogs(group, page, data) {
 }
 
 // 加载博客列表
-window.loadBlogs = async function(append = false) {
+window.loadBlogs = async function (append = false) {
   if (App.state.loading) return;
 
   App.state.loading = true;
-  
+
   // 只在非追加模式下显示全屏加载状态
   if (!append) {
     showLoading();
@@ -292,10 +292,10 @@ window.loadBlogs = async function(append = false) {
 
     // 动态获取每页数量
     const blogsPerPage = getBlogsPerPage();
-    
+
     // 计算偏移量
     const offset = (App.state.page - 1) * blogsPerPage;
-    
+
     const params = new URLSearchParams({
       limit: blogsPerPage,
       offset: offset
@@ -328,8 +328,8 @@ window.loadBlogs = async function(append = false) {
 
     if (data.success && data.blogs) {
       // ✨ 数据源处理：统一格式化日期
-      const blogs = window.processBlogsData 
-        ? window.processBlogsData(data.blogs) 
+      const blogs = window.processBlogsData
+        ? window.processBlogsData(data.blogs)
         : data.blogs;
       console.log(`[loadBlogs] 成功加载 ${blogs.length} 篇博客`);
 
@@ -380,7 +380,7 @@ window.loadBlogs = async function(append = false) {
           if (sentinel) {
             sentinel.classList.remove('hidden');
           }
-          
+
           // 初始加载完成后，准备无限滚动
           setTimeout(() => {
             if (typeof window.setupInfiniteScroll === 'function') {
@@ -406,7 +406,7 @@ window.loadBlogs = async function(append = false) {
         if (sentinel) {
           sentinel.classList.add('hidden');
         }
-        
+
         if (App.pagination) {
           App.pagination.update(uniqueBlogs.length, totalCount);
         }
@@ -439,7 +439,7 @@ window.loadBlogs = async function(append = false) {
     showError(`加载博客失败: ${error.message}`);
   } finally {
     App.state.loading = false;
-    
+
     // 只在非追加模式下隐藏加载状态
     if (!append) {
       hideLoading();
@@ -459,7 +459,7 @@ function displayBlogs(blogs) {
     container.appendChild(blogCard);
     cards.push(blogCard);
   });
-  
+
   // 监听所有卡片的滚动渐现动画
   if (window.observeElements) {
     setTimeout(() => window.observeElements(cards), 50);
@@ -478,7 +478,7 @@ function appendBlogs(blogs) {
     container.appendChild(blogCard);
     cards.push(blogCard);
   });
-  
+
   // 监听新追加卡片的滚动渐现动画
   if (window.observeElements) {
     setTimeout(() => window.observeElements(cards), 50);
@@ -498,12 +498,12 @@ function getTranslatedContentPreview(blog) {
 
     // 移除 frontmatter（--- ... --- 之间的内容）
     content = content.replace(/^---[\s\S]*?---\s*/m, '');
-    
+
     // 移除图片标记
     content = content.replace(/!\[.*?\]\(.*?\)/g, '');
     content = content.replace(/\[IMAGE:\d+\]/g, '');
     content = content.replace(/\[NEWLINE:\d+\]/g, ' ');
-    
+
     // 清理HTML标签
     content = content
       .replace(/<[^>]*>/g, '')
@@ -579,40 +579,95 @@ async function performSearch(query) {
 }
 
 // 显示搜索结果
-function displaySearchResults(results, query) {
+function displaySearchResults(blogs, query, count) {
+  // 🔧 修复：隐藏与搜索无关的内容
+  const groupInfo = document.getElementById('groupInfo');
+  const memberListSection = document.getElementById('memberListSection');
+  const paginationContainer = document.getElementById('paginationContainer');
+
+  if (groupInfo) groupInfo.classList.add('hidden');
+  if (memberListSection) memberListSection.classList.add('hidden');
+  if (paginationContainer) paginationContainer.classList.add('hidden');
+
+  // 🔧 修复：搜索标题放到 Grid 容器外面
+  // 先移除旧的搜索标题（如果存在）
+  const oldHeader = document.getElementById('searchResultHeader');
+  if (oldHeader) oldHeader.remove();
+
   const container = document.getElementById('blogsContainer');
+
+  // 创建搜索标题，放到 container 之前
+  const header = document.createElement('div');
+  header.id = 'searchResultHeader';
+  header.style.cssText = 'padding: 20px 0; border-bottom: 1px solid #e2e8f0; margin-bottom: 20px;';
+  header.innerHTML = `
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h3 style="font-size: 18px; font-weight: 600; color: #2d3748;">
+        搜索结果："${query}" <span style="color: #718096;">(找到 ${count || blogs.length} 篇博客)</span>
+      </h3>
+      <button onclick="clearSearch()" style="padding: 6px 12px; font-size: 13px; color: #4a5568; background: #edf2f7; border: none; border-radius: 4px; cursor: pointer;">
+        清除搜索
+      </button>
+    </div>
+  `;
+  container.parentNode.insertBefore(header, container);
+
+  // 清空并填充博客容器
   container.innerHTML = '';
 
-  if (results.length === 0) {
+  if (blogs.length === 0) {
     container.innerHTML = `
-      <div class="text-center py-12">
-        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
+        <svg style="width: 64px; height: 64px; margin: 0 auto 20px; color: #cbd5e0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
-        <h3 class="mt-2 text-sm font-medium text-gray-900">未找到结果</h3>
-        <p class="mt-1 text-sm text-gray-500">没有找到与"${query}"相关的博客。</p>
+        <h3 style="font-size: 16px; font-weight: 500; color: #2d3748; margin-bottom: 8px;">未找到结果</h3>
+        <p style="color: #718096;">没有找到与"${query}"相关的博客</p>
       </div>
     `;
     return;
   }
 
-  // 显示搜索标题
-  const searchHeader = document.createElement('div');
-  searchHeader.className = 'mb-6 p-4 bg-blue-50 rounded-lg';
-  searchHeader.innerHTML = `
-    <h3 class="text-lg font-semibold text-blue-900">
-      搜索结果: "${query}" (找到 ${results.length} 篇博客)
-    </h3>
-  `;
-  container.appendChild(searchHeader);
-
-  // 显示搜索结果
-  results.forEach((blog, index) => {
+  // 使用已有的 renderBlogItem 渲染博客卡片
+  blogs.forEach((blog, index) => {
     const blogCard = window.renderBlogItem(blog, index);
-    blogCard.classList.add('ring-2', 'ring-blue-200'); // 高亮搜索结果
     container.appendChild(blogCard);
   });
+
+  // 触发滚动动画
+  if (window.observeElements) {
+    const cards = container.querySelectorAll('.blog-card');
+    setTimeout(() => window.observeElements(Array.from(cards)), 50);
+  }
 }
+
+// 清除搜索，恢复正常列表
+function clearSearch() {
+  // 移除搜索标题
+  const header = document.getElementById('searchResultHeader');
+  if (header) header.remove();
+
+  // 清空搜索框
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) searchInput.value = '';
+
+  // 重新加载当前团体的博客
+  if (window.loadBlogs) {
+    window.loadBlogs();
+  }
+
+  // 恢复显示团体信息（如果当前不是 'all'）
+  if (App.state.group !== 'all') {
+    const groupInfo = document.getElementById('groupInfo');
+    const memberListSection = document.getElementById('memberListSection');
+    if (groupInfo) groupInfo.classList.remove('hidden');
+    if (memberListSection) memberListSection.classList.remove('hidden');
+  }
+}
+
+// 暴露为全局函数
+window.displaySearchResults = displaySearchResults;
+window.clearSearch = clearSearch;
 
 function showSearchResults(results) {
   const container = document.getElementById('blogsContainer');
@@ -647,7 +702,7 @@ async function getMemberSuggestions(query) {
     // ✅ 使用已有的成员数据（从缓存或API获取一次）
     const { getAllMembers } = await import('./members-api.js');
     const allMembers = await getAllMembers();
-    
+
     // 将团体键值对转换为成员数组
     const membersList = [];
     for (const [groupKey, members] of Object.entries(allMembers)) {
@@ -656,7 +711,7 @@ async function getMemberSuggestions(query) {
         'sakurazaka': '樱坂46',
         'hinatazaka': '日向坂46'
       };
-      
+
       members.forEach(name => {
         membersList.push({
           name: name,
@@ -666,13 +721,13 @@ async function getMemberSuggestions(query) {
         });
       });
     }
-    
+
     // 前端搜索过滤
     const results = membersList.filter(member =>
       member.name.includes(query) ||
       (member.displayName && member.displayName.includes(query))
     ).slice(0, 5);
-    
+
     return results;
   } catch (error) {
     console.error('获取成员建议失败:', error);
@@ -753,13 +808,13 @@ function displayMemberSuggestions(suggestions) {
          onclick="selectMember('${member.name}', '${member.groupName}')">
       <div class="flex-shrink-0">
         ${member.avatar ?
-          `<img src="${member.avatar}" alt="${member.name}" class="w-8 h-8 rounded-full object-cover">` :
-          `<div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+      `<img src="${member.avatar}" alt="${member.name}" class="w-8 h-8 rounded-full object-cover">` :
+      `<div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
             <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 8zM12 14a7 7 0 00-7 7h14a7 7 0 00-7 7z" />
             </svg>
           </div>`
-        }
+    }
       </div>
       <div class="flex-1">
         <div class="font-medium text-gray-900">${member.displayName || member.name}</div>
@@ -921,7 +976,7 @@ function startAutoRefresh() {
 // ✅ loadingMore 已迁移到 App.state.loadingMore
 
 // 设置无限滚动
-window.setupInfiniteScroll = function() {
+window.setupInfiniteScroll = function () {
   console.log('[InfiniteScroll] 设置无限滚动');
 
   // 清理旧的观察器
@@ -989,7 +1044,7 @@ async function loadMoreBlogs() {
     if (loadingIndicator) {
       loadingIndicator.classList.add('hidden');
     }
-    
+
     // 如果没有更多内容，隐藏哨兵
     if (!App.state.hasMore) {
       const sentinel = document.getElementById('scrollSentinel');
