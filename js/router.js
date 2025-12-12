@@ -8,91 +8,128 @@ window.Router = {
   currentBlog: null,
   previousPage: 1,  // 保存离开列表页时的页码
   previousGroup: null,  // 保存离开列表页时的团体
-  
+  previousMemberFilter: '',  // 保存离开列表页时的成员筛选
+
   /**
    * 初始化路由
    */
   init() {
     console.log('[Router] 初始化路由管理');
-    
+
     // 监听浏览器前进后退
     window.addEventListener('popstate', (event) => {
       console.log('[Router] popstate事件:', event.state, window.location.hash);
       this.handleRoute();
     });
-    
+
     // 监听hash变化
     window.addEventListener('hashchange', (event) => {
       console.log('[Router] hashchange事件:', window.location.hash);
       this.handleRoute();
     });
-    
+
     // 初始路由处理（立即执行）
     this.handleRoute();
   },
-  
+
+  /**
+   * 解析 URL 中的查询参数
+   */
+  parseHashParams(hash) {
+    const result = { path: hash, params: {} };
+    const questionIndex = hash.indexOf('?');
+    if (questionIndex !== -1) {
+      result.path = hash.substring(0, questionIndex);
+      const queryString = hash.substring(questionIndex + 1);
+      const pairs = queryString.split('&');
+      pairs.forEach(pair => {
+        const [key, value] = pair.split('=');
+        if (key && value) {
+          result.params[key] = decodeURIComponent(value);
+        }
+      });
+    }
+    return result;
+  },
+
   /**
    * 处理路由
    */
   handleRoute() {
     const hash = window.location.hash;
     console.log('[Router] 处理路由:', hash);
-    
+
     if (!hash || hash === '#') {
       this.showGroupPage('all');
       return;
     }
-    
+
+    // 解析 hash 和查询参数
+    const { path, params } = this.parseHashParams(hash);
+    const memberFilter = params.member || '';
+
+    console.log('[Router] 解析路由:', { path, memberFilter });
+
     // 解析路由
-    if (hash.startsWith('#blog/')) {
+    if (path.startsWith('#blog/')) {
       // 博客详情页
-      const blogId = hash.substring(6);
+      const blogId = path.substring(6);
       this.showBlogDetail(blogId);
-    } else if (hash.includes('/member/')) {
+    } else if (path.includes('/member/')) {
       // 成员页面
-      const parts = hash.split('/');
+      const parts = path.split('/');
       const group = parts[0].substring(1); // 去掉#
       const member = decodeURIComponent(parts[2]);
       this.showMemberPage(member, group);
     } else {
-      // 团体页面
-      const group = hash.substring(1);
-      this.showGroupPage(group);
+      // 团体页面（可能带有成员筛选参数）
+      const group = path.substring(1);
+      this.showGroupPage(group, memberFilter);
     }
   },
-  
+
   /**
    * 显示团体页面
+   * @param {string} group - 团体名称
+   * @param {string} memberFilter - 可选的成员筛选参数
    */
-  async showGroupPage(group) {
+  async showGroupPage(group, memberFilter = '') {
     // 🚀 立即显示loading，提升感知响应速度
     if (window.showLoading) {
       window.showLoading();
     }
-    
+
     console.log('[Router] 显示团体页面:', group);
     console.log('[Router] 当前状态:', {
       currentView: this.currentView,
       stateMember: App.state.member,
       stateGroup: App.state.group
     });
-    
-    // ✅ 防止重复调用：如果已经在相同的团体页面，不重新加载
-    if (this.currentView === 'group' && 
-        App.state.group === group &&
-        !App.state.member) {  // 确保不是从成员页返回
-      console.log('[Router] 已经在当前团体页面，跳过重新加载');
+
+    // ✅ 防止重复调用：如果已经在相同的团体页面且筛选状态相同，不重新加载
+    const currentMemberFilter = App.state.search || '';
+    if (this.currentView === 'group' &&
+      App.state.group === group &&
+      currentMemberFilter === memberFilter &&
+      !App.state.member) {  // 确保不是从成员页返回
+      console.log('[Router] 已经在当前团体页面，筛选状态相同，跳过重新加载');
       // 确保隐藏loading
       if (window.hideLoading) {
         window.hideLoading();
       }
       return;
     }
-    
+
     // 🔧 修复：判断是否从详情页返回
     const isReturningFromDetail = this.currentView === 'blog';
     const isSameGroup = this.previousGroup === group;
-    
+
+    // 🔧 修复：从详情页返回时恢复成员筛选状态
+    if (isReturningFromDetail && isSameGroup && !memberFilter && this.previousMemberFilter) {
+      memberFilter = this.previousMemberFilter;
+      console.log(`[Router] 从详情页返回，恢复成员筛选: ${memberFilter}`);
+    }
+
     console.log('[Router] 继续执行showGroupPage，设置状态');
     this.currentView = 'group';
     App.state.member = '';  // 清除成员状态
@@ -105,7 +142,7 @@ window.Router = {
 
     // 设置统一状态
     App.state.group = group;
-    
+
     // 🔧 修复：从详情页返回同一团体时，恢复之前的页码
     if (isReturningFromDetail && isSameGroup && this.previousPage > 1) {
       console.log(`[Router] 从详情页返回，恢复页码: ${this.previousPage}`);
@@ -114,12 +151,15 @@ window.Router = {
       console.log('[Router] 切换团体或首次进入，重置为第1页');
       App.state.page = 1;  // 重置为第1页
     }
-    
-    App.state.search = '';
+
+    // 🔧 修复：根据 memberFilter 设置搜索状态
+    App.state.search = memberFilter;
     // 🔧 修复：只有'all'使用无限滚动，具体团体使用翻页
     App.state.hasMore = (group === 'all');
     App.state.blogs = [];    // 清空缓存的博客
-    
+    // 🔧 修复：重置 loading 状态，确保 loadBlogs 能够执行（修复手机端返回不显示内容问题）
+    App.state.loading = false;
+
     // 🎯 SEO 更新（模块化）
     if (App.seo && App.seo.manager) {
       if (group === 'all') {
@@ -135,10 +175,20 @@ window.Router = {
         App.pagination.reset();
       }
     }
-    
-    // ✅ 重置成员筛选器UI
-    if (window.resetMemberFilter) {
-      window.resetMemberFilter();
+
+    // ✅ 恢复或重置成员筛选器UI
+    if (memberFilter) {
+      // 恢复成员筛选状态
+      if (window.restoreMemberFilter) {
+        window.restoreMemberFilter(memberFilter);
+      }
+      console.log(`[Router] 恢复成员筛选: ${memberFilter}`);
+    } else {
+      // 🔧 修复：没有筛选参数时始终重置筛选器UI
+      if (window.resetMemberFilter) {
+        window.resetMemberFilter();
+      }
+      console.log('[Router] 重置成员筛选器');
     }
 
     console.log('[Router] 设置状态 App.state.group:', App.state.group);
@@ -175,6 +225,19 @@ window.Router = {
       console.log('[Router] 恢复博客容器显示');
       blogsContainer.style.display = '';
       blogsContainer.innerHTML = ''; // 清空旧内容
+    }
+
+    // 🔧 修复：清除搜索结果标题（如果存在）
+    const searchHeader = document.getElementById('searchResultHeader');
+    if (searchHeader) {
+      searchHeader.remove();
+      console.log('[Router] 清除搜索结果标题');
+    }
+
+    // 清空搜索框
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+      searchInput.value = '';
     }
 
     // 显示页脚
@@ -236,23 +299,23 @@ window.Router = {
       }
     }
   },
-  
+
   /**
    * 显示成员页面
    */
   showMemberPage(member, group) {
     console.log('[Router] 显示成员页面:', member, group);
     this.currentView = 'member';
-    
+
     // 设置统一状态
     App.state.group = group;
     App.state.member = member;
-    
+
     // 🎯 SEO 更新（模块化）
     if (App.seo && App.seo.manager) {
       App.seo.manager.updateMemberMeta(member, group);
     }
-    
+
     // 隐藏博客详情页
     const blogDetail = document.getElementById('blogDetail');
     if (blogDetail) {
@@ -263,42 +326,43 @@ window.Router = {
       }
       blogDetail.remove();
     }
-    
+
     // 调用成员页面显示
     if (window.MemberPage && window.MemberPage.showMemberPage) {
       window.MemberPage.showMemberPage(member, group);
     }
   },
-  
+
   /**
    * 显示博客详情页
    */
   async showBlogDetail(blogId) {
     console.log('[Router] 显示博客详情:', blogId);
-    
+
     // 🔧 保存当前状态，用于返回时恢复
     if (this.currentView === 'group') {
       this.previousPage = App.state.page || 1;
       this.previousGroup = App.state.group;
-      console.log(`[Router] 保存列表页状态: 团体=${this.previousGroup}, 页码=${this.previousPage}`);
+      this.previousMemberFilter = App.state.search || '';
+      console.log(`[Router] 保存列表页状态: 团体=${this.previousGroup}, 页码=${this.previousPage}, 成员筛选=${this.previousMemberFilter || '无'}`);
     }
-    
+
     this.currentView = 'blog';
     this.currentBlog = blogId;
-    
+
     // 隐藏成员页面
     const memberPageContainer = document.getElementById('memberPageContainer');
     if (memberPageContainer) {
       memberPageContainer.classList.add('hidden');
     }
-    
+
     // 先检查是否已经在详情页
     const existingDetail = document.getElementById('blogDetail');
     if (existingDetail) {
       console.log('[Router] 已经在详情页，更新内容');
       existingDetail.remove();
     }
-    
+
     // 调用博客详情显示
     if (window.showBlogDetail) {
       try {
@@ -309,8 +373,8 @@ window.Router = {
 
         if (data.success && data.blog) {
           // ✨ 数据源处理：统一格式化日期
-          const processedBlog = window.processBlogData 
-            ? window.processBlogData(data.blog) 
+          const processedBlog = window.processBlogData
+            ? window.processBlogData(data.blog)
             : data.blog;
           console.log('[Router] 调用showBlogDetail，传递博客数据避免重复请求');
           // 传递 blogData 参数，避免 loadBlogContent 重复请求
@@ -329,7 +393,7 @@ window.Router = {
       console.error('[Router] showBlogDetail函数不存在');
     }
   },
-  
+
   /**
    * 导航到指定路由
    */
@@ -339,7 +403,7 @@ window.Router = {
     console.log('[Router] 当前成员:', App.state.member);
     console.log('[Router] 是博客详情:', hash.startsWith('#blog/'));
     console.log('[Router] 是成员页面:', hash.includes('/member/'));
-    
+
     // 特殊处理：如果当前在成员页面，要切换到团体页面
     if (this.currentView === 'member' && !hash.includes('/member/') && !hash.startsWith('#blog/')) {
       console.log('[Router] 从成员页直接切换到团体页');
@@ -350,11 +414,11 @@ window.Router = {
       this.showGroupPage(group);
       return;
     }
-    
+
     console.log('[Router] 设置 window.location.hash');
     console.log('[Router] 当前 hash:', window.location.hash);
     console.log('[Router] 目标 hash:', hash);
-    
+
     if (window.location.hash === hash) {
       console.warn('[Router] hash 相同，手动调用 handleRoute');
       this.handleRoute();
@@ -362,7 +426,7 @@ window.Router = {
       window.location.hash = hash;
     }
   },
-  
+
   /**
    * 返回上一页
    */

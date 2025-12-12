@@ -686,12 +686,16 @@
         container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">正在加载...</div>';
       }
       
-      // 更新 URL 状态
-      history.replaceState({ 
+      // 🔧 修复：使用 pushState 创建历史记录，使用查询参数格式
+      const newHash = memberName 
+        ? `#${App.state.group}?member=${encodeURIComponent(memberName)}`
+        : `#${App.state.group}`;
+      
+      history.pushState({ 
         view: 'list', 
         group: App.state.group, 
         member: memberName || '' 
-      }, '', `#${App.state.group}${memberName ? '/' + encodeURIComponent(memberName) : ''}`);
+      }, '', newHash);
       
       // 重新加载数据
       loadBlogs();
@@ -703,6 +707,34 @@
       if (select) {
         select.value = '';
         console.log('[resetMemberFilter] 筛选器已重置');
+      }
+    }
+    
+    // 🔧 恢复筛选器（从详情页返回时调用）
+    window.restoreMemberFilter = function(memberName) {
+      const select = document.getElementById('memberSelect');
+      if (select && memberName) {
+        // 等待下拉框选项加载完成后再设置值
+        const tryRestore = () => {
+          // 查找匹配的选项（考虑选项文本可能包含更新时间等附加信息）
+          const options = select.querySelectorAll('option');
+          for (const option of options) {
+            if (option.value === memberName) {
+              select.value = memberName;
+              console.log('[restoreMemberFilter] 筛选器已恢复:', memberName);
+              return true;
+            }
+          }
+          return false;
+        };
+        
+        // 立即尝试恢复
+        if (!tryRestore()) {
+          // 如果失败，等待 DOM 更新后重试
+          setTimeout(() => {
+            tryRestore();
+          }, 500);
+        }
       }
     }
 
@@ -776,22 +808,44 @@
 
     // 显示搜索结果
     function displaySearchResults(blogs, query, count) {
-      const container = document.getElementById('blogsContainer');
-      container.innerHTML = '';
+      // 🔧 修复：隐藏与搜索无关的内容
+      const groupInfo = document.getElementById('groupInfo');
+      const memberListSection = document.getElementById('memberListSection');
+      const paginationContainer = document.getElementById('paginationContainer');
       
-      // 显示搜索提示
+      if (groupInfo) groupInfo.classList.add('hidden');
+      if (memberListSection) memberListSection.classList.add('hidden');
+      if (paginationContainer) paginationContainer.classList.add('hidden');
+      
+      // 🔧 修复：搜索标题放到 Grid 容器外面
+      // 先移除旧的搜索标题（如果存在）
+      const oldHeader = document.getElementById('searchResultHeader');
+      if (oldHeader) oldHeader.remove();
+      
+      const container = document.getElementById('blogsContainer');
+      
+      // 创建搜索标题，放到 container 之前
       const header = document.createElement('div');
+      header.id = 'searchResultHeader';
       header.style.cssText = 'padding: 20px 0; border-bottom: 1px solid #e2e8f0; margin-bottom: 20px;';
       header.innerHTML = `
-        <h3 style="font-size: 18px; font-weight: 600; color: #2d3748;">
-          搜索结果："${query}" <span style="color: #718096;">(找到 ${count} 篇博客)</span>
-        </h3>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="font-size: 18px; font-weight: 600; color: #2d3748;">
+            搜索结果："${query}" <span style="color: #718096;">(找到 ${count} 篇博客)</span>
+          </h3>
+          <button onclick="clearSearch()" style="padding: 6px 12px; font-size: 13px; color: #4a5568; background: #edf2f7; border: none; border-radius: 4px; cursor: pointer;">
+            清除搜索
+          </button>
+        </div>
       `;
-      container.appendChild(header);
+      container.parentNode.insertBefore(header, container);
+      
+      // 清空并填充博客容器
+      container.innerHTML = '';
       
       if (blogs.length === 0) {
-        container.innerHTML += `
-          <div style="text-align: center; padding: 60px 20px;">
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
             <svg style="width: 64px; height: 64px; margin: 0 auto 20px; color: #cbd5e0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
@@ -812,6 +866,30 @@
       if (window.observeElements) {
         const cards = container.querySelectorAll('.blog-card');
         setTimeout(() => window.observeElements(Array.from(cards)), 50);
+      }
+    }
+    
+    // 清除搜索，恢复正常列表
+    function clearSearch() {
+      // 移除搜索标题
+      const header = document.getElementById('searchResultHeader');
+      if (header) header.remove();
+      
+      // 清空搜索框
+      const searchInput = document.getElementById('searchInput');
+      if (searchInput) searchInput.value = '';
+      
+      // 重新加载当前团体的博客
+      if (window.loadBlogs) {
+        window.loadBlogs();
+      }
+      
+      // 恢复显示团体信息（如果当前不是 'all'）
+      if (App.state.group !== 'all') {
+        const groupInfo = document.getElementById('groupInfo');
+        const memberListSection = document.getElementById('memberListSection');
+        if (groupInfo) groupInfo.classList.remove('hidden');
+        if (memberListSection) memberListSection.classList.remove('hidden');
       }
     }
 
