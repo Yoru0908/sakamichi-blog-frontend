@@ -1,45 +1,48 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>数据统计 - 坂道博客翻译</title>
-  
+
   <!-- ✅ 网站图标 -->
   <link rel="icon" type="image/jpeg" href="/images/sakamichi.jpg">
   <link rel="apple-touch-icon" href="/images/sakamichi.jpg">
   <meta name="theme-color" content="#742581">
-  
+
   <!-- ✅ 性能优化：预连接 -->
   <link rel="preconnect" href="https://api.sakamichi-tools.cn">
-  
+
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3218605960303034"
-     crossorigin="anonymous"></script>
-  
+    crossorigin="anonymous"></script>
+
   <!-- DaisyUI + Tailwind CSS -->
   <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
   <script src="https://cdn.tailwindcss.com"></script>
-  
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
   <!-- 现有CSS文件 -->
   <link rel="stylesheet" href="css/main-styles.css">
   <link rel="stylesheet" href="css/mobile.css">
   <link rel="stylesheet" href="css/transitions.css">
   <link rel="stylesheet" href="css/dark-theme.css">
-  
+
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
+
   <!-- 配置文件 -->
   <script src="js/config.js"></script>
   <script src="js/state.js"></script>
   <script src="js/group-config.js"></script>
-  
+
   <!-- 🎯 SEO 管理器 -->
   <script src="js/seo-manager.js"></script>
 
@@ -51,38 +54,38 @@
 
   <!-- 移动端菜单 -->
   <script src="js/mobile-menu.js"></script>
-  
+
   <style>
     body {
       font-family: 'Noto Sans SC', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
       background: #f5f5f5;
     }
-    
+
     .stat-card {
       background: white;
       border-radius: 0;
       padding: 24px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       transition: transform 0.2s;
     }
-    
+
     .stat-card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
-    
+
     .stat-number {
       font-size: 48px;
       font-weight: bold;
       line-height: 1.2;
     }
-    
+
     .stat-label {
       font-size: 14px;
       color: #6b7280;
       margin-top: 4px;
     }
-    
+
     .stat-badge {
       display: inline-block;
       padding: 4px 12px;
@@ -91,7 +94,7 @@
       font-weight: 500;
       margin-top: 8px;
     }
-    
+
     .group-tab {
       padding: 12px 24px;
       border: none;
@@ -101,27 +104,27 @@
       transition: all 0.3s;
       border-bottom: 2px solid transparent;
     }
-    
+
     .group-tab:hover {
       background: #f9fafb;
     }
-    
+
     .group-tab.active {
       color: #3b82f6;
       border-bottom-color: #3b82f6;
     }
-    
+
     .chart-container {
       position: relative;
       height: 400px;
       background: white;
       padding: 24px;
       border-radius: 0;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
-    
   </style>
 </head>
+
 <body>
   <!-- Header -->
   <header class="bg-white shadow-sm sticky top-0 z-50 border-b">
@@ -129,9 +132,10 @@
       <div class="flex items-center justify-between" style="height: 56px;">
         <!-- 左侧：标题 + 返回链接 -->
         <div class="flex items-center gap-8">
-          <a href="index.html" class="text-xl font-bold whitespace-nowrap flex items-center gap-2 text-blue-600 hover:text-blue-800">
+          <a href="index.html"
+            class="text-xl font-bold whitespace-nowrap flex items-center gap-2 text-blue-600 hover:text-blue-800">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
+              <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
             坂道博客翻译
           </a>
@@ -144,19 +148,21 @@
         <div class="flex items-center gap-3">
           <!-- PC端主题切换按钮 -->
           <button id="themeToggleDesktop" class="theme-toggle-btn desktop-only" title="切换主题">
-            <svg class="theme-icon-light" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="5"/>
-              <line x1="12" y1="1" x2="12" y2="3"/>
-              <line x1="12" y1="21" x2="12" y2="23"/>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-              <line x1="1" y1="12" x2="3" y2="12"/>
-              <line x1="21" y1="12" x2="23" y2="12"/>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            <svg class="theme-icon-light" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <circle cx="12" cy="12" r="5" />
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
             </svg>
-            <svg class="theme-icon-dark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            <svg class="theme-icon-dark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
             </svg>
           </button>
 
@@ -192,7 +198,7 @@
       <div class="mobile-nav-item">
         <a href="index.html" class="flex items-center gap-2">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
+            <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
           返回主页
         </a>
@@ -214,19 +220,21 @@
     <!-- 移动端主题切换 -->
     <div class="mobile-theme-toggle">
       <button id="themeToggleMobile" class="theme-toggle-btn-mobile">
-        <svg class="theme-icon-light" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="5"/>
-          <line x1="12" y1="1" x2="12" y2="3"/>
-          <line x1="12" y1="21" x2="12" y2="23"/>
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-          <line x1="1" y1="12" x2="3" y2="12"/>
-          <line x1="21" y1="12" x2="23" y2="12"/>
-          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        <svg class="theme-icon-light" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <circle cx="12" cy="12" r="5" />
+          <line x1="12" y1="1" x2="12" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
         </svg>
-        <svg class="theme-icon-dark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        <svg class="theme-icon-dark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
         </svg>
         <span class="theme-text">亮色模式</span>
       </button>
@@ -236,7 +244,7 @@
     <div class="mobile-lang-toggle">
       <button id="langToggleMobile" class="lang-toggle-btn-mobile">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h2m-1 0v6"/>
+          <path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h2m-1 0v6" />
         </svg>
         <span class="lang-text">简体中文</span>
       </button>
@@ -249,24 +257,27 @@
     <h1 class="text-4xl font-bold text-center mb-8" style="color: #1f2937;">
       博客统计分析
     </h1>
-    
+
     <!-- 筛选栏 -->
     <div class="bg-white shadow-sm p-6 mb-6" style="box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
       <div class="flex flex-wrap items-center gap-4">
         <div class="flex items-center gap-2">
           <label class="text-sm font-medium text-gray-700">年份</label>
-          <select id="yearSelect" onchange="onFilterChange()" style="padding: 8px 16px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; cursor: pointer; width: 120px;">
-            <option value="2025" selected>2025年</option>
+          <select id="yearSelect" onchange="onFilterChange()"
+            style="padding: 8px 16px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; cursor: pointer; width: 120px;">
+            <option value="2026" selected>2026年</option>
+            <option value="2025">2025年</option>
             <option value="2024">2024年</option>
             <option value="2023">2023年</option>
           </select>
         </div>
-        
+
         <div class="flex items-center gap-2">
           <label class="text-sm font-medium text-gray-700">月份</label>
-          <select id="monthSelect" onchange="onFilterChange()" style="padding: 8px 16px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; cursor: pointer; width: 120px;">
+          <select id="monthSelect" onchange="onFilterChange()"
+            style="padding: 8px 16px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; cursor: pointer; width: 120px;">
             <option value="all">全年</option>
-            <option value="1">1月</option>
+            <option value="1" selected>1月</option>
             <option value="2">2月</option>
             <option value="3">3月</option>
             <option value="4">4月</option>
@@ -275,13 +286,13 @@
             <option value="7">7月</option>
             <option value="8">8月</option>
             <option value="9">9月</option>
-            <option value="10" selected>10月</option>
+            <option value="10">10月</option>
             <option value="11">11月</option>
             <option value="12">12月</option>
           </select>
         </div>
       </div>
-      
+
       <!-- 团体标签 -->
       <div class="flex gap-2 mt-6 border-b">
         <button class="group-tab active" data-group="all" onclick="switchGroup('all')">
@@ -298,7 +309,7 @@
         </button>
       </div>
     </div>
-    
+
     <!-- 统计卡片 -->
     <div id="statsCards" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
       <!-- Loading状态 -->
@@ -306,7 +317,7 @@
         <div class="text-gray-500">正在加载统计数据...</div>
       </div>
     </div>
-    
+
     <!-- 图表 -->
     <div class="chart-container">
       <h2 class="text-xl font-bold mb-4" style="color: #1f2937;" id="chartTitle">
@@ -320,7 +331,7 @@
     // ✅ 使用真实API获取数据
     let realData = {};
     let isLoading = false;
-    
+
     // 临时mock数据（API加载前使用）
     const mockData = {
       all: {
@@ -440,10 +451,10 @@
         ]
       }
     };
-    
+
     let currentGroup = 'nogizaka';
     let chart = null;
-    
+
     // ✅ 复用主应用的官方标准配置（group-config.js）
     const groupColors = {
       all: '#6b7280',
@@ -451,28 +462,28 @@
       sakurazaka: window.GroupConfig?.getColor('sakurazaka') || '#F19DB5',
       hinatazaka: window.GroupConfig?.getColor('hinatazaka') || '#7BC7E8'
     };
-    
+
     const groupNames = {
       all: '全部团体',
       nogizaka: window.GroupConfig?.getDisplayName('nogizaka') || '乃木坂46',
       sakurazaka: window.GroupConfig?.getDisplayName('sakurazaka') || '樱坂46',
       hinatazaka: window.GroupConfig?.getDisplayName('hinatazaka') || '日向坂46'
     };
-    
+
     // 更新图表
     function updateChart(data, color) {
       const ctx = document.getElementById('memberChart').getContext('2d');
-      
+
       if (chart) {
         chart.destroy();
       }
-      
+
       // 检查数据是否为空
       if (!data || data.length === 0) {
         console.warn('[Stats] 没有数据可以显示图表');
         return;
       }
-      
+
       chart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -498,7 +509,7 @@
               titleFont: { size: 14 },
               bodyFont: { size: 13 },
               callbacks: {
-                label: function(context) {
+                label: function (context) {
                   return `博客数: ${context.parsed.y}篇`;
                 }
               }
@@ -520,7 +531,7 @@
               ticks: {
                 font: { size: 12 },
                 stepSize: 1,
-                callback: function(value) {
+                callback: function (value) {
                   // 只显示整数
                   if (Number.isInteger(value)) {
                     return value + '篇';
@@ -536,11 +547,11 @@
         }
       });
     }
-    
+
     // 从真实API加载数据
     async function loadRealData(group) {
       const apiBase = window.API_BASE_URL || window.API_BASE || 'https://api.sakamichi-tools.cn';
-      
+
       // 处理group名称
       let groupDisplayName;
       if (group === 'all') {
@@ -548,22 +559,22 @@
       } else {
         groupDisplayName = window.GroupConfig?.getDisplayName(group) || group;
       }
-      
+
       console.log(`[Stats] 加载${groupDisplayName}数据...`);
-      
+
       try {
         isLoading = true;
-        
+
         let allBlogs = [];
         let totalMembersCount = 0; // 真实的总成员数
         let currentMembersList = []; // 在籍成员名单
-        
+
         // 如果是全部团体，需要分别加载三个团体
         if (group === 'all') {
           const groups = ['nogizaka', 'sakurazaka', 'hinatazaka'];
           for (const g of groups) {
             const gName = window.GroupConfig?.getDisplayName(g) || g;
-            
+
             // 加载博客数据
             const response = await fetch(
               `${apiBase}/api/blogs?group=${encodeURIComponent(gName)}&limit=2000`
@@ -572,7 +583,7 @@
             if (data.success && data.blogs) {
               allBlogs = allBlogs.concat(data.blogs);
             }
-            
+
             // 加载完整成员列表
             try {
               const membersResponse = await fetch(`${apiBase}/api/members/${g}`);
@@ -599,7 +610,7 @@
           if (data.success && data.blogs) {
             allBlogs = data.blogs;
           }
-          
+
           // 加载完整成员列表
           try {
             const membersResponse = await fetch(`${apiBase}/api/members/${group}`);
@@ -617,26 +628,26 @@
             console.warn(`[Stats] 获取${group}成员列表失败:`, error);
           }
         }
-        
+
         if (allBlogs.length > 0) {
           console.log(`[Stats] 成功加载 ${allBlogs.length} 篇博客`);
-          
+
           // 按年月筛选
           const filteredBlogs = filterBlogsByDate(allBlogs);
           console.log(`[Stats] 筛选后 ${filteredBlogs.length} 篇博客`);
           console.log(`[Stats] 在籍成员数: ${currentMembersList.length}`, currentMembersList.slice(0, 5), '...');
-          
+
           // 使用公共统计函数
           const stats = calculateMemberStats(filteredBlogs, currentMembersList, totalMembersCount);
-          
+
           console.log(`[Stats] Top 20 成员:`, stats.topMembers.map(m => `${m.name}:${m.count}`).join(', '));
-          
+
           realData[group] = {
             ...stats,
             allBlogs: allBlogs, // 保存原始数据用于重新筛选
             currentMembersList: currentMembersList // 保存成员列表用于筛选
           };
-          
+
           console.log(`[Stats] ${groupDisplayName} 统计完成:`, {
             activeMembers: stats.activeMembers,
             totalMembers: stats.totalMembers,
@@ -644,14 +655,14 @@
             avgBlogs: stats.avgBlogs,
             topMembersCount: stats.topMembers.length
           });
-          
+
           // ❌ 删除自动更新，避免闪烁
           // 只在初始化完成或手动切换团体时更新
-          
+
         } else {
           console.error('[Stats] 没有获取到博客数据');
         }
-        
+
       } catch (error) {
         console.error(`[Stats] 加载${groupDisplayName}数据失败:`, error);
         alert(`加载数据失败: ${error.message}\n\n将使用模拟数据展示`);
@@ -659,58 +670,58 @@
         isLoading = false;
       }
     }
-    
+
     // 按日期筛选博客
     function filterBlogsByDate(blogs) {
       const year = document.getElementById('yearSelect').value;
       const month = document.getElementById('monthSelect').value;
-      
+
       return blogs.filter(blog => {
         if (!blog.publish_date) return false;
-        
+
         const date = blog.formatted_date || blog.publish_date;
-        
+
         // 提取年份和月份（支持多种格式：2025.10.22, 2025/10/22, 2025-10-22）
         const match = date.match(/(\d{4})[.\/\-](\d{1,2})/);
         if (!match) return false;
-        
+
         const blogYear = match[1];
         const blogMonth = parseInt(match[2]);
-        
+
         // 年份筛选
         if (blogYear !== year) return false;
-        
+
         // 月份筛选
         if (month !== 'all' && blogMonth !== parseInt(month)) return false;
-        
+
         return true;
       });
     }
-    
+
     // 提取的公共统计函数
     function calculateMemberStats(blogs, currentMembersList, existingTotalMembers) {
       // 统计成员数据
       const memberStats = {};
       const notFoundMembers = new Set(); // 记录找不到的成员
-      
+
       // 创建无空格的成员名单用于匹配
       const normalizedMembersList = currentMembersList.map(name => name.replace(/\s+/g, ''));
-      
+
       // ⚠️ 特殊成员列表（不计入统计）
       const specialMembers = ['ポカ']; // 日向坂46吉祥物
-      
+
       blogs.forEach(blog => {
         const member = blog.member;
         if (!member) return;
-        
+
         // 跳过特殊成员（不计入统计）
         if (specialMembers.includes(member)) {
           return;
         }
-        
+
         // ✅ 标准化名字（去掉空格）
         const normalizedMember = member.replace(/\s+/g, '');
-        
+
         // 检查成员是否在名单中（去空格比较）
         if (currentMembersList.length > 0) {
           const memberIndex = normalizedMembersList.indexOf(normalizedMember);
@@ -721,7 +732,7 @@
           }
           // 使用标准化的名字（无空格）作为key
           const standardName = currentMembersList[memberIndex];
-          
+
           if (!memberStats[standardName]) {
             memberStats[standardName] = { name: standardName, count: 0 };
           }
@@ -734,30 +745,30 @@
           memberStats[normalizedMember].count++;
         }
       });
-      
+
       // 输出找不到的成员（排除特殊成员）
       const reallyNotFound = Array.from(notFoundMembers).filter(m => !specialMembers.includes(m));
       if (reallyNotFound.length > 0) {
         console.warn(`[Stats] ⚠️ 以下成员在成员列表中找不到 (共${reallyNotFound.length}人):`, reallyNotFound);
         console.warn('[Stats] 这可能是名字格式不匹配的问题');
       }
-      
+
       // 记录特殊成员（仅作信息展示）
       const foundSpecial = Array.from(notFoundMembers).filter(m => specialMembers.includes(m));
       if (foundSpecial.length > 0) {
         console.log(`[Stats] ℹ️ 检测到特殊成员博客（不计入统计）:`, foundSpecial);
       }
-      
+
       // 排序取前20
       const topMembers = Object.values(memberStats)
         .sort((a, b) => b.count - a.count)
         .slice(0, 20);
-      
+
       // 计算统计数据
       const activeMembers = Object.keys(memberStats).length; // 发了博客的成员数
       const totalBlogs = blogs.length;
       const avgBlogs = activeMembers > 0 ? (totalBlogs / activeMembers).toFixed(1) : 0;
-      
+
       return {
         activeMembers: activeMembers,
         totalMembers: existingTotalMembers || activeMembers, // 保留原有总成员数
@@ -767,14 +778,14 @@
         topMembers: topMembers
       };
     }
-    
+
     // 时间筛选改变时触发
     function onFilterChange() {
       console.log('[Stats] 时间筛选改变，重新统计...');
-      
+
       // ✅ 更新所有已加载的团体数据，确保状态一致性
       const allGroups = ['all', 'nogizaka', 'sakurazaka', 'hinatazaka'];
-      
+
       allGroups.forEach(g => {
         if (realData[g] && realData[g].allBlogs) {
           const stats = calculateMemberStats(
@@ -785,10 +796,10 @@
           Object.assign(realData[g], stats);
         }
       });
-      
+
       updateStats();
     }
-    
+
     // 渲染卡片
     function renderStatsCards() {
       const container = document.getElementById('statsCards');
@@ -796,7 +807,7 @@
       const month = document.getElementById('monthSelect').value;
       const monthText = month === 'all' ? '全年' : `${month}月`;
       const periodText = `${year}年${monthText}`;
-      
+
       if (currentGroup === 'all') {
         // 全部团体：显示三个团体的详细信息
         const groups = ['nogizaka', 'sakurazaka', 'hinatazaka'];
@@ -814,7 +825,7 @@
           return sum + (gData?.activeMembers || gData?.members || 0);
         }, 0);
         const avgBlogs = activeMembers > 0 ? (totalBlogs / activeMembers).toFixed(1) : '0.0';
-        
+
         container.innerHTML = `
           <!-- 总成员数 -->
           <div class="stat-card">
@@ -824,17 +835,17 @@
             </div>
             <div style="margin-top: 16px; space-y-2;">
               ${groups.map(g => {
-                const gData = realData[g] || mockData[g];
-                const gColor = groupColors[g];
-                const activeCount = gData.activeMembers || gData.members;
-                const totalCount = gData.totalMembers || gData.members;
-                return `
+          const gData = realData[g] || mockData[g];
+          const gColor = groupColors[g];
+          const activeCount = gData.activeMembers || gData.members;
+          const totalCount = gData.totalMembers || gData.members;
+          return `
                   <div class="flex justify-between items-center py-1">
                     <span class="text-sm text-gray-700">${groupNames[g]}</span>
                     <span class="text-lg font-bold px-3 py-1" style="background: ${gColor}20; color: ${gColor}; border-radius: 6px;">${activeCount}/${totalCount}人</span>
                   </div>
                 `;
-              }).join('')}
+        }).join('')}
             </div>
           </div>
           
@@ -846,15 +857,15 @@
             </div>
             <div style="margin-top: 16px; space-y-2;">
               ${groups.map(g => {
-                const gData = realData[g] || mockData[g];
-                const gColor = groupColors[g];
-                return `
+          const gData = realData[g] || mockData[g];
+          const gColor = groupColors[g];
+          return `
                   <div class="flex justify-between items-center py-1">
                     <span class="text-sm text-gray-700">${groupNames[g]}</span>
                     <span class="text-lg font-bold px-3 py-1" style="background: ${gColor}20; color: ${gColor}; border-radius: 6px;">${gData.blogs}篇</span>
                   </div>
                 `;
-              }).join('')}
+        }).join('')}
             </div>
           </div>
           
@@ -868,15 +879,15 @@
                 <span class="text-lg font-bold px-3 py-1" style="background: #10b98120; color: #10b981; border-radius: 6px;">${avgBlogs}篇/人</span>
               </div>
               ${groups.map(g => {
-                const gData = realData[g] || mockData[g];
-                const gColor = groupColors[g];
-                return `
+          const gData = realData[g] || mockData[g];
+          const gColor = groupColors[g];
+          return `
                   <div class="flex justify-between items-center py-1">
                     <span class="text-sm text-gray-700">${groupNames[g]}平均</span>
                     <span class="text-lg font-bold px-3 py-1" style="background: ${gColor}20; color: ${gColor}; border-radius: 6px;">${gData.avgBlogs}篇/人</span>
                   </div>
                 `;
-              }).join('')}
+        }).join('')}
             </div>
           </div>
         `;
@@ -887,7 +898,7 @@
         const groupName = groupNames[currentGroup];
         const activeCount = data.activeMembers || data.members;
         const totalCount = data.totalMembers || data.members;
-        
+
         container.innerHTML = `
           <!-- 总成员数 -->
           <div class="stat-card">
@@ -931,39 +942,39 @@
         `;
       }
     }
-    
+
     // 修改updateStats使用真实数据
     function updateStats() {
       // 优先使用真实数据，否则使用mock数据
       const data = realData[currentGroup] || mockData[currentGroup];
       const color = groupColors[currentGroup];
       const groupName = groupNames[currentGroup];
-      
+
       console.log(`[Stats] updateStats - Group: ${currentGroup}`, {
         hasRealData: !!realData[currentGroup],
         topMembersCount: data.topMembers?.length || 0,
         totalBlogs: data.blogs
       });
-      
+
       if (!realData[currentGroup]) {
         console.log(`[Stats] 使用模拟数据展示 ${groupName}`);
       }
-      
+
       // 渲染卡片
       renderStatsCards();
-      
+
       // 更新图表标题
       document.getElementById('chartTitle').textContent = `成员博客统计图表 - ${groupName} (前20名)`;
-      
+
       // 更新图表
       console.log(`[Stats] 准备更新图表，数据长度: ${data.topMembers?.length || 0}`);
       updateChart(data.topMembers, color);
     }
-    
+
     // 修改switchGroup加载真实数据
     function switchGroup(group) {
       currentGroup = group;
-      
+
       // 更新标签状态
       document.querySelectorAll('.group-tab').forEach(tab => {
         tab.classList.remove('active');
@@ -971,7 +982,7 @@
           tab.classList.add('active');
         }
       });
-      
+
       // 如果没有真实数据，先加载
       if (!realData[group] && !isLoading) {
         loadRealData(group);
@@ -979,11 +990,11 @@
         updateStats();
       }
     }
-    
+
     // 初始化 - 等待第一个团体数据加载完成后再显示
     console.log('[Stats] 初始化统计页面...');
     currentGroup = 'all'; // 默认显示全部团体
-    
+
     // 异步加载所有团体数据
     async function loadAllGroups() {
       console.log('[Stats] 开始加载所有团体数据...');
@@ -997,13 +1008,14 @@
       // ✅ 数据加载完成后才第一次显示
       updateStats();
     }
-    
+
     loadAllGroups();
-    
+
     // 🎯 统计页面 SEO 更新（模块化）
     if (App.seo && App.seo.manager) {
       App.seo.manager.updateStatsMeta();
     }
   </script>
 </body>
+
 </html>
