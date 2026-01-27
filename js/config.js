@@ -38,16 +38,18 @@ const CLOUDINARY_CONFIG = {
  * @param {string} originalUrl - 原始图片URL
  * @returns {string} - 优化后的URL
  */
-function getCloudinaryUrl(originalUrl) {
+function getCloudinaryUrl(originalUrl, customWidth = null) {
   if (!CLOUDINARY_CONFIG.enabled) return originalUrl;
   if (!originalUrl || !originalUrl.startsWith('http')) return originalUrl;
-  
+
   const { cloudName, transformations } = CLOUDINARY_CONFIG;
-  const { width, quality, format, crop } = transformations;
-  
+  // Use custom width if provided, otherwise default config
+  const width = customWidth || transformations.width;
+  const { quality, format, crop } = transformations;
+
   const encodedUrl = encodeURIComponent(originalUrl);
   const transformStr = `w_${width},q_${quality},f_${format},c_${crop}`;
-  
+
   return `https://res.cloudinary.com/${cloudName}/image/fetch/${transformStr}/${encodedUrl}`;
 }
 
