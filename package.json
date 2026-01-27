@@ -21,6 +21,10 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "lighthouse": "^11.0.0"
+    "autoprefixer": "^10.4.23",
+    "daisyui": "^5.5.14",
+    "lighthouse": "^11.0.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17"
   }
 }

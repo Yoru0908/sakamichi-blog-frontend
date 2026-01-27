@@ -13,14 +13,14 @@
 
   <!-- ✅ 性能优化：预连接 -->
   <link rel="preconnect" href="https://api.sakamichi-tools.cn">
+  <link rel="preconnect" href="https://res.cloudinary.com">
 
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3218605960303034"
     crossorigin="anonymous"></script>
 
-  <!-- DaisyUI + Tailwind CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- DaisyUI + Tailwind CSS (Static) -->
+  <link rel="stylesheet" href="css/tailwind-output.css">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -123,6 +123,12 @@
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
   </style>
+  =======
+  <!-- DaisyUI + Tailwind CSS (Static) -->
+  <link rel="stylesheet" href="css/tailwind-output.css">
+
+  <!-- Google Fonts -->
+  >>>>>>> e6f6058 (feat(perf): replace tailwind cdn with static css build and optimize LCP)
 </head>
 
 <body>
