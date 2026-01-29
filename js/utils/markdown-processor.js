@@ -11,9 +11,15 @@ const MarkdownProcessor = {
    */
   processImages(content) {
     return content.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, url) => {
+      // 🚀 Cloudinary优化：限制最大宽度 800px
+      let optimizedUrl = url;
+      if (typeof window.getCloudinaryUrl === 'function') {
+        optimizedUrl = window.getCloudinaryUrl(url, 800);
+      }
+
       return `
         <div class="blog-image-wrapper my-4">
-          <img data-src="${url}" 
+          <img data-src="${optimizedUrl}" 
                alt="${alt || '图片'}" 
                class="w-full rounded-lg lazy-image" 
                onload="this.classList.add('loaded')" />
@@ -39,9 +45,9 @@ const MarkdownProcessor = {
   processLinks(content) {
     return content.replace(/(https?:\/\/[^\s<]+)/g, (match) => {
       // 如果是图片格式或已经在 img 标签中，不处理
-      if (match.includes('.jpg') || match.includes('.png') || 
-          match.includes('.gif') || match.includes('.jpeg') || 
-          match.includes('.webp')) {
+      if (match.includes('.jpg') || match.includes('.png') ||
+        match.includes('.gif') || match.includes('.jpeg') ||
+        match.includes('.webp')) {
         return match;
       }
       // ✅ 添加内联样式确保链接可点击
@@ -56,7 +62,7 @@ const MarkdownProcessor = {
    */
   process(content) {
     if (!content) return '';
-    
+
     let result = content;
     result = this.processImages(result);
     result = this.processBold(result);

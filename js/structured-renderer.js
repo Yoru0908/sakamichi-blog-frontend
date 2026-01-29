@@ -14,14 +14,14 @@ function renderStructuredContent(content, images = []) {
   if (!content) return '';
 
   console.log('[结构化渲染] 开始处理内容，长度:', content.length);
-  
+
   // 首先提取所有图片URL（在移除frontmatter之前）
   const extractedImages = extractImageUrlsFromContent(content);
   if (extractedImages.length > 0) {
     images = extractedImages;
     console.log('[结构化渲染] 提取到图片URL:', images);
   }
-  
+
   // 移除frontmatter（如果存在）
   let cleanContent = content;
   if (cleanContent.startsWith('---')) {
@@ -68,14 +68,19 @@ function renderStructuredContent(content, images = []) {
       // 如果提供了图片数组，使用对应的URL
       if (images && images[imageNum - 1]) {
         const imageUrl = images[imageNum - 1];
-        
+
         // 🚀 性能优化：首屏图片（前8张）使用 eager loading
-        // 前8个博客卡片在首屏立即显示，必须立即加载图片
-        const loadingStrategy = imageNum <= 8 
+        // 🚀 Cloudinary优化：限制所有内容图片最大宽度为 800px（保持清晰度但大幅减小体积）
+        let optimizedUrl = imageUrl;
+        if (typeof window.getCloudinaryUrl === 'function') {
+          optimizedUrl = window.getCloudinaryUrl(imageUrl, 800);
+        }
+
+        const loadingStrategy = imageNum <= 8
           ? 'loading="eager" fetchpriority="high"'  // 首屏8张图片立即加载
           : 'loading="lazy"';  // 其他图片懒加载
-        
-        result.push(`<img src="${imageUrl}" alt="图片${imageNum}" class="w-full my-4 rounded-lg" ${loadingStrategy} />`);
+
+        result.push(`<img src="${optimizedUrl}" alt="图片${imageNum}" class="w-full my-4 rounded-lg" ${loadingStrategy} />`);
       } else {
         // 否则使用占位符
         result.push(`<!-- Image ${imageNum} placeholder -->`);
@@ -85,7 +90,7 @@ function renderStructuredContent(content, images = []) {
 
     // 处理普通文本
     let processedLine = line;
-    
+
     // 使用统一的 Markdown 处理器
     if (typeof MarkdownProcessor !== 'undefined') {
       // 检查是否包含 Markdown 图片（用于日志）
@@ -144,14 +149,14 @@ function extractImageUrls(content) {
  */
 function extractImageUrlsFromContent(content) {
   const images = [];
-  
+
   // 先尝试提取Markdown格式的图片
   const markdownRegex = /!\[.*?\]\((https?:\/\/[^\)]+)\)/g;
   let match;
   while ((match = markdownRegex.exec(content)) !== null) {
     images.push(match[1]);
   }
-  
+
   // 如果没有找到Markdown格式的图片，尝试提取纯URL
   if (images.length === 0) {
     const urlRegex = /https?:\/\/[^\s]+\.(jpg|jpeg|png|gif|webp)/gi;
@@ -160,7 +165,7 @@ function extractImageUrlsFromContent(content) {
       images.push(urlMatch[0]);
     }
   }
-  
+
   return images;
 }
 

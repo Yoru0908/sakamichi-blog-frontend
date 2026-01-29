@@ -1,6 +1,7 @@
 /**
  * 统一路由管理模块
  * 处理所有页面的路由跳转和状态管理
+ * 🚀 支持按需加载 JS 模块
  */
 
 window.Router = {
@@ -30,6 +31,46 @@ window.Router = {
 
     // 初始路由处理（立即执行）
     this.handleRoute();
+  },
+
+  /**
+   * 动态加载脚本文件
+   * @param {string} url - 脚本路径
+   */
+  loadScript(url) {
+    return new Promise((resolve, reject) => {
+      // 检查是否已经加载
+      const existing = document.querySelector(`script[src="${url}"]`);
+      if (existing) {
+        if (existing.dataset.loaded === 'true') {
+          resolve();
+        } else {
+          // 如果正在加载中，添加监听器
+          existing.addEventListener('load', () => resolve());
+          existing.addEventListener('error', () => reject(new Error(`Failed to load ${url}`)));
+        }
+        return;
+      }
+
+      console.log(`[Router] 动态加载脚本: ${url}`);
+      const script = document.createElement('script');
+      script.src = url;
+      script.dataset.loaded = 'false';
+      script.defer = true;
+
+      script.onload = () => {
+        console.log(`[Router] 脚本加载成功: ${url}`);
+        script.dataset.loaded = 'true';
+        resolve();
+      };
+
+      script.onerror = () => {
+        console.error(`[Router] 脚本加载失败: ${url}`);
+        reject(new Error(`Failed to load ${url}`));
+      };
+
+      document.body.appendChild(script);
+    });
   },
 
   /**
@@ -303,7 +344,7 @@ window.Router = {
   /**
    * 显示成员页面
    */
-  showMemberPage(member, group) {
+  async showMemberPage(member, group) {
     console.log('[Router] 显示成员页面:', member, group);
     this.currentView = 'member';
 
@@ -314,6 +355,24 @@ window.Router = {
     // 🎯 SEO 更新（模块化）
     if (App.seo && App.seo.manager) {
       App.seo.manager.updateMemberMeta(member, group);
+    }
+
+    // 🚀 按需加载成员页面脚本
+    if (typeof window.MemberPage === 'undefined') {
+      console.log('[Router] 动态加载 MemberPage 模块...');
+      if (window.showLoading) window.showLoading();
+
+      try {
+        await this.loadScript('js/member-page.js');
+        // 预加载详情页相关，因为用户很可能点击博客详情
+        this.loadScript('js/member-detail.js');
+        console.log('[Router] MemberPage 模块加载完成');
+      } catch (e) {
+        console.error('[Router] 加载 MemberPage 模块失败:', e);
+        if (window.hideLoading) window.hideLoading();
+        return;
+      }
+      if (window.hideLoading) window.hideLoading();
     }
 
     // 隐藏博客详情页
@@ -361,6 +420,23 @@ window.Router = {
     if (existingDetail) {
       console.log('[Router] 已经在详情页，更新内容');
       existingDetail.remove();
+    }
+
+    // 🚀 按需加载博客详情相关脚本
+    // 需要: showBlogDetail (在 index.html 或 member-detail.js?), BlogDetailSidebar
+    // 注意：showBlogDetail 实际上是在 index.html 中定义的（之前看到的），但依赖 blog-detail-sidebar.js
+    if (typeof window.BlogDetailSidebar === 'undefined') {
+      console.log('[Router] 动态加载 BlogDetailSidebar 模块...');
+      if (window.showLoading) window.showLoading();
+      try {
+        await Promise.all([
+          this.loadScript('js/member-detail.js'), // 可能包含渲染逻辑
+          this.loadScript('js/blog-detail-sidebar.js')
+        ]);
+      } catch (e) {
+        console.error('[Router] 加载详情页模块失败:', e);
+      }
+      if (window.hideLoading) window.hideLoading();
     }
 
     // 调用博客详情显示
