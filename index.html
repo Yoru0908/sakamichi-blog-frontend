@@ -858,19 +858,20 @@
           const originalUrl = imageMatch[1];
           
           // ✅ 响应式图片优化：生成多个尺寸
-          const url360 = window.getCloudinaryUrl(originalUrl, 360); // 移动端小图
-          const url600 = window.getCloudinaryUrl(originalUrl, 600); // 桌面端/高清图
+          const url180 = window.getCloudinaryUrl(originalUrl, 180); // 移动端小卡片（2列布局，每列约180px）
+          const url360 = window.getCloudinaryUrl(originalUrl, 360); // 高清手机/平板
+          const url600 = window.getCloudinaryUrl(originalUrl, 600); // 桌面端
           
           // 构建 srcset 和 sizes
-          // 手机端(<=640px)会优先加载 url360，节省 ~40% 流量
-          const srcset = `${url360} 360w, ${url600} 600w`;
-          const sizes = `(max-width: 640px) 100vw, 600px`;
+          // 🔧 修复：手机端2列布局，每张卡片约50vw（~180px），不是100vw
+          const srcset = `${url180} 180w, ${url360} 360w, ${url600} 600w`;
+          const sizes = `(max-width: 640px) 50vw, 300px`;
           
           // ⚡ 前8张eager loading（立即加载），其他lazy loading（滚动加载）
           const loadingAttr = index < 8 ? 'loading="eager" fetchpriority="high"' : 'loading="lazy"';
           
           // 使用<img>标签 + 优化的加载策略 + 绝对定位 + 响应式
-          imageHtml = `<img src="${url600}" srcset="${srcset}" sizes="${sizes}" alt="${blog.title}" ${loadingAttr} style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">`;
+          imageHtml = `<img src="${url360}" srcset="${srcset}" sizes="${sizes}" alt="${blog.title}" ${loadingAttr} style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">`;
         }
       }
       
