@@ -278,75 +278,11 @@
     <!-- 博客列表 -->
     <div class="mb-8">
       <div id="blogsContainer" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-4" style="min-height: 400px;">
-        <!-- 🦴 骨架屏：8张卡片占位，防止CLS布局偏移 -->
-        <div class="skeleton-card blog-card">
-          <div class="blog-card-image skeleton-shimmer"></div>
-          <div class="blog-card-content">
-            <div class="skeleton-text skeleton-shimmer" style="width: 60%; height: 14px; margin-bottom: 8px;"></div>
-            <div class="skeleton-text skeleton-shimmer" style="width: 80%; height: 12px; margin-bottom: 12px;"></div>
-            <div class="skeleton-text skeleton-shimmer" style="width: 90%; height: 18px;"></div>
-          </div>
-        </div>
-        <div class="skeleton-card blog-card">
-          <div class="blog-card-image skeleton-shimmer"></div>
-          <div class="blog-card-content">
-            <div class="skeleton-text skeleton-shimmer" style="width: 50%; height: 14px; margin-bottom: 8px;"></div>
-            <div class="skeleton-text skeleton-shimmer" style="width: 70%; height: 12px; margin-bottom: 12px;"></div>
-            <div class="skeleton-text skeleton-shimmer" style="width: 85%; height: 18px;"></div>
-          </div>
-        </div>
-        <div class="skeleton-card blog-card">
-          <div class="blog-card-image skeleton-shimmer"></div>
-          <div class="blog-card-content">
-            <div class="skeleton-text skeleton-shimmer" style="width: 55%; height: 14px; margin-bottom: 8px;"></div>
-            <div class="skeleton-text skeleton-shimmer" style="width: 75%; height: 12px; margin-bottom: 12px;"></div>
-            <div class="skeleton-text skeleton-shimmer" style="width: 80%; height: 18px;"></div>
-          </div>
-        </div>
-        <div class="skeleton-card blog-card">
-          <div class="blog-card-image skeleton-shimmer"></div>
-          <div class="blog-card-content">
-            <div class="skeleton-text skeleton-shimmer" style="width: 65%; height: 14px; margin-bottom: 8px;"></div>
-            <div class="skeleton-text skeleton-shimmer" style="width: 85%; height: 12px; margin-bottom: 12px;"></div>
-            <div class="skeleton-text skeleton-shimmer" style="width: 75%; height: 18px;"></div>
-          </div>
-        </div>
-        <div class="skeleton-card blog-card">
-          <div class="blog-card-image skeleton-shimmer"></div>
-          <div class="blog-card-content">
-            <div class="skeleton-text skeleton-shimmer" style="width: 60%; height: 14px; margin-bottom: 8px;"></div>
-            <div class="skeleton-text skeleton-shimmer" style="width: 80%; height: 12px; margin-bottom: 12px;"></div>
-            <div class="skeleton-text skeleton-shimmer" style="width: 90%; height: 18px;"></div>
-          </div>
-        </div>
-        <div class="skeleton-card blog-card">
-          <div class="blog-card-image skeleton-shimmer"></div>
-          <div class="blog-card-content">
-            <div class="skeleton-text skeleton-shimmer" style="width: 50%; height: 14px; margin-bottom: 8px;"></div>
-            <div class="skeleton-text skeleton-shimmer" style="width: 70%; height: 12px; margin-bottom: 12px;"></div>
-            <div class="skeleton-text skeleton-shimmer" style="width: 85%; height: 18px;"></div>
-          </div>
-        </div>
-        <div class="skeleton-card blog-card">
-          <div class="blog-card-image skeleton-shimmer"></div>
-          <div class="blog-card-content">
-            <div class="skeleton-text skeleton-shimmer" style="width: 55%; height: 14px; margin-bottom: 8px;"></div>
-            <div class="skeleton-text skeleton-shimmer" style="width: 75%; height: 12px; margin-bottom: 12px;"></div>
-            <div class="skeleton-text skeleton-shimmer" style="width: 80%; height: 18px;"></div>
-          </div>
-        </div>
-        <div class="skeleton-card blog-card">
-          <div class="blog-card-image skeleton-shimmer"></div>
-          <div class="blog-card-content">
-            <div class="skeleton-text skeleton-shimmer" style="width: 65%; height: 14px; margin-bottom: 8px;"></div>
-            <div class="skeleton-text skeleton-shimmer" style="width: 85%; height: 12px; margin-bottom: 12px;"></div>
-            <div class="skeleton-text skeleton-shimmer" style="width: 75%; height: 18px;"></div>
-          </div>
-        </div>
+        <!-- 博客卡片会动态加载到这里 -->
       </div>
     </div>
 
-    <!-- 加载中（隐藏，骨架屏替代） -->
+    <!-- 加载中 -->
     <div id="loadingState" class="hidden fixed inset-0 flex items-center justify-center bg-white bg-opacity-90 z-40">
       <div class="text-center">
         <span class="loading loading-spinner loading-lg"></span>
