@@ -115,6 +115,27 @@
     .blog-image-wrapper img.loaded {
       opacity: 1;
     }
+
+    /* 🔧 AdSense CLS 修复 - 为自动广告预留空间 */
+    ins.adsbygoogle {
+      display: block !important;
+      min-height: 250px !important;  /* 预留高度防止布局偏移 */
+      background: #f9fafb;
+      border-radius: 8px;
+      margin: 24px 0;
+    }
+
+    /* 广告加载完成后移除背景 */
+    ins.adsbygoogle[data-ad-status="loaded"] {
+      background: transparent;
+    }
+
+    /* 响应式广告尺寸 */
+    @media (max-width: 768px) {
+      ins.adsbygoogle {
+        min-height: 200px !important;
+      }
+    }
   </style>
 </head>
 <body>
