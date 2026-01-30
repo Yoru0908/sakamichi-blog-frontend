@@ -111,8 +111,10 @@
 
 /* 基础样式 - 完全匹配官网 */
 .blog-content-official {
-  font-size: 14px;           /* 官网字体大小 */
-  line-height: 1.75;          /* 官网行高 */
+  font-size: 14px;
+  /* 官网字体大小 */
+  line-height: 1.75;
+  /* 官网行高 */
   color: #333;
   letter-spacing: 0.02em;
   max-width: none;
@@ -125,7 +127,8 @@
   margin: 0;
   padding: 0;
   height: 0;
-  line-height: inherit;       /* 🎯 继承 1.75，自动匹配官网 */
+  line-height: inherit;
+  /* 🎯 继承 1.75，自动匹配官网 */
 }
 
 /* 段落基础样式 */
@@ -147,7 +150,8 @@
   color: #6c757d;
   font-size: 14px;
   font-style: italic;
-  margin-bottom: 0;  /* 移除底部间距，让原文和译文紧贴 */
+  margin-bottom: 0;
+  /* 移除底部间距，让原文和译文紧贴 */
 }
 
 /* 中文译文样式 */
@@ -155,7 +159,8 @@
   color: #212529;
   font-size: 14px;
   font-weight: 450;
-  margin-bottom: 0;  /* 段落间距由<br>标签控制 */
+  margin-bottom: 0;
+  /* 段落间距由<br>标签控制 */
 }
 
 /* 图片样式 */
@@ -204,13 +209,16 @@
 /* 悬浮按钮容器 - 主按钮在下，选项向上展开 */
 .fab-container {
   position: fixed;
-  bottom: 20px;
+  bottom: 80px;
+  /* 避开底部广告 */
   right: 20px;
   display: flex;
-  flex-direction: column;  /* 从上往下排列：选项在上，主按钮在下 */
+  flex-direction: column;
+  /* 从上往下排列：选项在上，主按钮在下 */
   align-items: flex-end;
   gap: 12px;
-  z-index: 1000;
+  z-index: 2147483640;
+  /* 确保在AdSense广告之上 */
 }
 
 /* 主按钮 */
@@ -254,27 +262,32 @@
   gap: 10px;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(60px) scale(0.8);  /* 从主按钮下方60px开始 */
+  transform: translateY(60px) scale(0.8);
+  /* 从主按钮下方60px开始 */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .fab-container.open .fab-action {
   opacity: 1;
   visibility: visible;
-  transform: translateY(0) scale(1);  /* 向上移动到正常位置 */
+  transform: translateY(0) scale(1);
+  /* 向上移动到正常位置 */
 }
 
 /* 从下往上的渐进式延迟 - 越靠近主按钮的越先出现 */
 .fab-container.open .fab-action:nth-child(3) {
-  transition-delay: 0s;  /* 最下方的选项（日文）最先出现 */
+  transition-delay: 0s;
+  /* 最下方的选项（日文）最先出现 */
 }
 
 .fab-container.open .fab-action:nth-child(2) {
-  transition-delay: 0.05s;  /* 中间的选项（中文）*/
+  transition-delay: 0.05s;
+  /* 中间的选项（中文）*/
 }
 
 .fab-container.open .fab-action:nth-child(1) {
-  transition-delay: 0.1s;  /* 最上方的选项（双语）最后出现 */
+  transition-delay: 0.1s;
+  /* 最上方的选项（双语）最后出现 */
 }
 
 .fab-label {
@@ -324,7 +337,8 @@
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s;
-  z-index: 999;
+  z-index: 2147483639;
+  /* 比FAB低1层 */
   backdrop-filter: blur(2px);
 }
 
@@ -334,16 +348,17 @@
 }
 
 @media (max-width: 768px) {
+
   /* 隐藏桌面端语言选择器 */
   .language-selector {
     display: none;
   }
-  
+
   /* 显示悬浮按钮 */
   .fab-container {
     display: flex;
   }
-  
+
   .blog-content-official {
     font-size: 14px;
     padding: 16px;
@@ -351,6 +366,7 @@
 }
 
 @media (min-width: 769px) {
+
   /* 桌面端隐藏悬浮按钮 */
   .fab-container {
     display: none;
@@ -439,7 +455,7 @@
   .display-mode-controls {
     display: none !important;
   }
-  
+
   /* 打印时默认显示中日对照 */
   .blog-content-official p[lang] {
     display: block !important;
@@ -447,7 +463,7 @@
     transform: none !important;
     height: auto !important;
   }
-  
+
   .blog-content-official {
     font-size: 12pt;
   }
@@ -460,7 +476,7 @@
 }
 
 .blog-content-official p[lang="zh"]:lang(zh) {
-  quotes: """ """ "'" "'";
+  quotes: "" " " "" "'" "'";
 }
 
 /* 焦点可见性 */
