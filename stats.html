@@ -332,6 +332,24 @@
     let realData = {};
     let isLoading = false;
 
+    // ✅ 复用 App.js 中的重试逻辑
+    async function fetchWithRetry(url, options = {}, retries = 2, backoff = 1000) {
+      try {
+        const response = await fetch(url, options);
+        if (!response.ok && response.status >= 500 && retries > 0) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        return response;
+      } catch (error) {
+        if (retries > 0) {
+          console.warn(`[Stats] 请求失败 (${url})，${backoff}ms后重试。剩余: ${retries}`, error);
+          await new Promise(resolve => setTimeout(resolve, backoff));
+          return fetchWithRetry(url, options, retries - 1, backoff * 2);
+        }
+        throw error;
+      }
+    }
+
     // 临时mock数据（API加载前使用）
     const mockData = {
       all: {
@@ -576,9 +594,15 @@
             const gName = window.GroupConfig?.getDisplayName(g) || g;
 
             // 加载博客数据
-            const response = await fetch(
-              `${apiBase}/api/blogs?group=${encodeURIComponent(gName)}&limit=2000`
+            // 使用 fetchWithRetry，超时设置为 window.API_TIMEOUT (15s)
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), window.API_TIMEOUT || 15000);
+
+            const response = await fetchWithRetry(
+              `${apiBase}/api/blogs?group=${encodeURIComponent(gName)}&limit=2000`,
+              { signal: controller.signal }
             );
+            clearTimeout(timeoutId);
             const data = await response.json();
             if (data.success && data.blogs) {
               allBlogs = allBlogs.concat(data.blogs);
@@ -586,7 +610,7 @@
 
             // 加载完整成员列表
             try {
-              const membersResponse = await fetch(`${apiBase}/api/members/${g}`);
+              const membersResponse = await fetchWithRetry(`${apiBase}/api/members/${g}`);
               if (membersResponse.ok) {
                 const membersData = await membersResponse.json();
                 // 统计总成员数并保存成员名单
@@ -603,9 +627,14 @@
           }
         } else {
           // 加载博客数据
-          const response = await fetch(
-            `${apiBase}/api/blogs?group=${encodeURIComponent(groupDisplayName)}&limit=2000`
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), window.API_TIMEOUT || 15000);
+
+          const response = await fetchWithRetry(
+            `${apiBase}/api/blogs?group=${encodeURIComponent(groupDisplayName)}&limit=2000`,
+            { signal: controller.signal }
           );
+          clearTimeout(timeoutId);
           const data = await response.json();
           if (data.success && data.blogs) {
             allBlogs = data.blogs;
@@ -613,7 +642,7 @@
 
           // 加载完整成员列表
           try {
-            const membersResponse = await fetch(`${apiBase}/api/members/${group}`);
+            const membersResponse = await fetchWithRetry(`${apiBase}/api/members/${group}`);
             if (membersResponse.ok) {
               const membersData = await membersResponse.json();
               // 统计总成员数并保存成员名单
