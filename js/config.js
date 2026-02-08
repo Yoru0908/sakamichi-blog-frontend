@@ -16,7 +16,7 @@ const DETAIL_LIMIT = 50;        // 成员详情页博客数量
 const CACHE_TTL = 60 * 60 * 1000;  // 成员数据缓存时长（1小时）
 
 // ========== 超时配置 ==========
-const API_TIMEOUT = 5000;       // API 请求超时（5秒）
+const API_TIMEOUT = 15000;       // API 请求超时（15秒）
 const TOAST_DURATION = 3000;    // Toast 提示显示时长（3秒）
 
 // ========== Cloudinary 图片优化配置 ==========

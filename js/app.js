@@ -2,6 +2,33 @@
 const FALLBACK_WORKER_API_URL = window.API_BASE;
 const LOCAL_API_URL = window.LOCAL_API;
 
+/**
+ * 带重试机制的 Fetch
+ * @param {string} url - 请求URL
+ * @param {Object} options - fetch选项
+ * @param {number} retries - 重试次数
+ * @param {number} backoff - 初始重试延迟(ms)
+ */
+async function fetchWithRetry(url, options = {}, retries = 2, backoff = 1000) {
+  try {
+    const response = await fetch(url, options);
+
+    // 如果是 5xx 错误或网络错误，进行重试
+    if (!response.ok && response.status >= 500 && retries > 0) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    return response;
+  } catch (error) {
+    if (retries > 0) {
+      console.warn(`[Fetch] 请求失败 (${url})，${backoff}ms后重试。剩余重试次数: ${retries}`, error);
+      await new Promise(resolve => setTimeout(resolve, backoff));
+      return fetchWithRetry(url, options, retries - 1, backoff * 2);
+    }
+    throw error;
+  }
+}
+
 function determineInitialApiBaseUrl() {
   try {
     const configUrl = window.__APP_CONFIG__?.API_BASE_URL || window.API_BASE_URL;
@@ -49,14 +76,15 @@ async function ensureApiBaseUrl() {
     tested.add(candidate);
 
     try {
-      // 添加5秒超时
+      // 添加超时和重试
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), window.API_TIMEOUT);
 
-      const response = await fetch(`${candidate}/api/health`, {
+      // 使用 fetchWithRetry 进行健康检查，允许1次重试
+      const response = await fetchWithRetry(`${candidate}/api/health`, {
         cache: 'no-store',
         signal: controller.signal
-      });
+      }, 1, 1000);
 
       clearTimeout(timeoutId);
 
@@ -316,7 +344,9 @@ window.loadBlogs = async function (append = false) {
     const url = `${apiBase}/api/blogs?${params}`;
     console.log('[loadBlogs] 请求URL:', url);
 
-    const response = await fetch(url);
+    // 使用 fetchWithRetry 替代 fetch
+    // 重试2次，初始延迟1秒
+    const response = await fetchWithRetry(url, {}, 2, 1000);
     console.log('[loadBlogs] 响应状态:', response.status);
 
     if (!response.ok) {
