@@ -19,7 +19,16 @@
                     <h1 class="text-xl font-bold whitespace-nowrap">坂道博客翻译</h1>
                 </div>
                 <div class="flex items-center gap-3">
-                    <a href="index.html" class="btn btn-sm btn-outline">返回首页</a>
+                    <a href="javascript:void(0)" onclick="goBack()" class="btn btn-sm btn-outline">返回首页</a>
+                    <script>
+                        function goBack() {
+                            if (document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
+                                history.back();
+                            } else {
+                                window.location.href = 'index.html';
+                            }
+                        }
+                    </script>
                 </div>
             </div>
         </div>
@@ -130,7 +139,8 @@
                     如果您对本使用条款有任何疑问，请通过以下方式联系我们：<br>
                     • B站：多线程败犬Yoru<br>
                     • 微博：多线程败犬Yoru<br>
-                    • 反馈表单：<a href="https://forms.gle/xKJbXsUP4g8pLJSf7" target="_blank" class="text-violet-600 hover:underline">点击此处</a>
+                    • 反馈表单：<a href="https://forms.gle/xKJbXsUP4g8pLJSf7" target="_blank"
+                        class="text-violet-600 hover:underline">点击此处</a>
                 </p>
             </section>
         </div>
@@ -144,17 +154,19 @@
                 <div class="col-span-1 md:col-span-2">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Sakamichi Tools</h3>
                 </div>
-                
+
                 <!-- 快速链接 -->
                 <div>
                     <h4 class="text-sm font-semibold text-gray-900 mb-4">工具</h4>
                     <ul class="space-y-2">
                         <li><a href="index.html" class="text-gray-600 hover:text-violet-600 text-sm">博客翻译</a></li>
-                        <li><a href="https://photocard.sakamichi-tools.cn/" class="text-gray-600 hover:text-violet-600 text-sm">生写生成器</a></li>
-                        <li><a href="https://msg.sakamichi-tools.cn/" class="text-gray-600 hover:text-violet-600 text-sm">MSG生成器</a></li>
+                        <li><a href="https://photocard.sakamichi-tools.cn/"
+                                class="text-gray-600 hover:text-violet-600 text-sm">生写生成器</a></li>
+                        <li><a href="https://msg.sakamichi-tools.cn/"
+                                class="text-gray-600 hover:text-violet-600 text-sm">MSG生成器</a></li>
                     </ul>
                 </div>
-                
+
                 <!-- 法律信息 -->
                 <div>
                     <h4 class="text-sm font-semibold text-gray-900 mb-4">法律</h4>
@@ -164,10 +176,11 @@
                     </ul>
                 </div>
             </div>
-            
+
             <div class="mt-8 pt-8 border-t border-gray-200">
                 <p class="text-center text-sm text-gray-500">
-                    &copy; 2025 Sakamichi Tools. Created by <a href="https://potofu.me/yoru0908" target="_blank" class="text-violet-600 hover:underline">Yoru</a>
+                    &copy; 2025 Sakamichi Tools. Created by <a href="https://potofu.me/yoru0908" target="_blank"
+                        class="text-violet-600 hover:underline">Yoru</a>
                 </p>
             </div>
         </div>
