@@ -599,7 +599,7 @@
             const timeoutId = setTimeout(() => controller.abort(), window.API_TIMEOUT || 15000);
 
             const response = await fetchWithRetry(
-              `${apiBase}/api/blogs?group=${encodeURIComponent(gName)}&limit=2000`,
+              `${apiBase}/api/blogs?group=${encodeURIComponent(gName)}&limit=2000&exclude_content=true`,
               { signal: controller.signal }
             );
             clearTimeout(timeoutId);
@@ -631,7 +631,7 @@
           const timeoutId = setTimeout(() => controller.abort(), window.API_TIMEOUT || 15000);
 
           const response = await fetchWithRetry(
-            `${apiBase}/api/blogs?group=${encodeURIComponent(groupDisplayName)}&limit=2000`,
+            `${apiBase}/api/blogs?group=${encodeURIComponent(groupDisplayName)}&limit=2000&exclude_content=true`,
             { signal: controller.signal }
           );
           clearTimeout(timeoutId);
