@@ -613,10 +613,16 @@
               const membersResponse = await fetchWithRetry(`${apiBase}/api/members/${g}`);
               if (membersResponse.ok) {
                 const membersData = await membersResponse.json();
-                // 统计总成员数并保存成员名单
-                if (membersData.generations) {
+                // 优先使用 API 返回的 totalMembers（仅现役）
+                if (typeof membersData.totalMembers === 'number') {
+                  totalMembersCount += membersData.totalMembers;
+                } else if (membersData.generations) {
                   membersData.generations.forEach(gen => {
                     totalMembersCount += gen.members.length;
+                  });
+                }
+                if (membersData.generations) {
+                  membersData.generations.forEach(gen => {
                     currentMembersList.push(...gen.members);
                   });
                 }
@@ -645,10 +651,16 @@
             const membersResponse = await fetchWithRetry(`${apiBase}/api/members/${group}`);
             if (membersResponse.ok) {
               const membersData = await membersResponse.json();
-              // 统计总成员数并保存成员名单
-              if (membersData.generations) {
+              // 优先使用 API 返回的 totalMembers（仅现役）
+              if (typeof membersData.totalMembers === 'number') {
+                totalMembersCount = membersData.totalMembers;
+              } else if (membersData.generations) {
                 membersData.generations.forEach(gen => {
                   totalMembersCount += gen.members.length;
+                });
+              }
+              if (membersData.generations) {
+                membersData.generations.forEach(gen => {
                   currentMembersList.push(...gen.members);
                 });
               }

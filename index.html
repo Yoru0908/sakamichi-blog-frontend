@@ -916,16 +916,43 @@
       // ✅ 阶段3：直接使用预处理的 formatted_date
       const formattedDate = blog.formatted_date || blog.publish_date || '未知日期';
       
+      // 使用 unicode 确保团体名匹配正确（坂=U+5742）
+      const _gn = blog.group_name || '';
+      const _groupKey = _gn.includes('\u4e43\u6728\u5742') ? 'nogizaka'
+        : (_gn.includes('\u6a31\u5742') || _gn.includes('\u6afb\u5742')) ? 'sakurazaka'
+        : _gn.includes('\u65e5\u5411\u5742') ? 'hinatazaka'
+        : (App.state?.group || 'nogizaka');
+
       item.innerHTML = `
         <div class="blog-card-image" style="position: relative; background: #f5f5f5;">
           ${imageHtml}
         </div>
         <div class="blog-card-content">
-          <div class="member-name mb-2" lang="ja">${blog.member || '未知成员'}</div>
+          <div class="member-name mb-2" lang="ja">
+            <span class="member-name-link" style="cursor:pointer; text-decoration:none;">${blog.member || '\u672a\u77e5\u6210\u5458'}</span>
+          </div>
           <div class="blog-meta mb-2">${formattedDate} ${blog.group_name || ''}</div>
           <h3 class="blog-title" lang="ja">${blog.title || ''}</h3>
         </div>
       `;
+
+      // 成员名可点击跳转到成员详情页
+      const memberNameEl = item.querySelector('.member-name-link');
+      if (memberNameEl && blog.member) {
+        memberNameEl.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation(); // 阻止触发卡片的博客详情跳转
+          if (window.Router) {
+            Router.navigate(`#${_groupKey}/member/${encodeURIComponent(blog.member)}`);
+          }
+        });
+        memberNameEl.addEventListener('mouseenter', () => {
+          memberNameEl.style.textDecoration = 'underline';
+        });
+        memberNameEl.addEventListener('mouseleave', () => {
+          memberNameEl.style.textDecoration = 'none';
+        });
+      }
       
       return item; // 返回元素，由调用者决定如何添加到DOM
     }
