@@ -458,11 +458,15 @@
           
           if (groupData && groupData.generations) {
             console.log('[loadGroupInfo] 找到期别数据，期数:', groupData.generations.length);
-            // 计算所有期别的总成员数
+            // 计算所有期别的总成员数（仅现役）
             groupData.generations.forEach(generation => {
               totalMembers += generation.members.length;
               allMembers.push(...generation.members);
             });
+            // 毕业成员也加入 allMembers（用于获取最后更新日期）
+            if (groupData.graduated) {
+              allMembers.push(...groupData.graduated);
+            }
             console.log('[loadGroupInfo] 总成员数:', totalMembers, '成员列表:', allMembers.slice(0, 5), '...');
           } else {
             console.error('[loadGroupInfo] ❌ 没有期别数据！groupData:', groupData);
@@ -491,8 +495,8 @@
             }
           });
           
-          // 更新成员数（显示团体的实际成员总数）
-          document.getElementById('memberCount').textContent = totalMembers;
+          // 更新成员数（仅现役）
+          document.getElementById('memberCount').textContent = groupData?.totalMembers ?? totalMembers;
           
           // 准备完整的成员列表（包括没有博客的成员）
           // ⚠️ 标准化名字：移除空格以匹配 members API 的格式
@@ -534,8 +538,8 @@
           // 填充筛选器下拉框（显示全部成员和最后更新时间，按期别排序）
           populateMemberSelect(groupData, memberLastUpdate);
           
-          // 填充メンバー别ブログ网格（显示完整成员列表，按期别）
-          await renderMemberGrid(allMembers, membersWithBlogs);
+          // 填充メンバー别ブログ网格（现役 + 毕业，CSS区分）
+          await renderMemberGrid(groupData, membersWithBlogs);
         }
       } catch (error) {
         console.error('加载团体信息失败:', error);
@@ -593,8 +597,9 @@
     }
 
     // 渲染メンバー別ブログ网格（按期别）
-    async function renderMemberGrid(members, membersWithBlogs = []) {
-      console.log('[renderMemberGrid] 调用，当前团体:', App.state.group, 'members数:', members.length, '有博客的成员数:', membersWithBlogs.length);
+    // 渲染メンバー別ブログ网格（按期别 + 毕业分区）
+    // groupData: API返回的groupData对象（含 generations[] 和 graduated[]）
+    async function renderMemberGrid(groupData, membersWithBlogs = []) {
       const grid = document.getElementById('memberGrid');
       if (!grid) {
         console.error('[renderMemberGrid] ❌ 找不到 memberGrid 元素！');
@@ -608,44 +613,26 @@
       }
       
       grid.innerHTML = '';
-      
-      // 🆕 从后端API获取当前团体的期别数据
-      let groupData;
-      try {
-        const apiBase = window.API_BASE_URL || window.API_BASE;
-        const response = await fetch(`${apiBase}/api/members/${App.state.group}`);
-        console.log('[renderMemberGrid] members API 状态:', response.status);
-        if (response.ok) {
-          groupData = await response.json();
-          console.log('[renderMemberGrid] 获取到期别数据，期数:', groupData.generations?.length);
-        }
-      } catch (e) {
-        // 回退到本地数据
-        console.warn('[renderMemberGrid] API获取失败，使用本地数据', e);
-        groupData = window.MEMBERS_DATA ? { generations: window.MEMBERS_DATA[App.state.group]?.generations } : null;
-      }
-      if (!groupData) {
-        // 如果没有期别数据，使用原来的方式
-        members.forEach(member => {
+
+      // 如果传入的是旧格式（数组），回退处理
+      if (Array.isArray(groupData)) {
+        groupData.forEach(member => {
           const item = document.createElement('div');
           item.className = 'member-item';
           item.textContent = member;
-          
-          // 如果没有博客，添加灰色样式
-          if (!membersWithBlogs.includes(member)) {
-            item.classList.add('opacity-50');
-          }
-          
-          item.onclick = () => {
-            // 使用 Router 导航到成员页面
-            Router.navigate(`#${App.state.group}/member/${encodeURIComponent(member)}`);
-          };
+          if (!membersWithBlogs.includes(member)) item.classList.add('opacity-50');
+          item.onclick = () => Router.navigate(`#${App.state.group}/member/${encodeURIComponent(member)}`);
           grid.appendChild(item);
         });
         return;
       }
-      
-      // 按期别显示
+
+      if (!groupData || !groupData.generations) {
+        console.error('[renderMemberGrid] ❌ groupData 无效');
+        return;
+      }
+
+      // ① 现役成员：按期别显示
       console.log('[renderMemberGrid] 开始按期别渲染，期数:', groupData.generations.length);
       groupData.generations.forEach((generation, genIndex) => {
         // 期别标题
@@ -653,31 +640,40 @@
         genTitle.className = 'col-span-full text-sm font-bold text-gray-700 mt-4 mb-2 px-2';
         genTitle.textContent = generation.name;
         grid.appendChild(genTitle);
-        console.log(`[renderMemberGrid] 渲染期别 ${genIndex + 1}: ${generation.name}, 成员数: ${generation.members.length}`);
         
         // 该期成员
-        generation.members.forEach((member, memberIndex) => {
+        generation.members.forEach(member => {
           const item = document.createElement('div');
           item.className = 'member-item';
           item.textContent = member;
-          
-          // 如果没有博客，添加灰色样式
-          if (!membersWithBlogs.includes(member)) {
-            item.classList.add('opacity-50');
-          }
-          
+          if (!membersWithBlogs.includes(member)) item.classList.add('opacity-50');
           item.onclick = () => {
             console.log('[renderMemberGrid] 点击成员:', member);
-            // 使用 Router 导航到成员页面
             Router.navigate(`#${App.state.group}/member/${encodeURIComponent(member)}`);
           };
           grid.appendChild(item);
-          
-          if (memberIndex === 0) {
-            console.log(`[renderMemberGrid] 第一个成员示例: ${member}, 有博客: ${membersWithBlogs.includes(member)}`);
-          }
         });
       });
+
+      // ② 已毕业成员：独立区块，CSS区分
+      if (groupData.graduated && groupData.graduated.length > 0) {
+        const gradTitle = document.createElement('div');
+        gradTitle.className = 'col-span-full text-sm font-bold text-gray-400 mt-6 mb-2 px-2 border-t pt-4';
+        gradTitle.textContent = '已毕业成员';
+        grid.appendChild(gradTitle);
+
+        groupData.graduated.forEach(member => {
+          const item = document.createElement('div');
+          item.className = 'member-item member-item--graduated';
+          item.textContent = member;
+          item.onclick = () => {
+            console.log('[renderMemberGrid] 点击已毕业成员:', member);
+            Router.navigate(`#${App.state.group}/member/${encodeURIComponent(member)}`);
+          };
+          grid.appendChild(item);
+        });
+      }
+
       console.log('[renderMemberGrid] ✅ 渲染完成，grid子元素数:', grid.children.length);
     }
 
