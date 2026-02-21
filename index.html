@@ -21,7 +21,7 @@
      crossorigin="anonymous"></script>
   
   <!-- DaisyUI + Tailwind CSS (Static) -->
-  <link rel="stylesheet" href="css/tailwind-output.css">
+  <link rel="stylesheet" href="css/tailwind-output.css?v=2">
   
   <!-- 全局配置（必须最先加载） -->
   <script src="js/config.js"></script>
@@ -59,8 +59,8 @@
   
   <!-- 🚀 CSS文件 - 关键CSS同步，非关键CSS异步 -->
   <!-- 基础样式 - 同步加载（包含布局、网格等关键样式） -->
-  <link rel="stylesheet" href="css/main-styles.css">
-  <link rel="stylesheet" href="css/mobile.css" media="(max-width: 768px)">
+  <link rel="stylesheet" href="css/main-styles.css?v=2">
+  <link rel="stylesheet" href="css/mobile.css?v=2" media="(max-width: 768px)">
   
   <!-- 非关键CSS - 异步加载（动画、主题、组件样式） -->
   <link rel="preload" href="css/transitions.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -438,7 +438,7 @@
           // 🆕 从后端API获取团体的完整成员列表
           let groupData;
           try {
-            const membersResponse = await fetch(`${apiBase}/api/members/${group}`);
+            const membersResponse = await fetch(`${apiBase}/api/members/${group}?t=${Date.now()}`);
             console.log('[loadGroupInfo] members API 响应状态:', membersResponse.status);
             if (membersResponse.ok) {
               groupData = await membersResponse.json();
