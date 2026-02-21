@@ -155,7 +155,6 @@ header h1 {
 
 .member-item.opacity-50 {
   opacity: 0.4;
-  pointer-events: none;
 }
 
 /* 已毕业成员样式：视觉区分，但可点击 */

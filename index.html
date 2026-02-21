@@ -573,6 +573,8 @@
       // ① 现役成员：按期别顺序显示
       groupData.generations.forEach(generation => {
         generation.members.forEach(member => {
+          // 只显示现役成员，跳过已毕业成员
+          if (groupData.graduated && groupData.graduated.includes(member)) return;
           const option = document.createElement('option');
           option.value = member;
           option.textContent = formatMemberOption(member);
@@ -632,7 +634,7 @@
         return;
       }
 
-      // ① 现役成员：按期别显示
+      // 现役与已毕业成员都在 generations 中
       console.log('[renderMemberGrid] 开始按期别渲染，期数:', groupData.generations.length);
       groupData.generations.forEach((generation, genIndex) => {
         // 期别标题
@@ -641,12 +643,19 @@
         genTitle.textContent = generation.name;
         grid.appendChild(genTitle);
         
-        // 该期成员
+        // 该期成员（按期别显示所有成员，包括毕业的）
         generation.members.forEach(member => {
           const item = document.createElement('div');
-          item.className = 'member-item';
+          
+          // 检查是否毕业
+          const isGraduated = groupData.graduated && groupData.graduated.includes(member);
+          item.className = isGraduated ? 'member-item member-item--graduated' : 'member-item';
           item.textContent = member;
-          if (!membersWithBlogs.includes(member)) item.classList.add('opacity-50');
+          
+          if (!membersWithBlogs.includes(member)) {
+            item.classList.add('opacity-50');
+          }
+          
           item.onclick = () => {
             console.log('[renderMemberGrid] 点击成员:', member);
             Router.navigate(`#${App.state.group}/member/${encodeURIComponent(member)}`);
@@ -654,25 +663,6 @@
           grid.appendChild(item);
         });
       });
-
-      // ② 已毕业成员：独立区块，CSS区分
-      if (groupData.graduated && groupData.graduated.length > 0) {
-        const gradTitle = document.createElement('div');
-        gradTitle.className = 'col-span-full text-sm font-bold text-gray-400 mt-6 mb-2 px-2 border-t pt-4';
-        gradTitle.textContent = '已毕业成员';
-        grid.appendChild(gradTitle);
-
-        groupData.graduated.forEach(member => {
-          const item = document.createElement('div');
-          item.className = 'member-item member-item--graduated';
-          item.textContent = member;
-          item.onclick = () => {
-            console.log('[renderMemberGrid] 点击已毕业成员:', member);
-            Router.navigate(`#${App.state.group}/member/${encodeURIComponent(member)}`);
-          };
-          grid.appendChild(item);
-        });
-      }
 
       console.log('[renderMemberGrid] ✅ 渲染完成，grid子元素数:', grid.children.length);
     }
