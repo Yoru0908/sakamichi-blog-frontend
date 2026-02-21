@@ -544,6 +544,21 @@
 
     // 填充成员筛选下拉框
     function populateMemberSelect(groupData, memberLastUpdate = {}) {
+      // 辅助函数：格式化显示文本
+      function formatMemberOption(member) {
+        if (!memberLastUpdate[member]) return `${member}（未更新）`;
+        const date = memberLastUpdate[member];
+        const parts = date.split(' ');
+        const datePart = parts[0];
+        const timePart = parts[1] || '';
+        const dc = datePart.split('/');
+        if (dc.length === 3) {
+          const month = dc[1].padStart(2, '0');
+          const day = dc[2].padStart(2, '0');
+          return timePart ? `${member}（${month}.${day} ${timePart} 更新）` : `${member}（${month}.${day} 更新）`;
+        }
+        return `${member}（${date}）`;
+      }
       const select = document.getElementById('memberSelect');
       select.innerHTML = '<option value="">全部成员</option>';
       
@@ -551,48 +566,30 @@
         return;
       }
       
-      // 按期别顺序显示成员
+      // ① 现役成员：按期别顺序显示
       groupData.generations.forEach(generation => {
         generation.members.forEach(member => {
           const option = document.createElement('option');
           option.value = member;
-          
-          // 格式化显示文本：成员名 + 最后更新时间
-          let displayText = member;
-          if (memberLastUpdate[member]) {
-            // 将日期格式从 "2025/10/08 21:12" 转换为 "10.08 21:12 更新"
-            const date = memberLastUpdate[member];
-            const parts = date.split(' ');
-            if (parts.length >= 2) {
-              const datePart = parts[0]; // "2025/10/08"
-              const timePart = parts[1]; // "21:12"
-              const dateComponents = datePart.split('/'); // ["2025", "10", "08"]
-              if (dateComponents.length === 3) {
-                const month = dateComponents[1].padStart(2, '0');
-                const day = dateComponents[2].padStart(2, '0');
-                displayText = `${member}（${month}.${day} ${timePart} 更新）`;
-              } else {
-                // 如果格式不对，至少显示原始日期
-                displayText = `${member}（${date}）`;
-              }
-            } else if (parts.length === 1) {
-              // 只有日期没有时间
-              const datePart = parts[0];
-              const dateComponents = datePart.split('/');
-              if (dateComponents.length === 3) {
-                const month = dateComponents[1].padStart(2, '0');
-                const day = dateComponents[2].padStart(2, '0');
-                displayText = `${member}（${month}.${day} 更新）`;
-              }
-            }
-          } else {
-            displayText = `${member}（未更新）`;
-          }
-          
-          option.textContent = displayText;
+          option.textContent = formatMemberOption(member);
           select.appendChild(option);
         });
       });
+
+      // ② 已毕业成员：统一放在最下方，独立分组（不区分期别）
+      if (groupData.graduated && groupData.graduated.length > 0) {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = '── 已毕业 ──';
+        groupData.graduated.forEach(member => {
+          const option = document.createElement('option');
+          option.value = member;
+          option.textContent = memberLastUpdate[member]
+            ? formatMemberOption(member)
+            : `${member}（已毕业）`;
+          optgroup.appendChild(option);
+        });
+        select.appendChild(optgroup);
+      }
     }
 
     // 渲染メンバー別ブログ网格（按期别）
