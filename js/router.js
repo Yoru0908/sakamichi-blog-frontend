@@ -363,14 +363,14 @@ window.Router = {
       if (window.showLoading) window.showLoading();
 
       try {
-        await this.loadScript('js/member-page.js');
+        await this.loadScript('js/member-page.js?v=2');
         // 🔧 初始化 MemberPage（创建 DOM 容器）
         if (window.MemberPage && window.MemberPage.init) {
           window.MemberPage.init();
           console.log('[Router] MemberPage.init() 调用完成');
         }
         // 预加载详情页相关，因为用户很可能点击博客详情
-        this.loadScript('js/member-detail.js');
+        this.loadScript('js/member-detail.js?v=2');
         console.log('[Router] MemberPage 模块加载完成');
       } catch (e) {
         console.error('[Router] 加载 MemberPage 模块失败:', e);
@@ -439,8 +439,8 @@ window.Router = {
       if (window.showLoading) window.showLoading();
       try {
         await Promise.all([
-          this.loadScript('js/member-detail.js'), // 可能包含渲染逻辑
-          this.loadScript('js/blog-detail-sidebar.js')
+          this.loadScript('js/member-detail.js?v=2'), // 可能包含渲染逻辑
+          this.loadScript('js/blog-detail-sidebar.js?v=2')
         ]);
       } catch (e) {
         console.error('[Router] 加载详情页模块失败:', e);
