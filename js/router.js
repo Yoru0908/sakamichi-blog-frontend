@@ -393,6 +393,10 @@ window.Router = {
 
     // 调用成员页面显示
     if (window.MemberPage && window.MemberPage.showMemberPage) {
+      // 🔧 确保容器存在（init 可能没被调用，或容器被意外移除）
+      if (window.MemberPage.createMemberPageContainer) {
+        window.MemberPage.createMemberPageContainer();
+      }
       window.MemberPage.showMemberPage(member, group);
     }
   },

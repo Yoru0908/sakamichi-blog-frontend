@@ -9,21 +9,21 @@ window.MemberPage = {
   memberBlogs: [],
   currentYear: new Date().getFullYear(),
   currentMonth: new Date().getMonth() + 1,
-  
+
   /**
    * 初始化成员页面
    */
   init() {
     // 创建成员页面容器
     this.createMemberPageContainer();
-    
+
     // 加载成员图片数据
     this.loadMemberImages();
-    
+
     // 不再监听hashchange，由Router统一处理
     console.log('[MemberPage] 初始化完成');
   },
-  
+
   /**
    * 加载成员图片数据
    */
@@ -39,14 +39,14 @@ window.MemberPage = {
       console.warn('⚠️ 成员图片数据加载失败，将使用默认头像');
     }
   },
-  
+
   /**
    * 创建成员页面容器
    */
   createMemberPageContainer() {
     // 检查是否已存在
     if (document.getElementById('memberPageContainer')) return;
-    
+
     // 创建容器
     const container = document.createElement('div');
     container.id = 'memberPageContainer';
@@ -340,13 +340,16 @@ window.MemberPage = {
         </aside>
       </div>
     `;
-    
-    // 插入到主内容区域
+
+    // 插入到主内容区域（追加到 main 末尾，避免 insertBefore 的 DOM 引用问题）
     const mainContent = document.querySelector('main');
-    const blogsContainer = document.getElementById('blogsContainer');
-    mainContent.insertBefore(container, blogsContainer.parentNode);
+    if (mainContent) {
+      mainContent.appendChild(container);
+    } else {
+      document.body.appendChild(container);
+    }
   },
-  
+
   /**
    * 显示成员页面
    */
@@ -373,7 +376,7 @@ window.MemberPage = {
     if (container) {
       console.log('[MemberPage] 显示成员页面容器');
       container.classList.remove('hidden');
-      
+
       // 确保加载状态初始化为隐藏
       const loadingState = document.getElementById('memberLoadingState');
       if (loadingState) loadingState.classList.add('hidden');
@@ -390,7 +393,7 @@ window.MemberPage = {
     // 滚动到顶部
     window.scrollTo({ top: 0, behavior: 'smooth' });
   },
-  
+
   /**
    * 隐藏其他视图
    */
@@ -440,30 +443,30 @@ window.MemberPage = {
     const footer = document.querySelector('footer');
     if (footer) footer.style.display = 'none';
   },
-  
+
   /**
    * 更新成员信息显示
    */
   updateMemberInfo(memberName, groupKey) {
     // 使用 GroupConfig 获取团体名称
     const groupName = window.GroupConfig ? window.GroupConfig.getDisplayName(groupKey) : groupKey;
-    
+
     console.log(`[MemberPage] 更新成员信息: ${memberName}, 团体: ${groupName}`);
-    
+
     // 更新侧边栏成员信息
     const nameEl = document.getElementById('memberNameSidebar');
     if (nameEl) nameEl.textContent = memberName;
-    
+
     // 更新手机端标题
     const headerEl = document.getElementById('memberNameHeader');
     if (headerEl) headerEl.textContent = memberName;
-    
+
     // 更新假名（如果有的话）
     const kanaEl = document.getElementById('memberKanaSidebar');
     if (kanaEl) {
       kanaEl.textContent = this.getMemberKana(memberName) || '';
     }
-    
+
     // 更新头像 - 智能匹配真实图片
     const avatarSidebar = document.getElementById('memberAvatarSidebar');
     if (avatarSidebar) {
@@ -509,7 +512,7 @@ window.MemberPage = {
       }
     }
   },
-  
+
   /**
    * 获取成员假名
    */
@@ -525,51 +528,51 @@ window.MemberPage = {
     };
     return kanaMap[memberName] || '';
   },
-  
+
   /**
    * 加载成员博客
    */
   async loadMemberBlogs(memberName, groupKey, page = 1) {
     const pageSize = window.PAGE_SIZE;
     const offset = (page - 1) * pageSize;
-    
+
     // 显示加载状态
     const loadingEl = document.getElementById('memberLoadingState');
     const containerEl = document.getElementById('memberBlogsContainer');
     const emptyEl = document.getElementById('memberEmptyState');
-    
+
     console.log('[MemberPage] 元素状态:', {
       loading: !!loadingEl,
       container: !!containerEl,
       empty: !!emptyEl
     });
-    
+
     if (loadingEl) loadingEl.classList.remove('hidden');
     if (containerEl) containerEl.innerHTML = '';
     if (emptyEl) emptyEl.classList.add('hidden');
-    
+
     try {
       // 使用 GroupConfig 获取API团体名称
       const groupName = window.GroupConfig ? window.GroupConfig.getApiName(groupKey) : groupKey;
-      
+
       console.log(`[MemberPage] 加载博客 - 成员: ${memberName}, 团体: ${groupName}`);
-      
+
       // 构建API URL
       const apiBase = window.API_BASE_URL || window.API_BASE;
       let url = `${apiBase}/api/blogs?member=${encodeURIComponent(memberName)}&limit=${pageSize}&offset=${offset}`;
-      
+
       // 只有非all时才添加团体筛选
       if (groupKey !== 'all') {
         url += `&group=${encodeURIComponent(groupName)}`;
       }
-      
+
       console.log('[MemberPage] API URL:', url);
-      
+
       const response = await fetch(url);
       const data = await response.json();
-      
+
       console.log('[MemberPage] API响应:', data);
-      
+
       const loadingState = document.getElementById('memberLoadingState');
       if (loadingState) {
         console.log('[MemberPage] 隐藏加载状态');
@@ -577,17 +580,17 @@ window.MemberPage = {
       } else {
         console.error('[MemberPage] 找不到 memberLoadingState 元素！');
       }
-      
+
       if (data.success && data.blogs && data.blogs.length > 0) {
         // ✨ 数据源处理：统一格式化日期
-        const processedBlogs = window.processBlogsData 
-          ? window.processBlogsData(data.blogs) 
+        const processedBlogs = window.processBlogsData
+          ? window.processBlogsData(data.blogs)
           : data.blogs;
-        
+
         // 更新博客数量
         const blogCount = data.count || processedBlogs.length;
         // 博客数量不再显示在页面上
-        
+
         // 更新最后更新时间（如果元素存在）
         if (processedBlogs[0]) {
           const lastUpdateEl = document.getElementById('memberLastUpdate');
@@ -597,18 +600,18 @@ window.MemberPage = {
             lastUpdateEl.textContent = formattedDate;
           }
         }
-        
+
         // 渲染博客列表（使用博客卡片样式）
         const container = document.getElementById('memberBlogsContainer');
         console.log('[MemberPage] 容器找到:', !!container);
         console.log('[MemberPage] renderBlogItem存在:', !!window.renderBlogItem);
         console.log('[MemberPage] 博客数量:', processedBlogs.length);
-        
+
         // ✅ 清空容器，避免重复显示
         if (container) {
           container.innerHTML = '';
         }
-        
+
         const cards = [];
         processedBlogs.forEach((blog, index) => {
           // 使用主页面的博客卡片渲染 + Cloudinary优化
@@ -617,12 +620,12 @@ window.MemberPage = {
             console.log(`[MemberPage] 创建卡片 ${index + 1}:`, !!card);
             container.appendChild(card);
             cards.push(card);
-            
+
             // 立即显示卡片（不等待滚动动画）
             setTimeout(() => {
               card.classList.add('visible');
               console.log(`[MemberPage] 卡片 ${index + 1} 已显示`);
-              
+
               // 调试图片尺寸
               const img = card.querySelector('.blog-card-image');
               if (img) {
@@ -638,16 +641,16 @@ window.MemberPage = {
             container.appendChild(this.createBlogListItem(blog));
           }
         });
-        
+
         console.log('[MemberPage] 容器子元素数量:', container.children.length);
         console.log('[MemberPage] 容器 display:', window.getComputedStyle(container).display);
         console.log('[MemberPage] 容器 visibility:', window.getComputedStyle(container).visibility);
         console.log('[MemberPage] 容器 offsetHeight:', container.offsetHeight);
         console.log('[MemberPage] 容器父元素:', container.parentElement);
-        
+
         // 更新日历
         this.updateCalendar(processedBlogs);
-        
+
         // 更新分页
         if (data.count > pageSize) {
           this.updatePagination(page, Math.ceil(data.count / pageSize));
@@ -667,14 +670,14 @@ window.MemberPage = {
       document.getElementById('memberEmptyState').classList.remove('hidden');
     }
   },
-  
+
   /**
    * 创建博客列表项
    */
   createBlogListItem(blog) {
     const li = document.createElement('li');
     li.className = 'blog-list-item';
-    
+
     // 提取文本摘要
     let excerpt = '';
     if (blog.translated_content) {
@@ -688,7 +691,7 @@ window.MemberPage = {
         .substring(0, 150);
       if (excerpt.length === 150) excerpt += '...';
     }
-    
+
     li.innerHTML = `
       <a href="#blog/${blog.id}" class="blog-list-link">
         <h3 class="blog-list-title">${blog.title || ''}</h3>
@@ -698,10 +701,10 @@ window.MemberPage = {
         ${excerpt ? `<p class="blog-list-excerpt">${excerpt}</p>` : ''}
       </a>
     `;
-    
+
     return li;
   },
-  
+
   /**
    * 更新分页组件
    */
@@ -711,37 +714,37 @@ window.MemberPage = {
     const prevBtn = document.getElementById('memberPrevBtn');
     const nextBtn = document.getElementById('memberNextBtn');
     const pageButtons = document.getElementById('memberPageButtons');
-    
+
     if (totalPages <= 1) {
       container.classList.add('hidden');
       return;
     }
-    
+
     container.classList.remove('hidden');
     pageInfo.textContent = `第 ${currentPage} 页 / 共 ${totalPages} 页`;
-    
+
     // 更新按钮状态
     prevBtn.disabled = currentPage === 1;
     nextBtn.disabled = currentPage === totalPages;
     prevBtn.onclick = () => this.goToPage(currentPage - 1);
     nextBtn.onclick = () => this.goToPage(currentPage + 1);
-    
+
     // 生成页码按钮
     pageButtons.innerHTML = '';
     let startPage = Math.max(1, currentPage - 2);
     let endPage = Math.min(totalPages, currentPage + 2);
-    
+
     for (let i = startPage; i <= endPage; i++) {
       const btn = document.createElement('button');
-      btn.className = i === currentPage 
-        ? 'px-3 py-1 text-sm bg-blue-600 text-white rounded' 
+      btn.className = i === currentPage
+        ? 'px-3 py-1 text-sm bg-blue-600 text-white rounded'
         : 'px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100';
       btn.textContent = i;
       btn.onclick = () => this.goToPage(i);
       pageButtons.appendChild(btn);
     }
   },
-  
+
   /**
    * 跳转到指定页
    */
@@ -750,14 +753,14 @@ window.MemberPage = {
     await this.loadMemberBlogs(App.state.member, App.state.group, page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   },
-  
+
   /**
    * 返回团体页面
    */
   backToGroupPage() {
     console.log('[MemberPage] 返回团体页面:', App.state.group);
     console.log('[MemberPage] Router存在:', !!window.Router);
-    
+
     // 直接调用 Router.showGroupPage，不依赖 hash 变化
     if (window.Router) {
       console.log('[MemberPage] 直接调用 Router.showGroupPage');
@@ -770,7 +773,7 @@ window.MemberPage = {
       window.location.hash = App.state.group;
     }
   },
-  
+
   /**
    * 处理路由变化
    */
@@ -785,7 +788,7 @@ window.MemberPage = {
       }
     }
   },
-  
+
   /**
    * 更新日历
    */
@@ -794,10 +797,10 @@ window.MemberPage = {
     this.currentYear = now.getFullYear();
     this.currentMonth = now.getMonth() + 1;
     this.memberBlogs = blogs;
-    
+
     this.renderCalendar();
   },
-  
+
   /**
    * 渲染日历（仿官网风格）
    */
@@ -807,7 +810,7 @@ window.MemberPage = {
     if (monthEl) {
       monthEl.textContent = `${this.currentYear}.${String(this.currentMonth).padStart(2, '0')}`;
     }
-    
+
     // 获取该月有博客的日期（用于标记）- 使用通用日期工具
     const blogDatesSet = new Set();
     if (this.memberBlogs) {
@@ -820,43 +823,43 @@ window.MemberPage = {
         }
       });
     }
-    
+
     // 获取当月的日历信息
     const firstDay = new Date(this.currentYear, this.currentMonth - 1, 1);
     const lastDay = new Date(this.currentYear, this.currentMonth, 0);
     const daysInMonth = lastDay.getDate();
     const startWeekday = firstDay.getDay(); // 0=周日, 1=周一, ...
-    
+
     // 渲染完整的日历网格
     const datesEl = document.getElementById('calendarDates');
     if (datesEl) {
       let html = '';
-      
+
       // 使用单一 grid 布局（与博客详情页一致）
       html += '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 4px;">';
-      
+
       // 添加星期标题（日文）
       const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
       weekdays.forEach(day => {
         html += `<div style="text-align: center; font-size: 10px; color: #999; padding: 4px;">${day}</div>`;
       });
-      
+
       // 添加占位空白
       for (let i = 0; i < startWeekday; i++) {
         html += '<div style="aspect-ratio: 1; padding: 2px;"></div>';
       }
-      
+
       // 添加每一天
       const today = new Date();
       const isCurrentMonth = today.getFullYear() === this.currentYear && (today.getMonth() + 1) === this.currentMonth;
       const currentDay = isCurrentMonth ? today.getDate() : -1;
-      
+
       for (let day = 1; day <= daysInMonth; day++) {
         const hasBlog = blogDatesSet.has(day);
         const isToday = day === currentDay;
-        
+
         let style = 'aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 11px; padding: 2px; border-radius: 4px; border: none; background: transparent; cursor: default;';
-        
+
         if (isToday) {
           style += ' background: #1a73e8; color: white; font-weight: bold;';
         } else if (hasBlog) {
@@ -864,27 +867,27 @@ window.MemberPage = {
         } else {
           style += ' color: #ccc;';
         }
-        
+
         const dateStr = `${this.currentYear}/${String(this.currentMonth).padStart(2, '0')}/${String(day).padStart(2, '0')}`;
-        
+
         if (hasBlog) {
           html += `<button style="${style}" onclick="MemberPage.filterByDate('${dateStr}')">${day}</button>`;
         } else {
           html += `<div style="${style}">${day}</div>`;
         }
       }
-      
+
       html += '</div>';
       datesEl.innerHTML = html;
     }
   },
-  
+
   /**
    * 获取指定月份有博客的日期
    */
   getBlogDatesForMonth(year, month) {
     const dates = new Set();
-    
+
     if (this.memberBlogs) {
       this.memberBlogs.forEach(blog => {
         if (blog.publish_date && window.isInMonth && window.isInMonth(blog.publish_date, year, month)) {
@@ -894,10 +897,10 @@ window.MemberPage = {
         }
       });
     }
-    
+
     return Array.from(dates).sort();
   },
-  
+
   /**
    * 切换月份
    */
@@ -910,10 +913,10 @@ window.MemberPage = {
       this.currentMonth = 12;
       this.currentYear--;
     }
-    
+
     this.renderCalendar();
   },
-  
+
   /**
    * 按日期筛选
    */
@@ -928,7 +931,7 @@ window.MemberPage = {
       window.location.hash = `#blog/${blog.id}`;
     }
   },
-  
+
   /**
    * 切换月份下拉菜单（带动画）
    */
@@ -936,25 +939,25 @@ window.MemberPage = {
     const dropdown = document.getElementById('monthDropdown');
     const arrow = document.getElementById('dropdownArrow');
     if (!dropdown || !arrow) return;
-    
+
     const isHidden = dropdown.style.opacity === '0' || dropdown.style.visibility === 'hidden';
-    
+
     if (isHidden) {
       // 生成可用月份列表
       this.populateMonthDropdown();
-      
+
       // 显示下拉菜单（带动画）
       dropdown.style.visibility = 'visible';
       dropdown.style.opacity = '0';
       dropdown.style.transform = 'translateY(-10px)';
-      
+
       // 触发动画
       setTimeout(() => {
         dropdown.style.opacity = '1';
         dropdown.style.transform = 'translateY(0)';
         arrow.style.transform = 'rotate(180deg)';
       }, 10);
-      
+
       // 点击外部关闭
       setTimeout(() => {
         document.addEventListener('click', this.closeMonthDropdown);
@@ -964,15 +967,15 @@ window.MemberPage = {
       dropdown.style.opacity = '0';
       dropdown.style.transform = 'translateY(-10px)';
       arrow.style.transform = 'rotate(0)';
-      
+
       setTimeout(() => {
         dropdown.style.visibility = 'hidden';
       }, 300);
-      
+
       document.removeEventListener('click', this.closeMonthDropdown);
     }
   },
-  
+
   /**
    * 关闭月份下拉菜单
    */
@@ -980,28 +983,28 @@ window.MemberPage = {
     const dropdown = document.getElementById('monthDropdown');
     const selector = document.querySelector('.calendar-month-selector-new');
     const arrow = document.getElementById('dropdownArrow');
-    
+
     if (dropdown && !dropdown.contains(event.target) && !selector.contains(event.target)) {
       // 隐藏下拉菜单（带动画）
       dropdown.style.opacity = '0';
       dropdown.style.transform = 'translateY(-10px)';
       if (arrow) arrow.style.transform = 'rotate(0)';
-      
+
       setTimeout(() => {
         dropdown.style.visibility = 'hidden';
       }, 300);
-      
+
       document.removeEventListener('click', MemberPage.closeMonthDropdown);
     }
   },
-  
+
   /**
    * 填充月份下拉列表
    */
   populateMonthDropdown() {
     const list = document.getElementById('monthDropdownList');
     if (!list) return;
-    
+
     // 获取博客中所有的年月（使用通用日期工具）
     const availableMonths = new Set();
     if (this.memberBlogs) {
@@ -1014,10 +1017,10 @@ window.MemberPage = {
         }
       });
     }
-    
+
     // 转换为数组并排序（倒序，最新的在前）
     const monthsArray = Array.from(availableMonths).sort().reverse();
-    
+
     // 生成按钮（紫色主题）
     list.innerHTML = monthsArray.map(month => {
       const [year, monthNum] = month.split('.');
@@ -1045,7 +1048,7 @@ window.MemberPage = {
       `;
     }).join('');
   },
-  
+
   /**
    * 选择月份
    */
@@ -1053,7 +1056,7 @@ window.MemberPage = {
     this.currentYear = year;
     this.currentMonth = month;
     this.renderCalendar();
-    
+
     // 关闭下拉菜单（带动画）
     const dropdown = document.getElementById('monthDropdown');
     const arrow = document.getElementById('dropdownArrow');
@@ -1061,11 +1064,11 @@ window.MemberPage = {
       dropdown.style.opacity = '0';
       dropdown.style.transform = 'translateY(-10px)';
       if (arrow) arrow.style.transform = 'rotate(0)';
-      
+
       setTimeout(() => {
         dropdown.style.visibility = 'hidden';
       }, 300);
-      
+
       document.removeEventListener('click', this.closeMonthDropdown);
     }
   }
