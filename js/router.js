@@ -364,6 +364,11 @@ window.Router = {
 
       try {
         await this.loadScript('js/member-page.js');
+        // 🔧 初始化 MemberPage（创建 DOM 容器）
+        if (window.MemberPage && window.MemberPage.init) {
+          window.MemberPage.init();
+          console.log('[Router] MemberPage.init() 调用完成');
+        }
         // 预加载详情页相关，因为用户很可能点击博客详情
         this.loadScript('js/member-detail.js');
         console.log('[Router] MemberPage 模块加载完成');
