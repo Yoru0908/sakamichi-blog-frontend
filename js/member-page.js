@@ -1074,7 +1074,7 @@ window.MemberPage = {
   }
 };
 
-// 初始化
-document.addEventListener('DOMContentLoaded', () => {
-  MemberPage.init();
-});
+// 🔧 脚本懒加载后立即执行（DOMContentLoaded 此时已经触发，监听没有意义）
+MemberPage.createMemberPageContainer();
+MemberPage.loadMemberImages();
+console.log('[MemberPage] 模块已加载，容器已创建');
