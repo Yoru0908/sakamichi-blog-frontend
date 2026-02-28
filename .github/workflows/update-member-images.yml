@@ -24,11 +24,11 @@ jobs:
         with:
           node-version: '20'
       
-      - name: Install dependencies
+      - name: Install Playwright and dependencies
         run: |
-          cd scripts
-          npm install cheerio 2>/dev/null || true
-          echo "Dependencies ready"
+          npm install playwright
+          npx playwright install chromium --with-deps
+          echo "Playwright ready"
       
       - name: Fetch member images
         run: |
