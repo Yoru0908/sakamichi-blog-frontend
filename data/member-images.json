@@ -1,7 +1,7 @@
 {
-  "lastUpdate": "2026-01-29T20:54:28.860Z",
-  "note": "成员真实图片 - 樱坂46/日向坂46自动更新，乃木坂46保留手动维护",
-  "source": "官网API + 手动维护",
+  "lastUpdate": "2026-03-01T03:47:24.236Z",
+  "note": "成员真实图片 - 樱坂46、日向坂46为官网HTML自动更新，乃木坂46保留手动维护",
+  "source": "官网HTML解析 + 手动维护",
   "images": {
     "石森 璃花": {
       "imageUrl": "https://sakurazaka46.com/images/14/f84/000e812e34b92a517f88c0e1ab9f8/400_640_102400.jpg",
@@ -560,7 +560,7 @@
       "group": "乃木坂46"
     },
     "石森璃花": {
-      "imageUrl": "https://sakurazaka46.com/images/14/f84/000e812e34b92a517f88c0e1ab9f8/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/cd8/11c3587bb87a5ddc9e4e63f941bf1/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "井上梨名": {
@@ -568,127 +568,127 @@
       "group": "樱坂46"
     },
     "遠藤光莉": {
-      "imageUrl": "https://sakurazaka46.com/images/14/dc0/94d7cdae2f72390f4fb06d8042d0b/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/857/d0120b9769f3d70674079f22bfb93/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "遠藤理子": {
-      "imageUrl": "https://sakurazaka46.com/images/14/fb8/33b79df1a181d3a21e23d21422cb1/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/b22/3713b6987a8e214d6fe5a57854634/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "大園玲": {
-      "imageUrl": "https://sakurazaka46.com/images/14/264/4723da4508f477fe5f2da70bba4b3/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/24b/9ec4f53fd6bdff10e11184718fdc6/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "大沼晶保": {
-      "imageUrl": "https://sakurazaka46.com/images/14/c8e/27b5891f5cbd50fd4de6000ed37c3/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/12f/8c6160d77812688b7e5f29b89119c/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "小田倉麗奈": {
-      "imageUrl": "https://sakurazaka46.com/images/14/ac6/72c53251c1034657acd9be0c09ba9/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/263/20608a9c45d8afddc128ae180ab71/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "幸阪茉里乃": {
-      "imageUrl": "https://sakurazaka46.com/images/14/afe/7dd7bb436a5de47ade0575bda744f/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/2f9/1e452e7822839ea7c313a6f72beca/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "小島凪紗": {
-      "imageUrl": "https://sakurazaka46.com/images/14/833/2715333dadd74a1157f37fdbf0108/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/44a/4e7a8c8ab86faba15404dffa70f48/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "武元唯衣": {
-      "imageUrl": "https://sakurazaka46.com/images/14/188/20e0a8033e39df007cf34f3d8efa3/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/fde/33bda495de83cc021bc791ee1f815/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "谷口愛季": {
-      "imageUrl": "https://sakurazaka46.com/images/14/dd9/ef473ddc2db5bcb9f292df216aff3/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/025/cbcd2e8333953131b14d1e1b85ffe/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "田村保乃": {
-      "imageUrl": "https://sakurazaka46.com/images/14/d64/f3aad591987805162227830f33734/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/d78/15b07c7fcfa61ee38717e3ead9190/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "中嶋優月": {
-      "imageUrl": "https://sakurazaka46.com/images/14/c4f/333b700dfdb745af4b0f375a3dd3f/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/7e9/80345b3421394aac9b2ce72b0c6f5/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "藤吉夏鈴": {
-      "imageUrl": "https://sakurazaka46.com/images/14/afd/51823010f3577f32bf7a8146b5d99/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/ac8/bdf305ca6fe3150253309e3162b38/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "増本綺良": {
-      "imageUrl": "https://sakurazaka46.com/images/14/4eb/62d5a821fca366662513f9e12cea7/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/b0b/6c435985fee683a63a4e111d08c66/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "松田里奈": {
-      "imageUrl": "https://sakurazaka46.com/images/14/99a/30cd86661500ac50a02670516252f/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/751/48de20a8332db5f761ac1277f5e55/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "的野美青": {
-      "imageUrl": "https://sakurazaka46.com/images/14/74a/4fbc9c0ee8ef016d81c1d52aee23d/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/b8b/bfc2cd7717c347546f5d88dcc5521/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "向井純葉": {
-      "imageUrl": "https://sakurazaka46.com/images/14/754/bc6ea8285e20e5f167ee7eacc31e1/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/e82/320adae04d6b88c9ec11f065b8d9e/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "村井優": {
-      "imageUrl": "https://sakurazaka46.com/images/14/3fb/82d100ecdf6f7eb667b7b0782edfe/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/f66/d3ee063660b09ae19c9ae6faddb3b/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "村山美羽": {
-      "imageUrl": "https://sakurazaka46.com/images/14/578/f65d04c371834316d4addf71c7b9a/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/8cd/9eae10b884ede12c4445a0958b70f/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "森田ひかる": {
-      "imageUrl": "https://sakurazaka46.com/images/14/f6a/385e70c721f6d30065ef377c34654/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/653/60ba6e0df07c5a0f5dedf11db6186/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "守屋麗奈": {
-      "imageUrl": "https://sakurazaka46.com/images/14/2e4/7662aae2c7059221311d34aa4c6a3/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/ca6/ea887c53d101dcd1ec2154334e1b1/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "山﨑天": {
-      "imageUrl": "https://sakurazaka46.com/images/14/7d3/e33b1d6ac91cf58a836e55a6c25ad/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/d79/76fa08f7e62c5b15ff4ba200ba199/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "山下瞳月": {
-      "imageUrl": "https://sakurazaka46.com/images/14/45d/5ddc2679f0e7a2dcca1905b1e6012/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/f38/3108b02a46500ce0d6093234a2dc0/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "浅井恋乃未": {
-      "imageUrl": "https://sakurazaka46.com/images/14/4c3/1ddbf780024df3164450dc65fff12/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/571/5f8ff9c3868beec870183b2d31c3a/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "稲熊ひな": {
-      "imageUrl": "https://sakurazaka46.com/images/14/5df/743ca24e09d69be785c6339ed318f/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/399/dd195ad9a0d52b851a86c1dedbf6c/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "勝又春": {
-      "imageUrl": "https://sakurazaka46.com/images/14/abc/68d30887b7eab270febd23cb2607d/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/d1b/9c4d1ed47ac4c11e75c9eb9627a2a/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "佐藤愛桜": {
-      "imageUrl": "https://sakurazaka46.com/images/14/c3f/d7f2f1a47d14132dddb3ea29c8f09/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/73f/cb69cae91954986017e139dabeef4/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "中川智尋": {
-      "imageUrl": "https://sakurazaka46.com/images/14/22b/b397bfde982a1ff3c2a3aa8ab1353/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/eeb/7f18c42636b09a6d7d497071a549f/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "松本和子": {
-      "imageUrl": "https://sakurazaka46.com/images/14/18c/ff0622d4ad4a12ba1ce3a141a00ec/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/ecc/679134dea971e03bce13c7f41f82e/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "目黒陽色": {
-      "imageUrl": "https://sakurazaka46.com/images/14/c1e/ba544bf5472491923f3c2c0a2ea8c/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/343/e99d35233cec8a3d6aeaaf71e598e/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "山川宇衣": {
-      "imageUrl": "https://sakurazaka46.com/images/14/d37/36727e01aae8a390c3ff6dc4615c2/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/c45/b723790606854ed9be6119727ea7e/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "山田桃実": {
-      "imageUrl": "https://sakurazaka46.com/images/14/16b/03d38a618a7ec9962d3a2c134d63f/400_640_102400.jpg",
+      "imageUrl": "https://sakurazaka46.com/images/14/3f0/982a8a5790f0825271e4224658219/400_320_102400.jpg",
       "group": "樱坂46"
     },
     "石塚瑶季": {
