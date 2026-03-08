@@ -866,9 +866,9 @@ window.MemberPage = {
         let style = 'aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 11px; padding: 2px; border-radius: 4px; border: none; background: transparent; cursor: default;';
 
         if (isToday) {
-          style += ' background: #1a73e8; color: white; font-weight: bold;';
+          style += ' background: #7e57c2; color: white; font-weight: bold;';
         } else if (hasBlog) {
-          style += ' background: #e8f0fe; color: #1a73e8; cursor: pointer;';
+          style += ' background: #ede7f6; color: #7e57c2; cursor: pointer;';
         } else {
           style += ' color: #ccc;';
         }

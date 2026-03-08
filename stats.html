@@ -103,6 +103,8 @@
       font-weight: 500;
       transition: all 0.3s;
       border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .group-tab:hover {
@@ -295,7 +297,7 @@
       </div>
 
       <!-- 团体标签 -->
-      <div class="flex gap-2 mt-6 border-b">
+      <div class="flex gap-2 mt-6 border-b overflow-x-auto" style="flex-wrap: nowrap; -webkit-overflow-scrolling: touch;">
         <button class="group-tab active" data-group="all" onclick="switchGroup('all')">
           全部团体
         </button>
@@ -945,10 +947,10 @@
           <!-- 总成员数 -->
           <div class="stat-card">
             <div class="stat-label">总成员数</div>
-            <div class="stat-number" style="color: #3b82f6;">
+            <div class="stat-number" style="color: #7e57c2;">
               <span>${activeCount}/${totalCount}</span><span style="font-size: 24px; margin-left: 4px;">人</span>
             </div>
-            <div class="stat-badge" style="background: #dbeafe; color: #1e40af;">
+            <div class="stat-badge" style="background: #ede7f6; color: #5e35b1;">
               ${groupName}
             </div>
           </div>
