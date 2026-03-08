@@ -7,14 +7,14 @@
 let INTERACTION_DATA = {};
 let AVAILABLE_MONTHS = {};
 let dataLoaded = false;
-const API_BASE = window.API_BASE || 'https://api.sakamichi-tools.cn';
+const INTERACTIONS_API_BASE = window.API_BASE || 'https://api.sakamichi-tools.cn';
 const USE_API = location.protocol !== 'file:' && !location.hostname.match(/^(localhost|127\.0\.0\.1)$/);
 
 async function loadInteractionData() {
   try {
     if (USE_API) {
       // 生产环境：从后端 API 批量加载
-      const resp = await fetch(`${API_BASE}/api/interactions/all`);
+      const resp = await fetch(`${INTERACTIONS_API_BASE}/api/interactions/all`);
       if (!resp.ok) throw new Error(`API: ${resp.status}`);
       const json = await resp.json();
       INTERACTION_DATA = json.data || {};
