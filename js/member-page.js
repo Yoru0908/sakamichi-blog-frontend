@@ -329,8 +329,9 @@ window.MemberPage = {
               </div>
               
               <!-- 月份下拉菜单（带动画） -->
-              <div id="monthDropdown" style="opacity: 0; visibility: hidden; position: absolute; top: calc(100% + 8px); left: 0; right: 0; z-index: 1000; background: white; border: 2px solid #7e57c2; border-radius: 8px; padding: 16px; box-shadow: 0 8px 24px rgba(126, 87, 194, 0.15); transition: all 0.3s ease; transform: translateY(-10px);">
-                <div id="monthDropdownList" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; max-height: 300px; overflow-y: auto;"></div>
+              <div id="monthDropdown" style="opacity: 0; visibility: hidden; position: absolute; top: calc(100% + 8px); left: 0; right: 0; z-index: 1000; background: white; border: 2px solid #7e57c2; border-radius: 8px; padding: 16px; box-shadow: 0 8px 24px rgba(126, 87, 194, 0.15); transition: all 0.3s ease; transform: translateY(-10px); overscroll-behavior: contain;">
+                <div id="monthDropdownYears" style="display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; justify-content: center;"></div>
+                <div id="monthDropdownList" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-height: 240px; overflow-y: auto; overscroll-behavior: contain;"></div>
               </div>
             </div>
             <div id="calendarDates" class="calendar-dates">
@@ -999,37 +1000,71 @@ window.MemberPage = {
   },
 
   /**
-   * 填充月份下拉列表
+   * 填充月份下拉列表（年份→月份层级）
    */
   populateMonthDropdown() {
+    const yearContainer = document.getElementById('monthDropdownYears');
     const list = document.getElementById('monthDropdownList');
-    if (!list) return;
+    if (!list || !yearContainer) return;
 
     // 获取博客中所有的年月（使用通用日期工具）
-    const availableMonths = new Set();
+    const yearMonthMap = {}; // { year: [month1, month2, ...] }
     if (this.memberBlogs) {
       this.memberBlogs.forEach(blog => {
         if (blog.publish_date) {
           const parts = window.extractDateParts ? window.extractDateParts(blog.publish_date) : null;
           if (parts) {
-            availableMonths.add(`${parts.year}.${String(parts.month).padStart(2, '0')}`);
+            const y = parts.year;
+            const m = parts.month;
+            if (!yearMonthMap[y]) yearMonthMap[y] = new Set();
+            yearMonthMap[y].add(m);
           }
         }
       });
     }
 
-    // 转换为数组并排序（倒序，最新的在前）
-    const monthsArray = Array.from(availableMonths).sort().reverse();
+    // 获取可用年份（倒序）
+    const years = Object.keys(yearMonthMap).sort((a, b) => b - a);
+    if (years.length === 0) return;
 
-    // 生成按钮（紫色主题）
-    list.innerHTML = monthsArray.map(month => {
-      const [year, monthNum] = month.split('.');
-      const isSelected = this.currentYear === parseInt(year) && this.currentMonth === parseInt(monthNum);
+    // 默认选中当前日历年份，若不在列表中则选最新年份
+    if (!this._dropdownYear || !yearMonthMap[this._dropdownYear]) {
+      this._dropdownYear = this.currentYear && yearMonthMap[this.currentYear] ? this.currentYear : parseInt(years[0]);
+    }
+
+    // 渲染年份标签
+    yearContainer.innerHTML = years.map(y => {
+      const isActive = parseInt(y) === this._dropdownYear;
+      return `
+        <button
+          onclick="event.stopPropagation(); MemberPage.switchDropdownYear(${y})"
+          style="
+            padding: 6px 14px;
+            border: ${isActive ? '2px solid #7e57c2' : '1px solid #e0e0e0'};
+            border-radius: 20px;
+            background: ${isActive ? '#7e57c2' : 'white'};
+            color: ${isActive ? 'white' : '#666'};
+            font-size: 13px;
+            font-weight: ${isActive ? 'bold' : 'normal'};
+            cursor: pointer;
+            transition: all 0.2s ease;
+          "
+          onmouseover="if(!${isActive}){this.style.background='#f3e5f5';this.style.borderColor='#7e57c2';this.style.color='#7e57c2';}"
+          onmouseout="if(!${isActive}){this.style.background='white';this.style.borderColor='#e0e0e0';this.style.color='#666';}"
+        >${y}</button>
+      `;
+    }).join('');
+
+    // 渲染该年份下的月份按钮（倒序）
+    const months = Array.from(yearMonthMap[this._dropdownYear] || []).sort((a, b) => b - a);
+    list.innerHTML = months.map(m => {
+      const isSelected = this.currentYear === this._dropdownYear && this.currentMonth === m;
+      const monthStr = `${String(m).padStart(2, '0')}月`;
       return `
         <button 
-          onclick="MemberPage.selectMonth(${year}, ${parseInt(monthNum)})" 
+          onclick="MemberPage.selectMonth(${this._dropdownYear}, ${m})" 
           style="
-            padding: 10px 16px;
+            padding: 10px 12px;
             border: ${isSelected ? '2px solid #7e57c2' : '1px solid #e0e0e0'};
             border-radius: 6px;
             background: ${isSelected ? '#f3e5f5' : 'white'};
@@ -1043,10 +1078,41 @@ window.MemberPage = {
           onmouseover="this.style.background='#f3e5f5'; this.style.borderColor='#7e57c2'; this.style.color='#7e57c2';"
           onmouseout="this.style.background='${isSelected ? '#f3e5f5' : 'white'}'; this.style.borderColor='${isSelected ? '#7e57c2' : '#e0e0e0'}'; this.style.color='${isSelected ? '#7e57c2' : '#666'}';"
         >
-          ${month}
+          ${monthStr}
         </button>
       `;
     }).join('');
+
+    // 滚动隔离：防止下拉菜单内滚动穿透到页面
+    this.setupDropdownScrollIsolation();
+  },
+
+  /**
+   * 切换下拉菜单中的年份
+   */
+  switchDropdownYear(year) {
+    this._dropdownYear = year;
+    this.populateMonthDropdown();
+  },
+
+  /**
+   * 设置下拉菜单滚动隔离
+   */
+  setupDropdownScrollIsolation() {
+    const dropdown = document.getElementById('monthDropdown');
+    if (!dropdown || dropdown._scrollIsolated) return;
+    dropdown._scrollIsolated = true;
+
+    dropdown.addEventListener('wheel', function(e) {
+      const list = document.getElementById('monthDropdownList');
+      if (!list) return;
+      const { scrollTop, scrollHeight, clientHeight } = list;
+      const atTop = scrollTop === 0 && e.deltaY < 0;
+      const atBottom = scrollTop + clientHeight >= scrollHeight && e.deltaY > 0;
+      if (atTop || atBottom) {
+        e.preventDefault();
+      }
+    }, { passive: false });
   },
 
   /**

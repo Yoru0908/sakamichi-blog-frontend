@@ -473,9 +473,10 @@
           }
           
           // 计算每个成员的最后更新日期
+          // ⚠️ 标准化名字：移除空格以匹配 members API 的格式
           data.blogs.forEach(blog => {
             if (blog.member && blog.publish_date) {
-              const member = blog.member;
+              const member = blog.member.replace(/\s+/g, '');
               const dateStr = blog.publish_date;
               
               // 转换日期字符串为可比较的格式
