@@ -5487,7 +5487,7 @@
         },
         {
           "name": "小西夏菜実",
-          "gen": "五期生",
+          "gen": "四期生",
           "count": 16
         },
         {
@@ -5517,7 +5517,7 @@
         },
         {
           "name": "片山紗希",
-          "gen": "四期生",
+          "gen": "五期生",
           "count": 8
         },
         {
@@ -5577,8 +5577,8 @@
           [
             0,
             15,
-            15,
-            31
+            7,
+            39
           ],
           [
             1,
@@ -5587,16 +5587,16 @@
             3
           ],
           [
-            33,
             36,
-            230,
-            46
+            41,
+            262,
+            38
           ],
           [
-            12,
-            25,
-            40,
-            30
+            9,
+            20,
+            8,
+            38
           ]
         ]
       },
@@ -5616,7 +5616,7 @@
             },
             {
               "name": "小西夏菜実",
-              "gen": "五期生",
+              "gen": "四期生",
               "count": 8
             },
             {
@@ -5690,24 +5690,24 @@
               "count": 55
             },
             {
-              "name": "高井俐香",
-              "gen": "同期",
-              "count": 46
-            },
-            {
               "name": "大田美月",
               "gen": "同期",
-              "count": 40
+              "count": 51
+            },
+            {
+              "name": "高井俐香",
+              "gen": "同期",
+              "count": 50
             },
             {
               "name": "佐藤優羽",
               "gen": "同期",
-              "count": 33
+              "count": 37
             },
             {
               "name": "鶴崎仁香",
               "gen": "同期",
-              "count": 25
+              "count": 26
             },
             {
               "name": "森本茉莉",
@@ -5717,12 +5717,12 @@
             {
               "name": "河田陽菜",
               "gen": "二期生",
-              "count": 15
+              "count": 19
             },
             {
-              "name": "下田衣珠季",
+              "name": "坂井新奈",
               "gen": "同期",
-              "count": 11
+              "count": 15
             }
           ]
         },
@@ -5730,19 +5730,14 @@
           "gen": "四期生",
           "topMentioned": [
             {
-              "name": "大田美月",
-              "gen": "五期生",
-              "count": 14
+              "name": "松田好花",
+              "gen": "二期生",
+              "count": 11
             },
             {
               "name": "山口陽世",
               "gen": "三期生",
-              "count": 12
-            },
-            {
-              "name": "松田好花",
-              "gen": "二期生",
-              "count": 11
+              "count": 9
             },
             {
               "name": "山下葉留花",
@@ -5750,24 +5745,29 @@
               "count": 8
             },
             {
+              "name": "渡辺莉奈",
+              "gen": "同期",
+              "count": 6
+            },
+            {
               "name": "小坂菜緒",
               "gen": "二期生",
-              "count": 7
-            },
-            {
-              "name": "高井俐香",
-              "gen": "五期生",
-              "count": 7
-            },
-            {
-              "name": "坂井新奈",
-              "gen": "五期生",
               "count": 6
             },
             {
               "name": "正源司陽子",
               "gen": "同期",
               "count": 6
+            },
+            {
+              "name": "小西夏菜実",
+              "gen": "同期",
+              "count": 6
+            },
+            {
+              "name": "清水理央",
+              "gen": "同期",
+              "count": 5
             }
           ]
         }
@@ -5786,7 +5786,7 @@
               "name": "山口陽世",
               "count": 17,
               "mainSource": "四期生",
-              "mainCount": 12
+              "mainCount": 9
             },
             {
               "name": "髙橋未来虹",
@@ -5809,7 +5809,7 @@
               "name": "河田陽菜",
               "count": 26,
               "mainSource": "五期生",
-              "mainCount": 15
+              "mainCount": 19
             },
             {
               "name": "金村美玖",
@@ -5827,7 +5827,7 @@
               "name": "小坂菜緒",
               "count": 17,
               "mainSource": "五期生",
-              "mainCount": 8
+              "mainCount": 9
             }
           ]
         },
@@ -5838,13 +5838,13 @@
               "name": "大田美月",
               "count": 56,
               "mainSource": "五期生",
-              "mainCount": 40
+              "mainCount": 51
             },
             {
               "name": "高井俐香",
               "count": 55,
               "mainSource": "五期生",
-              "mainCount": 46
+              "mainCount": 50
             },
             {
               "name": "大野愛実",
@@ -5856,31 +5856,31 @@
               "name": "佐藤優羽",
               "count": 38,
               "mainSource": "五期生",
-              "mainCount": 33
+              "mainCount": 37
             },
             {
               "name": "鶴崎仁香",
               "count": 27,
               "mainSource": "五期生",
-              "mainCount": 25
-            },
-            {
-              "name": "小西夏菜実",
-              "count": 16,
-              "mainSource": "三期生",
-              "mainCount": 8
+              "mainCount": 26
             },
             {
               "name": "坂井新奈",
               "count": 15,
               "mainSource": "五期生",
-              "mainCount": 9
+              "mainCount": 15
             },
             {
               "name": "下田衣珠季",
               "count": 13,
               "mainSource": "五期生",
               "mainCount": 11
+            },
+            {
+              "name": "片山紗希",
+              "count": 8,
+              "mainSource": "五期生",
+              "mainCount": 8
             },
             {
               "name": "蔵盛妃那乃",
@@ -5912,6 +5912,12 @@
               "mainCount": 13
             },
             {
+              "name": "小西夏菜実",
+              "count": 16,
+              "mainSource": "三期生",
+              "mainCount": 8
+            },
+            {
               "name": "清水理央",
               "count": 13,
               "mainSource": "五期生",
@@ -5920,8 +5926,8 @@
             {
               "name": "渡辺莉奈",
               "count": 11,
-              "mainSource": "五期生",
-              "mainCount": 4
+              "mainSource": "四期生",
+              "mainCount": 6
             },
             {
               "name": "藤嶌果歩",
@@ -5930,16 +5936,10 @@
               "mainCount": 5
             },
             {
-              "name": "片山紗希",
-              "count": 8,
-              "mainSource": "五期生",
-              "mainCount": 8
-            },
-            {
               "name": "平岡海月",
               "count": 8,
               "mainSource": "五期生",
-              "mainCount": 5
+              "mainCount": 7
             },
             {
               "name": "正源司陽子",
@@ -5963,7 +5963,7 @@
               "name": "平尾帆夏",
               "count": 5,
               "mainSource": "五期生",
-              "mainCount": 2
+              "mainCount": 3
             }
           ]
         }
@@ -6793,7 +6793,7 @@
         },
         {
           "name": "小西夏菜実",
-          "gen": "五期生",
+          "gen": "四期生",
           "count": 16
         },
         {
@@ -6833,7 +6833,7 @@
         },
         {
           "name": "片山紗希",
-          "gen": "四期生",
+          "gen": "五期生",
           "count": 7
         },
         {
@@ -6893,8 +6893,8 @@
           [
             20,
             83,
-            11,
-            17
+            12,
+            16
           ],
           [
             0,
@@ -6903,16 +6903,16 @@
             2
           ],
           [
-            10,
-            124,
-            112,
+            12,
+            147,
+            120,
             26
           ],
           [
-            12,
-            52,
-            26,
-            43
+            10,
+            29,
+            8,
+            53
           ]
         ]
       },
@@ -7003,7 +7003,17 @@
             {
               "name": "河田陽菜",
               "gen": "二期生",
-              "count": 105
+              "count": 124
+            },
+            {
+              "name": "鶴崎仁香",
+              "gen": "同期",
+              "count": 22
+            },
+            {
+              "name": "高井俐香",
+              "gen": "同期",
+              "count": 20
             },
             {
               "name": "佐藤優羽",
@@ -7011,34 +7021,24 @@
               "count": 20
             },
             {
-              "name": "鶴崎仁香",
-              "gen": "同期",
-              "count": 17
-            },
-            {
-              "name": "高井俐香",
-              "gen": "同期",
-              "count": 16
-            },
-            {
               "name": "大野愛実",
               "gen": "同期",
               "count": 13
             },
             {
-              "name": "大田美月",
-              "gen": "同期",
-              "count": 11
-            },
-            {
               "name": "坂井新奈",
               "gen": "同期",
-              "count": 11
+              "count": 12
             },
             {
               "name": "松田好花",
               "gen": "二期生",
-              "count": 9
+              "count": 11
+            },
+            {
+              "name": "大田美月",
+              "gen": "同期",
+              "count": 11
             }
           ]
         },
@@ -7046,24 +7046,19 @@
           "gen": "四期生",
           "topMentioned": [
             {
-              "name": "河田陽菜",
-              "gen": "二期生",
-              "count": 41
-            },
-            {
               "name": "正源司陽子",
               "gen": "同期",
               "count": 23
             },
             {
-              "name": "小西夏菜実",
-              "gen": "五期生",
-              "count": 8
+              "name": "河田陽菜",
+              "gen": "二期生",
+              "count": 22
             },
             {
-              "name": "鶴崎仁香",
-              "gen": "五期生",
-              "count": 8
+              "name": "清水理央",
+              "gen": "同期",
+              "count": 7
             },
             {
               "name": "森本茉莉",
@@ -7071,8 +7066,8 @@
               "count": 7
             },
             {
-              "name": "松田好花",
-              "gen": "二期生",
+              "name": "小西夏菜実",
+              "gen": "同期",
               "count": 6
             },
             {
@@ -7081,8 +7076,13 @@
               "count": 5
             },
             {
-              "name": "高井俐香",
-              "gen": "五期生",
+              "name": "平岡海月",
+              "gen": "同期",
+              "count": 5
+            },
+            {
+              "name": "松田好花",
+              "gen": "二期生",
               "count": 4
             }
           ]
@@ -7125,13 +7125,13 @@
               "name": "河田陽菜",
               "count": 207,
               "mainSource": "五期生",
-              "mainCount": 105
+              "mainCount": 124
             },
             {
               "name": "松田好花",
               "count": 23,
               "mainSource": "五期生",
-              "mainCount": 9
+              "mainCount": 11
             },
             {
               "name": "小坂菜緒",
@@ -7154,7 +7154,7 @@
               "name": "鶴崎仁香",
               "count": 29,
               "mainSource": "五期生",
-              "mainCount": 17
+              "mainCount": 22
             },
             {
               "name": "佐藤優羽",
@@ -7166,19 +7166,13 @@
               "name": "高井俐香",
               "count": 20,
               "mainSource": "五期生",
-              "mainCount": 16
+              "mainCount": 20
             },
             {
               "name": "大野愛実",
               "count": 17,
               "mainSource": "五期生",
               "mainCount": 13
-            },
-            {
-              "name": "小西夏菜実",
-              "count": 16,
-              "mainSource": "四期生",
-              "mainCount": 8
             },
             {
               "name": "大田美月",
@@ -7190,7 +7184,7 @@
               "name": "坂井新奈",
               "count": 12,
               "mainSource": "五期生",
-              "mainCount": 11
+              "mainCount": 12
             },
             {
               "name": "下田衣珠季",
@@ -7203,6 +7197,12 @@
               "count": 8,
               "mainSource": "五期生",
               "mainCount": 6
+            },
+            {
+              "name": "片山紗希",
+              "count": 7,
+              "mainSource": "五期生",
+              "mainCount": 5
             },
             {
               "name": "蔵盛妃那乃",
@@ -7228,15 +7228,15 @@
               "mainCount": 9
             },
             {
+              "name": "小西夏菜実",
+              "count": 16,
+              "mainSource": "五期生",
+              "mainCount": 9
+            },
+            {
               "name": "平岡海月",
               "count": 8,
               "mainSource": "四期生",
-              "mainCount": 4
-            },
-            {
-              "name": "片山紗希",
-              "count": 7,
-              "mainSource": "五期生",
               "mainCount": 5
             },
             {
@@ -7248,7 +7248,7 @@
             {
               "name": "石塚瑶季",
               "count": 6,
-              "mainSource": "五期生",
+              "mainSource": "四期生",
               "mainCount": 3
             },
             {
@@ -7261,7 +7261,7 @@
               "name": "宮地すみれ",
               "count": 4,
               "mainSource": "五期生",
-              "mainCount": 2
+              "mainCount": 4
             },
             {
               "name": "平尾帆夏",
@@ -8331,7 +8331,7 @@
         },
         {
           "name": "小西夏菜実",
-          "gen": "五期生",
+          "gen": "四期生",
           "count": 11
         },
         {
@@ -8341,7 +8341,7 @@
         },
         {
           "name": "片山紗希",
-          "gen": "四期生",
+          "gen": "五期生",
           "count": 8
         },
         {
@@ -8411,8 +8411,8 @@
           [
             11,
             40,
-            31,
-            24
+            34,
+            21
           ],
           [
             1,
@@ -8422,15 +8422,15 @@
           ],
           [
             21,
-            191,
-            107,
-            38
+            193,
+            133,
+            34
           ],
           [
             12,
-            133,
-            58,
-            30
+            131,
+            26,
+            40
           ]
         ]
       },
@@ -8531,42 +8531,42 @@
             {
               "name": "河田陽菜",
               "gen": "二期生",
-              "count": 95
+              "count": 85
             },
             {
               "name": "松田好花",
               "gen": "二期生",
-              "count": 62
+              "count": 73
             },
             {
               "name": "金村美玖",
               "gen": "二期生",
-              "count": 30
+              "count": 31
             },
             {
               "name": "大野愛実",
               "gen": "同期",
-              "count": 26
+              "count": 28
             },
             {
               "name": "大田美月",
               "gen": "同期",
-              "count": 23
+              "count": 27
+            },
+            {
+              "name": "下田衣珠季",
+              "gen": "同期",
+              "count": 22
             },
             {
               "name": "高井俐香",
               "gen": "同期",
-              "count": 17
+              "count": 18
             },
             {
-              "name": "清水理央",
-              "gen": "四期生",
-              "count": 13
-            },
-            {
-              "name": "佐藤優羽",
+              "name": "鶴崎仁香",
               "gen": "同期",
-              "count": 13
+              "count": 18
             }
           ]
         },
@@ -8574,34 +8574,19 @@
           "gen": "四期生",
           "topMentioned": [
             {
-              "name": "松田好花",
-              "gen": "二期生",
-              "count": 65
-            },
-            {
               "name": "河田陽菜",
               "gen": "二期生",
-              "count": 58
+              "count": 68
+            },
+            {
+              "name": "松田好花",
+              "gen": "二期生",
+              "count": 54
             },
             {
               "name": "大野愛実",
               "gen": "五期生",
-              "count": 15
-            },
-            {
-              "name": "鶴崎仁香",
-              "gen": "五期生",
-              "count": 12
-            },
-            {
-              "name": "下田衣珠季",
-              "gen": "五期生",
-              "count": 11
-            },
-            {
-              "name": "大田美月",
-              "gen": "五期生",
-              "count": 8
+              "count": 13
             },
             {
               "name": "森本茉莉",
@@ -8610,8 +8595,23 @@
             },
             {
               "name": "小西夏菜実",
-              "gen": "五期生",
+              "gen": "同期",
               "count": 8
+            },
+            {
+              "name": "渡辺莉奈",
+              "gen": "同期",
+              "count": 7
+            },
+            {
+              "name": "小坂菜緒",
+              "gen": "二期生",
+              "count": 6
+            },
+            {
+              "name": "正源司陽子",
+              "gen": "同期",
+              "count": 6
             }
           ]
         }
@@ -8653,19 +8653,19 @@
               "name": "河田陽菜",
               "count": 175,
               "mainSource": "五期生",
-              "mainCount": 95
+              "mainCount": 85
             },
             {
               "name": "松田好花",
               "count": 154,
-              "mainSource": "四期生",
-              "mainCount": 65
+              "mainSource": "五期生",
+              "mainCount": 73
             },
             {
               "name": "金村美玖",
               "count": 36,
               "mainSource": "五期生",
-              "mainCount": 30
+              "mainCount": 31
             },
             {
               "name": "小坂菜緒",
@@ -8682,31 +8682,31 @@
               "name": "大野愛実",
               "count": 61,
               "mainSource": "五期生",
-              "mainCount": 26
+              "mainCount": 28
             },
             {
               "name": "大田美月",
               "count": 34,
               "mainSource": "五期生",
-              "mainCount": 23
+              "mainCount": 27
             },
             {
               "name": "下田衣珠季",
               "count": 25,
               "mainSource": "五期生",
-              "mainCount": 12
+              "mainCount": 22
             },
             {
               "name": "鶴崎仁香",
               "count": 21,
-              "mainSource": "四期生",
-              "mainCount": 12
+              "mainSource": "五期生",
+              "mainCount": 18
             },
             {
               "name": "高井俐香",
               "count": 20,
               "mainSource": "五期生",
-              "mainCount": 17
+              "mainCount": 18
             },
             {
               "name": "佐藤優羽",
@@ -8715,10 +8715,10 @@
               "mainCount": 13
             },
             {
-              "name": "小西夏菜実",
-              "count": 11,
+              "name": "片山紗希",
+              "count": 8,
               "mainSource": "四期生",
-              "mainCount": 8
+              "mainCount": 3
             },
             {
               "name": "坂井新奈",
@@ -8752,26 +8752,26 @@
             {
               "name": "正源司陽子",
               "count": 15,
-              "mainSource": "四期生",
-              "mainCount": 8
+              "mainSource": "五期生",
+              "mainCount": 9
             },
             {
               "name": "清水理央",
               "count": 14,
               "mainSource": "五期生",
-              "mainCount": 13
+              "mainCount": 10
+            },
+            {
+              "name": "小西夏菜実",
+              "count": 11,
+              "mainSource": "四期生",
+              "mainCount": 8
             },
             {
               "name": "平尾帆夏",
               "count": 11,
               "mainSource": "三期生",
               "mainCount": 8
-            },
-            {
-              "name": "片山紗希",
-              "count": 8,
-              "mainSource": "四期生",
-              "mainCount": 3
             },
             {
               "name": "平岡海月",
@@ -8782,8 +8782,8 @@
             {
               "name": "竹内希来里",
               "count": 6,
-              "mainSource": "五期生",
-              "mainCount": 4
+              "mainSource": "四期生",
+              "mainCount": 3
             },
             {
               "name": "石塚瑶季",
@@ -9647,7 +9647,7 @@
         },
         {
           "name": "片山紗希",
-          "gen": "四期生",
+          "gen": "五期生",
           "count": 24
         },
         {
@@ -9737,7 +9737,7 @@
         },
         {
           "name": "小西夏菜実",
-          "gen": "五期生",
+          "gen": "四期生",
           "count": 4
         },
         {
@@ -9782,8 +9782,8 @@
           [
             20,
             10,
-            22,
-            8
+            21,
+            9
           ],
           [
             1,
@@ -9792,15 +9792,15 @@
             1
           ],
           [
-            10,
-            85,
-            94,
-            52
+            13,
+            96,
+            143,
+            31
           ],
           [
-            6,
-            49,
-            48,
+            3,
+            38,
+            20,
             23
           ]
         ]
@@ -9836,7 +9836,7 @@
             },
             {
               "name": "小西夏菜実",
-              "gen": "五期生",
+              "gen": "四期生",
               "count": 4
             },
             {
@@ -9882,7 +9882,7 @@
             {
               "name": "松田好花",
               "gen": "二期生",
-              "count": 78
+              "count": 87
             },
             {
               "name": "大野愛実",
@@ -9892,15 +9892,25 @@
             {
               "name": "大田美月",
               "gen": "同期",
-              "count": 22
+              "count": 25
+            },
+            {
+              "name": "鶴崎仁香",
+              "gen": "同期",
+              "count": 23
             },
             {
               "name": "片山紗希",
-              "gen": "四期生",
+              "gen": "同期",
               "count": 21
             },
             {
               "name": "佐藤優羽",
+              "gen": "同期",
+              "count": 14
+            },
+            {
+              "name": "下田衣珠季",
               "gen": "同期",
               "count": 11
             },
@@ -9908,16 +9918,6 @@
               "name": "渡辺莉奈",
               "gen": "四期生",
               "count": 10
-            },
-            {
-              "name": "下田衣珠季",
-              "gen": "同期",
-              "count": 9
-            },
-            {
-              "name": "高井俐香",
-              "gen": "同期",
-              "count": 8
             }
           ]
         },
@@ -9927,12 +9927,7 @@
             {
               "name": "松田好花",
               "gen": "二期生",
-              "count": 40
-            },
-            {
-              "name": "鶴崎仁香",
-              "gen": "五期生",
-              "count": 15
+              "count": 31
             },
             {
               "name": "大野愛実",
@@ -9950,19 +9945,24 @@
               "count": 7
             },
             {
-              "name": "髙橋未来虹",
-              "gen": "三期生",
-              "count": 5
-            },
-            {
               "name": "高井俐香",
               "gen": "五期生",
-              "count": 5
+              "count": 4
             },
             {
-              "name": "下田衣珠季",
-              "gen": "五期生",
-              "count": 5
+              "name": "清水理央",
+              "gen": "同期",
+              "count": 4
+            },
+            {
+              "name": "髙橋未来虹",
+              "gen": "三期生",
+              "count": 3
+            },
+            {
+              "name": "竹内希来里",
+              "gen": "同期",
+              "count": 3
             }
           ]
         }
@@ -9987,7 +9987,7 @@
               "name": "上村ひなの",
               "count": 7,
               "mainSource": "五期生",
-              "mainCount": 3
+              "mainCount": 4
             },
             {
               "name": "森本茉莉",
@@ -10004,7 +10004,7 @@
               "name": "松田好花",
               "count": 129,
               "mainSource": "五期生",
-              "mainCount": 78
+              "mainCount": 87
             },
             {
               "name": "小坂菜緒",
@@ -10021,8 +10021,8 @@
             {
               "name": "河田陽菜",
               "count": 3,
-              "mainSource": "四期生",
-              "mainCount": 2
+              "mainSource": "五期生",
+              "mainCount": 3
             }
           ]
         },
@@ -10039,37 +10039,43 @@
               "name": "大田美月",
               "count": 26,
               "mainSource": "五期生",
-              "mainCount": 22
+              "mainCount": 25
+            },
+            {
+              "name": "片山紗希",
+              "count": 24,
+              "mainSource": "五期生",
+              "mainCount": 21
             },
             {
               "name": "鶴崎仁香",
               "count": 23,
-              "mainSource": "四期生",
-              "mainCount": 15
+              "mainSource": "五期生",
+              "mainCount": 23
             },
             {
               "name": "佐藤優羽",
               "count": 19,
               "mainSource": "五期生",
-              "mainCount": 11
+              "mainCount": 14
             },
             {
               "name": "下田衣珠季",
               "count": 14,
               "mainSource": "五期生",
-              "mainCount": 9
+              "mainCount": 11
             },
             {
               "name": "高井俐香",
               "count": 13,
               "mainSource": "五期生",
-              "mainCount": 8
+              "mainCount": 9
             },
             {
               "name": "松尾桜",
               "count": 7,
               "mainSource": "五期生",
-              "mainCount": 4
+              "mainCount": 5
             },
             {
               "name": "蔵盛妃那乃",
@@ -10081,12 +10087,6 @@
               "name": "坂井新奈",
               "count": 4,
               "mainSource": "五期生",
-              "mainCount": 2
-            },
-            {
-              "name": "小西夏菜実",
-              "count": 4,
-              "mainSource": "三期生",
               "mainCount": 4
             }
           ]
@@ -10094,12 +10094,6 @@
         {
           "gen": "四期生",
           "members": [
-            {
-              "name": "片山紗希",
-              "count": 24,
-              "mainSource": "五期生",
-              "mainCount": 21
-            },
             {
               "name": "渡辺莉奈",
               "count": 19,
@@ -10116,7 +10110,7 @@
               "name": "清水理央",
               "count": 11,
               "mainSource": "五期生",
-              "mainCount": 6
+              "mainCount": 5
             },
             {
               "name": "藤嶌果歩",
@@ -10131,6 +10125,12 @@
               "mainCount": 3
             },
             {
+              "name": "小西夏菜実",
+              "count": 4,
+              "mainSource": "三期生",
+              "mainCount": 4
+            },
+            {
               "name": "宮地すみれ",
               "count": 3,
               "mainSource": "四期生",
@@ -10140,7 +10140,7 @@
               "name": "平岡海月",
               "count": 2,
               "mainSource": "五期生",
-              "mainCount": 1
+              "mainCount": 2
             },
             {
               "name": "石塚瑶季",
@@ -10971,7 +10971,7 @@
         },
         {
           "name": "小西夏菜実",
-          "gen": "五期生",
+          "gen": "四期生",
           "count": 14
         },
         {
@@ -10996,7 +10996,7 @@
         },
         {
           "name": "片山紗希",
-          "gen": "四期生",
+          "gen": "五期生",
           "count": 11
         },
         {
@@ -11071,8 +11071,8 @@
           [
             17,
             18,
-            25,
-            4
+            27,
+            2
           ],
           [
             0,
@@ -11081,16 +11081,16 @@
             0
           ],
           [
-            29,
-            88,
-            59,
+            35,
+            97,
+            63,
             54
           ],
           [
-            12,
-            59,
-            32,
-            23
+            6,
+            50,
+            23,
+            28
           ]
         ]
       },
@@ -11156,35 +11156,35 @@
             {
               "name": "松田好花",
               "gen": "二期生",
-              "count": 70
-            },
-            {
-              "name": "正源司陽子",
-              "gen": "四期生",
-              "count": 15
+              "count": 78
             },
             {
               "name": "高井俐香",
               "gen": "同期",
-              "count": 14
+              "count": 16
             },
             {
-              "name": "小西夏菜実",
-              "gen": "同期",
+              "name": "正源司陽子",
+              "gen": "四期生",
               "count": 12
-            },
-            {
-              "name": "山口陽世",
-              "gen": "三期生",
-              "count": 11
             },
             {
               "name": "金村美玖",
               "gen": "二期生",
-              "count": 11
+              "count": 12
             },
             {
               "name": "森本茉莉",
+              "gen": "三期生",
+              "count": 12
+            },
+            {
+              "name": "小西夏菜実",
+              "gen": "四期生",
+              "count": 12
+            },
+            {
+              "name": "山口陽世",
               "gen": "三期生",
               "count": 10
             },
@@ -11201,27 +11201,22 @@
             {
               "name": "松田好花",
               "gen": "二期生",
-              "count": 47
+              "count": 39
+            },
+            {
+              "name": "正源司陽子",
+              "gen": "同期",
+              "count": 9
             },
             {
               "name": "鶴崎仁香",
               "gen": "五期生",
-              "count": 11
-            },
-            {
-              "name": "髙橋未来虹",
-              "gen": "三期生",
-              "count": 8
+              "count": 7
             },
             {
               "name": "金村美玖",
               "gen": "二期生",
-              "count": 7
-            },
-            {
-              "name": "高井俐香",
-              "gen": "五期生",
-              "count": 7
+              "count": 6
             },
             {
               "name": "佐藤優羽",
@@ -11229,14 +11224,19 @@
               "count": 6
             },
             {
-              "name": "正源司陽子",
-              "gen": "同期",
-              "count": 6
+              "name": "高井俐香",
+              "gen": "五期生",
+              "count": 5
             },
             {
               "name": "小坂菜緒",
               "gen": "二期生",
               "count": 5
+            },
+            {
+              "name": "平岡海月",
+              "gen": "同期",
+              "count": 4
             }
           ]
         }
@@ -11254,14 +11254,14 @@
             {
               "name": "髙橋未来虹",
               "count": 16,
-              "mainSource": "四期生",
+              "mainSource": "五期生",
               "mainCount": 8
             },
             {
               "name": "森本茉莉",
               "count": 13,
               "mainSource": "五期生",
-              "mainCount": 10
+              "mainCount": 12
             },
             {
               "name": "上村ひなの",
@@ -11278,13 +11278,13 @@
               "name": "松田好花",
               "count": 133,
               "mainSource": "五期生",
-              "mainCount": 70
+              "mainCount": 78
             },
             {
               "name": "金村美玖",
               "count": 22,
               "mainSource": "五期生",
-              "mainCount": 11
+              "mainCount": 12
             },
             {
               "name": "小坂菜緒",
@@ -11300,8 +11300,8 @@
             {
               "name": "鶴崎仁香",
               "count": 23,
-              "mainSource": "四期生",
-              "mainCount": 11
+              "mainSource": "五期生",
+              "mainCount": 8
             },
             {
               "name": "佐藤優羽",
@@ -11313,19 +11313,19 @@
               "name": "高井俐香",
               "count": 21,
               "mainSource": "五期生",
-              "mainCount": 14
-            },
-            {
-              "name": "小西夏菜実",
-              "count": 14,
-              "mainSource": "五期生",
-              "mainCount": 12
+              "mainCount": 16
             },
             {
               "name": "大野愛実",
               "count": 13,
               "mainSource": "五期生",
               "mainCount": 7
+            },
+            {
+              "name": "片山紗希",
+              "count": 11,
+              "mainSource": "五期生",
+              "mainCount": 9
             },
             {
               "name": "大田美月",
@@ -11348,7 +11348,7 @@
             {
               "name": "下田衣珠季",
               "count": 2,
-              "mainSource": "四期生",
+              "mainSource": "五期生",
               "mainCount": 1
             },
             {
@@ -11366,17 +11366,17 @@
               "name": "正源司陽子",
               "count": 21,
               "mainSource": "五期生",
-              "mainCount": 15
+              "mainCount": 12
+            },
+            {
+              "name": "小西夏菜実",
+              "count": 14,
+              "mainSource": "五期生",
+              "mainCount": 12
             },
             {
               "name": "竹内希来里",
               "count": 13,
-              "mainSource": "五期生",
-              "mainCount": 9
-            },
-            {
-              "name": "片山紗希",
-              "count": 11,
               "mainSource": "五期生",
               "mainCount": 9
             },
@@ -11450,21 +11450,21 @@
         },
         {
           "name": "柴田柚菜",
-          "gen": "六期生",
+          "gen": "四期生",
           "count": 1
         }
       ],
       "generationMatrix": {
         "generations": [
+          "三期生",
           "五期生",
-          "六期生",
           "四期生"
         ],
         "matrix": [
           [
             0,
-            0,
-            0
+            1,
+            1
           ],
           [
             0,
@@ -11472,23 +11472,15 @@
             0
           ],
           [
-            1,
-            1,
+            0,
+            0,
             0
           ]
         ]
       },
       "genDetails": [
         {
-          "gen": "五期生",
-          "topMentioned": []
-        },
-        {
-          "gen": "六期生",
-          "topMentioned": []
-        },
-        {
-          "gen": "四期生",
+          "gen": "三期生",
           "topMentioned": [
             {
               "name": "菅原咲月",
@@ -11497,38 +11489,46 @@
             },
             {
               "name": "柴田柚菜",
-              "gen": "六期生",
+              "gen": "四期生",
               "count": 1
             }
           ]
+        },
+        {
+          "gen": "五期生",
+          "topMentioned": []
+        },
+        {
+          "gen": "四期生",
+          "topMentioned": []
         }
       ],
       "genReceived": [
+        {
+          "gen": "三期生",
+          "members": []
+        },
         {
           "gen": "五期生",
           "members": [
             {
               "name": "菅原咲月",
               "count": 1,
-              "mainSource": "四期生",
-              "mainCount": 1
-            }
-          ]
-        },
-        {
-          "gen": "六期生",
-          "members": [
-            {
-              "name": "柴田柚菜",
-              "count": 1,
-              "mainSource": "四期生",
+              "mainSource": "三期生",
               "mainCount": 1
             }
           ]
         },
         {
           "gen": "四期生",
-          "members": []
+          "members": [
+            {
+              "name": "柴田柚菜",
+              "count": 1,
+              "mainSource": "三期生",
+              "mainCount": 1
+            }
+          ]
         }
       ]
     },
@@ -11653,7 +11653,7 @@
         },
         {
           "name": "伊藤理々杏",
-          "gen": "四期生",
+          "gen": "三期生",
           "count": 1
         },
         {
@@ -11677,10 +11677,10 @@
             0
           ],
           [
+            2,
             1,
             1,
-            1,
-            2
+            1
           ],
           [
             0,
@@ -11721,7 +11721,7 @@
             },
             {
               "name": "伊藤理々杏",
-              "gen": "四期生",
+              "gen": "三期生",
               "count": 1
             },
             {
@@ -11746,6 +11746,12 @@
           "members": [
             {
               "name": "梅澤美波",
+              "count": 1,
+              "mainSource": "五期生",
+              "mainCount": 1
+            },
+            {
+              "name": "伊藤理々杏",
               "count": 1,
               "mainSource": "五期生",
               "mainCount": 1
@@ -11779,12 +11785,6 @@
           "members": [
             {
               "name": "遠藤さくら",
-              "count": 1,
-              "mainSource": "五期生",
-              "mainCount": 1
-            },
-            {
-              "name": "伊藤理々杏",
               "count": 1,
               "mainSource": "五期生",
               "mainCount": 1
@@ -11931,7 +11931,7 @@
         },
         {
           "name": "柴田柚菜",
-          "gen": "六期生",
+          "gen": "四期生",
           "count": 1
         },
         {
@@ -11943,14 +11943,22 @@
       "generationMatrix": {
         "generations": [
           "五期生",
-          "六期生"
+          "六期生",
+          "四期生"
         ],
         "matrix": [
           [
             0,
-            3
+            2,
+            1
           ],
           [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
             0,
             0
           ]
@@ -11967,7 +11975,7 @@
             },
             {
               "name": "柴田柚菜",
-              "gen": "六期生",
+              "gen": "四期生",
               "count": 1
             },
             {
@@ -11979,6 +11987,10 @@
         },
         {
           "gen": "六期生",
+          "topMentioned": []
+        },
+        {
+          "gen": "四期生",
           "topMentioned": []
         }
       ],
@@ -11997,13 +12009,18 @@
               "mainCount": 1
             },
             {
-              "name": "柴田柚菜",
+              "name": "海邉朱莉",
               "count": 1,
               "mainSource": "五期生",
               "mainCount": 1
-            },
+            }
+          ]
+        },
+        {
+          "gen": "四期生",
+          "members": [
             {
-              "name": "海邉朱莉",
+              "name": "柴田柚菜",
               "count": 1,
               "mainSource": "五期生",
               "mainCount": 1
@@ -12132,7 +12149,7 @@
           [
             0,
             0,
-            0
+            3
           ],
           [
             4,
@@ -12142,14 +12159,20 @@
           [
             0,
             0,
-            3
+            0
           ]
         ]
       },
       "genDetails": [
         {
           "gen": "三期生",
-          "topMentioned": []
+          "topMentioned": [
+            {
+              "name": "賀喜遥香",
+              "gen": "四期生",
+              "count": 3
+            }
+          ]
         },
         {
           "gen": "五期生",
@@ -12188,13 +12211,7 @@
         },
         {
           "gen": "四期生",
-          "topMentioned": [
-            {
-              "name": "賀喜遥香",
-              "gen": "同期",
-              "count": 3
-            }
-          ]
+          "topMentioned": []
         }
       ],
       "genReceived": [
@@ -13126,7 +13143,7 @@
         },
         {
           "name": "岩本蓮加",
-          "gen": "五期生",
+          "gen": "三期生",
           "count": 6
         },
         {
@@ -13156,7 +13173,7 @@
         },
         {
           "name": "伊藤理々杏",
-          "gen": "四期生",
+          "gen": "三期生",
           "count": 4
         },
         {
@@ -13176,22 +13193,22 @@
         },
         {
           "name": "柴田柚菜",
-          "gen": "六期生",
+          "gen": "四期生",
           "count": 2
         },
         {
           "name": "佐藤璃果",
-          "gen": "五期生",
+          "gen": "四期生",
           "count": 2
         },
         {
           "name": "林瑠奈",
-          "gen": "五期生",
+          "gen": "四期生",
           "count": 2
         },
         {
           "name": "吉田綾乃クリスティー",
-          "gen": "四期生",
+          "gen": "三期生",
           "count": 1
         },
         {
@@ -13209,28 +13226,28 @@
         ],
         "matrix": [
           [
-            0,
             2,
+            1,
             0,
-            8
+            12
           ],
           [
-            30,
-            24,
+            32,
             23,
-            26
+            19,
+            24
           ],
           [
-            12,
-            25,
+            13,
+            23,
             123,
             17
           ],
           [
-            4,
-            2,
-            1,
-            8
+            6,
+            0,
+            3,
+            7
           ]
         ]
       },
@@ -13241,21 +13258,31 @@
             {
               "name": "賀喜遥香",
               "gen": "四期生",
-              "count": 7
+              "count": 10
+            },
+            {
+              "name": "菅原咲月",
+              "gen": "五期生",
+              "count": 1
+            },
+            {
+              "name": "柴田柚菜",
+              "gen": "四期生",
+              "count": 1
             },
             {
               "name": "佐藤璃果",
-              "gen": "五期生",
+              "gen": "四期生",
               "count": 1
             },
             {
               "name": "岩本蓮加",
-              "gen": "五期生",
+              "gen": "同期",
               "count": 1
             },
             {
               "name": "吉田綾乃クリスティー",
-              "gen": "四期生",
+              "gen": "同期",
               "count": 1
             }
           ]
@@ -13271,7 +13298,7 @@
             {
               "name": "矢田萌華",
               "gen": "六期生",
-              "count": 11
+              "count": 9
             },
             {
               "name": "賀喜遥香",
@@ -13364,19 +13391,14 @@
               "count": 3
             },
             {
-              "name": "賀喜遥香",
-              "gen": "同期",
-              "count": 3
-            },
-            {
-              "name": "菅原咲月",
-              "gen": "五期生",
-              "count": 1
-            },
-            {
-              "name": "柴田柚菜",
+              "name": "矢田萌華",
               "gen": "六期生",
-              "count": 1
+              "count": 2
+            },
+            {
+              "name": "伊藤理々杏",
+              "gen": "三期生",
+              "count": 2
             },
             {
               "name": "田村真佑",
@@ -13390,7 +13412,12 @@
             },
             {
               "name": "佐藤璃果",
-              "gen": "五期生",
+              "gen": "同期",
+              "count": 1
+            },
+            {
+              "name": "松尾美佑",
+              "gen": "同期",
               "count": 1
             }
           ]
@@ -13411,6 +13438,24 @@
               "count": 7,
               "mainSource": "六期生",
               "mainCount": 5
+            },
+            {
+              "name": "岩本蓮加",
+              "count": 6,
+              "mainSource": "undefined",
+              "mainCount": 4
+            },
+            {
+              "name": "伊藤理々杏",
+              "count": 4,
+              "mainSource": "四期生",
+              "mainCount": 2
+            },
+            {
+              "name": "吉田綾乃クリスティー",
+              "count": 1,
+              "mainSource": "三期生",
+              "mainCount": 1
             }
           ]
         },
@@ -13442,12 +13487,6 @@
               "mainCount": 5
             },
             {
-              "name": "岩本蓮加",
-              "count": 6,
-              "mainSource": "undefined",
-              "mainCount": 4
-            },
-            {
               "name": "小川彩",
               "count": 6,
               "mainSource": "六期生",
@@ -13469,18 +13508,6 @@
               "name": "中西アルノ",
               "count": 2,
               "mainSource": "五期生",
-              "mainCount": 2
-            },
-            {
-              "name": "佐藤璃果",
-              "count": 2,
-              "mainSource": "四期生",
-              "mainCount": 1
-            },
-            {
-              "name": "林瑠奈",
-              "count": 2,
-              "mainSource": "六期生",
               "mainCount": 2
             }
           ]
@@ -13547,12 +13574,6 @@
               "count": 3,
               "mainSource": "六期生",
               "mainCount": 2
-            },
-            {
-              "name": "柴田柚菜",
-              "count": 2,
-              "mainSource": "四期生",
-              "mainCount": 1
             }
           ]
         },
@@ -13562,8 +13583,8 @@
             {
               "name": "賀喜遥香",
               "count": 18,
-              "mainSource": "五期生",
-              "mainCount": 8
+              "mainSource": "三期生",
+              "mainCount": 10
             },
             {
               "name": "矢久保美緒",
@@ -13581,7 +13602,7 @@
               "name": "松尾美佑",
               "count": 9,
               "mainSource": "六期生",
-              "mainCount": 6
+              "mainCount": 5
             },
             {
               "name": "弓木奈於",
@@ -13596,16 +13617,22 @@
               "mainCount": 3
             },
             {
-              "name": "伊藤理々杏",
-              "count": 4,
-              "mainSource": "五期生",
-              "mainCount": 3
-            },
-            {
-              "name": "吉田綾乃クリスティー",
-              "count": 1,
+              "name": "柴田柚菜",
+              "count": 2,
               "mainSource": "三期生",
               "mainCount": 1
+            },
+            {
+              "name": "佐藤璃果",
+              "count": 2,
+              "mainSource": "四期生",
+              "mainCount": 1
+            },
+            {
+              "name": "林瑠奈",
+              "count": 2,
+              "mainSource": "六期生",
+              "mainCount": 2
             },
             {
               "name": "金川紗耶",
@@ -14233,7 +14260,7 @@
         },
         {
           "name": "伊藤理々杏",
-          "gen": "四期生",
+          "gen": "三期生",
           "count": 2
         },
         {
@@ -14253,7 +14280,7 @@
         },
         {
           "name": "林瑠奈",
-          "gen": "五期生",
+          "gen": "四期生",
           "count": 1
         },
         {
@@ -14278,12 +14305,12 @@
         },
         {
           "name": "佐藤璃果",
-          "gen": "五期生",
+          "gen": "四期生",
           "count": 1
         },
         {
           "name": "岩本蓮加",
-          "gen": "五期生",
+          "gen": "三期生",
           "count": 1
         }
       ],
@@ -14302,22 +14329,22 @@
             0
           ],
           [
-            36,
-            6,
-            10,
-            4
+            13,
+            2,
+            8,
+            0
           ],
           [
-            7,
-            22,
+            4,
+            20,
             54,
-            10
+            11
           ],
           [
-            7,
-            0,
+            36,
             3,
-            4
+            5,
+            7
           ]
         ]
       },
@@ -14332,7 +14359,7 @@
             {
               "name": "久保史緒里",
               "gen": "三期生",
-              "count": 32
+              "count": 11
             },
             {
               "name": "矢田萌華",
@@ -14340,33 +14367,23 @@
               "count": 5
             },
             {
-              "name": "梅澤美波",
-              "gen": "三期生",
-              "count": 4
-            },
-            {
-              "name": "菅原咲月",
-              "gen": "同期",
-              "count": 3
-            },
-            {
               "name": "瀬戸口心月",
               "gen": "六期生",
               "count": 3
             },
             {
-              "name": "増田三莉音",
-              "gen": "六期生",
+              "name": "梅澤美波",
+              "gen": "三期生",
               "count": 2
             },
             {
-              "name": "金川紗耶",
-              "gen": "四期生",
+              "name": "一ノ瀬美空",
+              "gen": "同期",
               "count": 1
             },
             {
-              "name": "松尾美佑",
-              "gen": "四期生",
+              "name": "菅原咲月",
+              "gen": "同期",
               "count": 1
             }
           ]
@@ -14390,11 +14407,6 @@
               "count": 9
             },
             {
-              "name": "久保史緒里",
-              "gen": "三期生",
-              "count": 7
-            },
-            {
               "name": "瀬戸口心月",
               "gen": "同期",
               "count": 6
@@ -14413,6 +14425,11 @@
               "name": "増田三莉音",
               "gen": "同期",
               "count": 4
+            },
+            {
+              "name": "川端晃菜",
+              "gen": "同期",
+              "count": 4
             }
           ]
         },
@@ -14422,7 +14439,12 @@
             {
               "name": "久保史緒里",
               "gen": "三期生",
-              "count": 5
+              "count": 30
+            },
+            {
+              "name": "梅澤美波",
+              "gen": "三期生",
+              "count": 4
             },
             {
               "name": "賀喜遥香",
@@ -14430,22 +14452,27 @@
               "count": 3
             },
             {
+              "name": "菅原咲月",
+              "gen": "五期生",
+              "count": 2
+            },
+            {
+              "name": "増田三莉音",
+              "gen": "六期生",
+              "count": 2
+            },
+            {
+              "name": "松尾美佑",
+              "gen": "同期",
+              "count": 2
+            },
+            {
               "name": "矢田萌華",
               "gen": "六期生",
               "count": 2
             },
             {
-              "name": "梅澤美波",
-              "gen": "三期生",
-              "count": 2
-            },
-            {
-              "name": "瀬戸口心月",
-              "gen": "六期生",
-              "count": 1
-            },
-            {
-              "name": "松尾美佑",
+              "name": "金川紗耶",
               "gen": "同期",
               "count": 1
             }
@@ -14459,14 +14486,26 @@
             {
               "name": "久保史緒里",
               "count": 44,
-              "mainSource": "五期生",
-              "mainCount": 32
+              "mainSource": "四期生",
+              "mainCount": 30
             },
             {
               "name": "梅澤美波",
               "count": 6,
-              "mainSource": "五期生",
+              "mainSource": "四期生",
               "mainCount": 4
+            },
+            {
+              "name": "伊藤理々杏",
+              "count": 2,
+              "mainSource": "六期生",
+              "mainCount": 1
+            },
+            {
+              "name": "岩本蓮加",
+              "count": 1,
+              "mainSource": "四期生",
+              "mainCount": 1
             }
           ]
         },
@@ -14482,8 +14521,8 @@
             {
               "name": "菅原咲月",
               "count": 4,
-              "mainSource": "五期生",
-              "mainCount": 3
+              "mainSource": "四期生",
+              "mainCount": 2
             },
             {
               "name": "中西アルノ",
@@ -14516,27 +14555,9 @@
               "mainCount": 1
             },
             {
-              "name": "林瑠奈",
-              "count": 1,
-              "mainSource": "六期生",
-              "mainCount": 1
-            },
-            {
               "name": "岡本姫奈",
               "count": 1,
               "mainSource": "六期生",
-              "mainCount": 1
-            },
-            {
-              "name": "佐藤璃果",
-              "count": 1,
-              "mainSource": "六期生",
-              "mainCount": 1
-            },
-            {
-              "name": "岩本蓮加",
-              "count": 1,
-              "mainSource": "五期生",
               "mainCount": 1
             }
           ]
@@ -14624,8 +14645,8 @@
             {
               "name": "松尾美佑",
               "count": 2,
-              "mainSource": "五期生",
-              "mainCount": 1
+              "mainSource": "四期生",
+              "mainCount": 2
             },
             {
               "name": "遠藤さくら",
@@ -14640,15 +14661,15 @@
               "mainCount": 2
             },
             {
-              "name": "伊藤理々杏",
-              "count": 2,
-              "mainSource": "六期生",
+              "name": "矢久保美緒",
+              "count": 1,
+              "mainSource": "四期生",
               "mainCount": 1
             },
             {
-              "name": "矢久保美緒",
+              "name": "林瑠奈",
               "count": 1,
-              "mainSource": "五期生",
+              "mainSource": "六期生",
               "mainCount": 1
             },
             {
@@ -14659,6 +14680,12 @@
             },
             {
               "name": "筒井あやめ",
+              "count": 1,
+              "mainSource": "六期生",
+              "mainCount": 1
+            },
+            {
+              "name": "佐藤璃果",
               "count": 1,
               "mainSource": "六期生",
               "mainCount": 1
@@ -15362,12 +15389,12 @@
         },
         {
           "name": "黒見明香",
-          "gen": "五期生",
+          "gen": "四期生",
           "count": 2
         },
         {
           "name": "柴田柚菜",
-          "gen": "六期生",
+          "gen": "四期生",
           "count": 2
         },
         {
@@ -15407,7 +15434,7 @@
         },
         {
           "name": "林瑠奈",
-          "gen": "五期生",
+          "gen": "四期生",
           "count": 1
         },
         {
@@ -15425,35 +15452,51 @@
         ],
         "matrix": [
           [
+            1,
             0,
             0,
-            0,
-            0
-          ],
-          [
-            64,
-            13,
-            7,
-            38
-          ],
-          [
-            101,
-            13,
-            50,
-            13
-          ],
-          [
-            9,
-            0,
-            5,
             2
+          ],
+          [
+            57,
+            12,
+            5,
+            23
+          ],
+          [
+            100,
+            10,
+            50,
+            15
+          ],
+          [
+            16,
+            1,
+            5,
+            18
           ]
         ]
       },
       "genDetails": [
         {
           "gen": "三期生",
-          "topMentioned": []
+          "topMentioned": [
+            {
+              "name": "久保史緒里",
+              "gen": "同期",
+              "count": 1
+            },
+            {
+              "name": "松尾美佑",
+              "gen": "四期生",
+              "count": 1
+            },
+            {
+              "name": "矢久保美緒",
+              "gen": "四期生",
+              "count": 1
+            }
+          ]
         },
         {
           "gen": "五期生",
@@ -15461,17 +15504,17 @@
             {
               "name": "久保史緒里",
               "gen": "三期生",
-              "count": 63
+              "count": 57
             },
             {
               "name": "松尾美佑",
               "gen": "四期生",
-              "count": 20
+              "count": 11
             },
             {
               "name": "矢久保美緒",
               "gen": "四期生",
-              "count": 14
+              "count": 9
             },
             {
               "name": "一ノ瀬美空",
@@ -15489,14 +15532,14 @@
               "count": 2
             },
             {
-              "name": "大越ひなの",
-              "gen": "六期生",
+              "name": "菅原咲月",
+              "gen": "同期",
               "count": 2
             },
             {
-              "name": "五百城茉央",
-              "gen": "同期",
-              "count": 2
+              "name": "柴田柚菜",
+              "gen": "四期生",
+              "count": 1
             }
           ]
         },
@@ -15506,7 +15549,7 @@
             {
               "name": "久保史緒里",
               "gen": "三期生",
-              "count": 98
+              "count": 97
             },
             {
               "name": "矢田萌華",
@@ -15551,7 +15594,17 @@
             {
               "name": "久保史緒里",
               "gen": "三期生",
+              "count": 15
+            },
+            {
+              "name": "松尾美佑",
+              "gen": "同期",
               "count": 9
+            },
+            {
+              "name": "矢久保美緒",
+              "gen": "同期",
+              "count": 5
             },
             {
               "name": "鈴木佑捺",
@@ -15559,18 +15612,23 @@
               "count": 4
             },
             {
-              "name": "松尾美佑",
+              "name": "田村真佑",
+              "gen": "同期",
+              "count": 2
+            },
+            {
+              "name": "梅澤美波",
+              "gen": "三期生",
+              "count": 1
+            },
+            {
+              "name": "弓木奈於",
               "gen": "同期",
               "count": 1
             },
             {
-              "name": "矢久保美緒",
-              "gen": "同期",
-              "count": 1
-            },
-            {
-              "name": "柴田柚菜",
-              "gen": "六期生",
+              "name": "五百城茉央",
+              "gen": "五期生",
               "count": 1
             }
           ]
@@ -15584,7 +15642,7 @@
               "name": "久保史緒里",
               "count": 170,
               "mainSource": "六期生",
-              "mainCount": 98
+              "mainCount": 97
             },
             {
               "name": "梅澤美波",
@@ -15618,14 +15676,8 @@
             {
               "name": "五百城茉央",
               "count": 3,
-              "mainSource": "五期生",
-              "mainCount": 2
-            },
-            {
-              "name": "黒見明香",
-              "count": 2,
-              "mainSource": "六期生",
-              "mainCount": 2
+              "mainSource": "四期生",
+              "mainCount": 1
             },
             {
               "name": "中西アルノ",
@@ -15647,12 +15699,6 @@
             },
             {
               "name": "小川彩",
-              "count": 1,
-              "mainSource": "六期生",
-              "mainCount": 1
-            },
-            {
-              "name": "林瑠奈",
               "count": 1,
               "mainSource": "六期生",
               "mainCount": 1
@@ -15723,12 +15769,6 @@
               "mainCount": 2
             },
             {
-              "name": "柴田柚菜",
-              "count": 2,
-              "mainSource": "五期生",
-              "mainCount": 1
-            },
-            {
               "name": "愛宕心響",
               "count": 1,
               "mainSource": "六期生",
@@ -15743,19 +15783,31 @@
               "name": "松尾美佑",
               "count": 25,
               "mainSource": "五期生",
-              "mainCount": 20
+              "mainCount": 11
             },
             {
               "name": "矢久保美緒",
               "count": 24,
               "mainSource": "五期生",
-              "mainCount": 14
+              "mainCount": 9
             },
             {
               "name": "田村真佑",
               "count": 4,
-              "mainSource": "五期生",
+              "mainSource": "四期生",
               "mainCount": 2
+            },
+            {
+              "name": "黒見明香",
+              "count": 2,
+              "mainSource": "六期生",
+              "mainCount": 2
+            },
+            {
+              "name": "柴田柚菜",
+              "count": 2,
+              "mainSource": "五期生",
+              "mainCount": 1
             },
             {
               "name": "金川紗耶",
@@ -15766,7 +15818,13 @@
             {
               "name": "弓木奈於",
               "count": 1,
-              "mainSource": "五期生",
+              "mainSource": "四期生",
+              "mainCount": 1
+            },
+            {
+              "name": "林瑠奈",
+              "count": 1,
+              "mainSource": "六期生",
               "mainCount": 1
             }
           ]
@@ -16274,7 +16332,7 @@
         },
         {
           "name": "佐藤璃果",
-          "gen": "五期生",
+          "gen": "四期生",
           "count": 3
         },
         {
@@ -16304,7 +16362,7 @@
         },
         {
           "name": "柴田柚菜",
-          "gen": "六期生",
+          "gen": "四期生",
           "count": 2
         },
         {
@@ -16319,7 +16377,7 @@
         },
         {
           "name": "林瑠奈",
-          "gen": "五期生",
+          "gen": "四期生",
           "count": 1
         },
         {
@@ -16339,17 +16397,17 @@
         },
         {
           "name": "伊藤理々杏",
-          "gen": "四期生",
+          "gen": "三期生",
           "count": 1
         },
         {
           "name": "岩本蓮加",
-          "gen": "五期生",
+          "gen": "三期生",
           "count": 1
         },
         {
           "name": "吉田綾乃クリスティー",
-          "gen": "四期生",
+          "gen": "三期生",
           "count": 1
         },
         {
@@ -16378,10 +16436,10 @@
             0
           ],
           [
-            13,
-            11,
+            12,
             6,
-            24
+            4,
+            20
           ],
           [
             9,
@@ -16390,10 +16448,10 @@
             23
           ],
           [
-            0,
+            4,
             3,
             3,
-            2
+            10
           ]
         ]
       },
@@ -16426,24 +16484,24 @@
               "count": 4
             },
             {
-              "name": "佐藤璃果",
-              "gen": "同期",
-              "count": 3
-            },
-            {
-              "name": "矢田萌華",
-              "gen": "六期生",
-              "count": 2
-            },
-            {
               "name": "瀬戸口心月",
               "gen": "六期生",
               "count": 2
             },
             {
-              "name": "梅澤美波",
-              "gen": "三期生",
-              "count": 2
+              "name": "五百城茉央",
+              "gen": "同期",
+              "count": 1
+            },
+            {
+              "name": "林瑠奈",
+              "gen": "四期生",
+              "count": 1
+            },
+            {
+              "name": "矢田萌華",
+              "gen": "六期生",
+              "count": 1
             }
           ]
         },
@@ -16496,6 +16554,21 @@
           "gen": "四期生",
           "topMentioned": [
             {
+              "name": "佐藤璃果",
+              "gen": "同期",
+              "count": 3
+            },
+            {
+              "name": "弓木奈於",
+              "gen": "同期",
+              "count": 2
+            },
+            {
+              "name": "柴田柚菜",
+              "gen": "同期",
+              "count": 2
+            },
+            {
               "name": "森平麗心",
               "gen": "六期生",
               "count": 2
@@ -16516,18 +16589,8 @@
               "count": 1
             },
             {
-              "name": "井上和",
-              "gen": "五期生",
-              "count": 1
-            },
-            {
-              "name": "菅原咲月",
-              "gen": "五期生",
-              "count": 1
-            },
-            {
-              "name": "柴田柚菜",
-              "gen": "六期生",
+              "name": "梅澤美波",
+              "gen": "三期生",
               "count": 1
             }
           ]
@@ -16546,8 +16609,26 @@
             {
               "name": "梅澤美波",
               "count": 2,
-              "mainSource": "五期生",
-              "mainCount": 2
+              "mainSource": "四期生",
+              "mainCount": 1
+            },
+            {
+              "name": "伊藤理々杏",
+              "count": 1,
+              "mainSource": "四期生",
+              "mainCount": 1
+            },
+            {
+              "name": "岩本蓮加",
+              "count": 1,
+              "mainSource": "四期生",
+              "mainCount": 1
+            },
+            {
+              "name": "吉田綾乃クリスティー",
+              "count": 1,
+              "mainSource": "四期生",
+              "mainCount": 1
             }
           ]
         },
@@ -16565,12 +16646,6 @@
               "count": 6,
               "mainSource": "五期生",
               "mainCount": 4
-            },
-            {
-              "name": "佐藤璃果",
-              "count": 3,
-              "mainSource": "五期生",
-              "mainCount": 3
             },
             {
               "name": "五百城茉央",
@@ -16591,12 +16666,6 @@
               "mainCount": 1
             },
             {
-              "name": "林瑠奈",
-              "count": 1,
-              "mainSource": "五期生",
-              "mainCount": 1
-            },
-            {
               "name": "冨里奈央",
               "count": 1,
               "mainSource": "五期生",
@@ -16606,12 +16675,6 @@
               "name": "川﨑桜",
               "count": 1,
               "mainSource": "六期生",
-              "mainCount": 1
-            },
-            {
-              "name": "岩本蓮加",
-              "count": 1,
-              "mainSource": "五期生",
               "mainCount": 1
             },
             {
@@ -16674,12 +16737,6 @@
               "mainCount": 2
             },
             {
-              "name": "柴田柚菜",
-              "count": 2,
-              "mainSource": "五期生",
-              "mainCount": 1
-            },
-            {
               "name": "海邉朱莉",
               "count": 1,
               "mainSource": "六期生",
@@ -16709,27 +16766,33 @@
               "mainCount": 2
             },
             {
+              "name": "佐藤璃果",
+              "count": 3,
+              "mainSource": "四期生",
+              "mainCount": 3
+            },
+            {
               "name": "弓木奈於",
               "count": 2,
-              "mainSource": "五期生",
+              "mainSource": "四期生",
               "mainCount": 2
+            },
+            {
+              "name": "柴田柚菜",
+              "count": 2,
+              "mainSource": "四期生",
+              "mainCount": 2
+            },
+            {
+              "name": "林瑠奈",
+              "count": 1,
+              "mainSource": "五期生",
+              "mainCount": 1
             },
             {
               "name": "筒井あやめ",
               "count": 1,
               "mainSource": "六期生",
-              "mainCount": 1
-            },
-            {
-              "name": "伊藤理々杏",
-              "count": 1,
-              "mainSource": "五期生",
-              "mainCount": 1
-            },
-            {
-              "name": "吉田綾乃クリスティー",
-              "count": 1,
-              "mainSource": "五期生",
               "mainCount": 1
             }
           ]
@@ -17151,7 +17214,7 @@
       "ranking": [
         {
           "name": "佐藤璃果",
-          "gen": "五期生",
+          "gen": "四期生",
           "count": 35
         },
         {
@@ -17166,7 +17229,7 @@
         },
         {
           "name": "林瑠奈",
-          "gen": "五期生",
+          "gen": "四期生",
           "count": 6
         },
         {
@@ -17186,7 +17249,7 @@
         },
         {
           "name": "黒見明香",
-          "gen": "五期生",
+          "gen": "四期生",
           "count": 4
         },
         {
@@ -17211,12 +17274,12 @@
         },
         {
           "name": "伊藤理々杏",
-          "gen": "四期生",
+          "gen": "三期生",
           "count": 2
         },
         {
           "name": "吉田綾乃クリスティー",
-          "gen": "四期生",
+          "gen": "三期生",
           "count": 2
         },
         {
@@ -17251,7 +17314,7 @@
         },
         {
           "name": "岩本蓮加",
-          "gen": "五期生",
+          "gen": "三期生",
           "count": 1
         },
         {
@@ -17286,7 +17349,7 @@
         },
         {
           "name": "柴田柚菜",
-          "gen": "六期生",
+          "gen": "四期生",
           "count": 1
         }
       ],
@@ -17306,21 +17369,21 @@
           ],
           [
             3,
-            39,
-            8,
-            7
-          ],
-          [
-            1,
-            36,
             16,
-            2
+            2,
+            18
           ],
           [
-            1,
             2,
-            0,
-            0
+            14,
+            15,
+            23
+          ],
+          [
+            5,
+            1,
+            6,
+            10
           ]
         ]
       },
@@ -17334,7 +17397,7 @@
           "topMentioned": [
             {
               "name": "佐藤璃果",
-              "gen": "同期",
+              "gen": "四期生",
               "count": 14
             },
             {
@@ -17343,34 +17406,34 @@
               "count": 12
             },
             {
-              "name": "鈴木佑捺",
-              "gen": "六期生",
-              "count": 4
-            },
-            {
-              "name": "黒見明香",
-              "gen": "同期",
-              "count": 4
-            },
-            {
-              "name": "瀬戸口心月",
-              "gen": "六期生",
-              "count": 3
-            },
-            {
-              "name": "林瑠奈",
-              "gen": "同期",
-              "count": 3
-            },
-            {
               "name": "中西アルノ",
               "gen": "同期",
               "count": 2
             },
             {
-              "name": "梅澤美波",
+              "name": "鈴木佑捺",
+              "gen": "六期生",
+              "count": 1
+            },
+            {
+              "name": "井上和",
+              "gen": "同期",
+              "count": 1
+            },
+            {
+              "name": "川端晃菜",
+              "gen": "六期生",
+              "count": 1
+            },
+            {
+              "name": "田村真佑",
+              "gen": "四期生",
+              "count": 1
+            },
+            {
+              "name": "岩本蓮加",
               "gen": "三期生",
-              "count": 2
+              "count": 1
             }
           ]
         },
@@ -17379,7 +17442,7 @@
           "topMentioned": [
             {
               "name": "佐藤璃果",
-              "gen": "五期生",
+              "gen": "四期生",
               "count": 19
             },
             {
@@ -17394,7 +17457,7 @@
             },
             {
               "name": "林瑠奈",
-              "gen": "五期生",
+              "gen": "四期生",
               "count": 3
             },
             {
@@ -17423,13 +17486,43 @@
           "gen": "四期生",
           "topMentioned": [
             {
-              "name": "佐藤璃果",
-              "gen": "五期生",
-              "count": 2
+              "name": "黒見明香",
+              "gen": "同期",
+              "count": 4
+            },
+            {
+              "name": "鈴木佑捺",
+              "gen": "六期生",
+              "count": 3
+            },
+            {
+              "name": "瀬戸口心月",
+              "gen": "六期生",
+              "count": 3
             },
             {
               "name": "梅澤美波",
               "gen": "三期生",
+              "count": 3
+            },
+            {
+              "name": "佐藤璃果",
+              "gen": "同期",
+              "count": 2
+            },
+            {
+              "name": "弓木奈於",
+              "gen": "同期",
+              "count": 2
+            },
+            {
+              "name": "林瑠奈",
+              "gen": "同期",
+              "count": 2
+            },
+            {
+              "name": "五百城茉央",
+              "gen": "五期生",
               "count": 1
             }
           ]
@@ -17442,12 +17535,30 @@
             {
               "name": "梅澤美波",
               "count": 3,
-              "mainSource": "五期生",
-              "mainCount": 2
+              "mainSource": "四期生",
+              "mainCount": 3
+            },
+            {
+              "name": "伊藤理々杏",
+              "count": 2,
+              "mainSource": "六期生",
+              "mainCount": 1
+            },
+            {
+              "name": "吉田綾乃クリスティー",
+              "count": 2,
+              "mainSource": "六期生",
+              "mainCount": 1
             },
             {
               "name": "久保史緒里",
               "count": 2,
+              "mainSource": "五期生",
+              "mainCount": 1
+            },
+            {
+              "name": "岩本蓮加",
+              "count": 1,
               "mainSource": "五期生",
               "mainCount": 1
             }
@@ -17456,12 +17567,6 @@
         {
           "gen": "五期生",
           "members": [
-            {
-              "name": "佐藤璃果",
-              "count": 35,
-              "mainSource": "六期生",
-              "mainCount": 19
-            },
             {
               "name": "池田瑛紗",
               "count": 14,
@@ -17475,18 +17580,6 @@
               "mainCount": 11
             },
             {
-              "name": "林瑠奈",
-              "count": 6,
-              "mainSource": "六期生",
-              "mainCount": 3
-            },
-            {
-              "name": "黒見明香",
-              "count": 4,
-              "mainSource": "五期生",
-              "mainCount": 4
-            },
-            {
               "name": "中西アルノ",
               "count": 2,
               "mainSource": "五期生",
@@ -17494,12 +17587,6 @@
             },
             {
               "name": "井上和",
-              "count": 1,
-              "mainSource": "五期生",
-              "mainCount": 1
-            },
-            {
-              "name": "岩本蓮加",
               "count": 1,
               "mainSource": "五期生",
               "mainCount": 1
@@ -17519,7 +17606,7 @@
             {
               "name": "五百城茉央",
               "count": 1,
-              "mainSource": "五期生",
+              "mainSource": "四期生",
               "mainCount": 1
             }
           ]
@@ -17542,8 +17629,8 @@
             {
               "name": "鈴木佑捺",
               "count": 4,
-              "mainSource": "五期生",
-              "mainCount": 4
+              "mainSource": "四期生",
+              "mainCount": 3
             },
             {
               "name": "森平麗心",
@@ -17574,12 +17661,6 @@
               "count": 1,
               "mainSource": "六期生",
               "mainCount": 1
-            },
-            {
-              "name": "柴田柚菜",
-              "count": 1,
-              "mainSource": "六期生",
-              "mainCount": 1
             }
           ]
         },
@@ -17587,21 +17668,27 @@
           "gen": "四期生",
           "members": [
             {
-              "name": "伊藤理々杏",
-              "count": 2,
+              "name": "佐藤璃果",
+              "count": 35,
               "mainSource": "六期生",
-              "mainCount": 1
+              "mainCount": 19
             },
             {
-              "name": "吉田綾乃クリスティー",
-              "count": 2,
+              "name": "林瑠奈",
+              "count": 6,
               "mainSource": "六期生",
-              "mainCount": 1
+              "mainCount": 3
+            },
+            {
+              "name": "黒見明香",
+              "count": 4,
+              "mainSource": "四期生",
+              "mainCount": 4
             },
             {
               "name": "弓木奈於",
               "count": 2,
-              "mainSource": "五期生",
+              "mainSource": "四期生",
               "mainCount": 2
             },
             {
@@ -17620,6 +17707,12 @@
               "name": "矢久保美緒",
               "count": 1,
               "mainSource": "五期生",
+              "mainCount": 1
+            },
+            {
+              "name": "柴田柚菜",
+              "count": 1,
+              "mainSource": "六期生",
               "mainCount": 1
             }
           ]
