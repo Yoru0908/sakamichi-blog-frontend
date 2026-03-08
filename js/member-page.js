@@ -86,9 +86,8 @@ window.MemberPage = {
         }
         
         .member-sidebar {
-          position: sticky;
-          top: 80px;
-          height: fit-content;
+          /* no sticky here - let grid stretch it so child sticky works */
+          align-self: stretch;
         }
         
         .sidebar-card {
@@ -97,6 +96,9 @@ window.MemberPage = {
           padding: 24px;
           margin-bottom: 20px;
           text-align: center;
+          position: sticky;
+          top: 80px;
+          z-index: 10;
         }
         
         .member-avatar-sidebar {
@@ -653,8 +655,9 @@ window.MemberPage = {
         this.updateCalendar(processedBlogs);
 
         // 更新分页
-        if (data.count > pageSize) {
-          this.updatePagination(page, Math.ceil(data.count / pageSize));
+        const totalCount = data.total || data.pagination?.total || data.count;
+        if (totalCount > pageSize) {
+          this.updatePagination(page, Math.ceil(totalCount / pageSize));
         } else {
           document.getElementById('memberPagination').classList.add('hidden');
         }
@@ -738,8 +741,9 @@ window.MemberPage = {
     for (let i = startPage; i <= endPage; i++) {
       const btn = document.createElement('button');
       btn.className = i === currentPage
-        ? 'px-3 py-1 text-sm bg-blue-600 text-white rounded'
+        ? 'px-3 py-1 text-sm text-white rounded'
         : 'px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100';
+      if (i === currentPage) btn.style.background = '#7e57c2';
       btn.textContent = i;
       btn.onclick = () => this.goToPage(i);
       pageButtons.appendChild(btn);
