@@ -363,7 +363,7 @@ window.Router = {
       if (window.showLoading) window.showLoading();
 
       try {
-        await this.loadScript('js/member-page.js?v=3');
+        await this.loadScript('js/member-page.js?v=4');
         // 🔧 初始化 MemberPage（创建 DOM 容器）
         if (window.MemberPage && window.MemberPage.init) {
           window.MemberPage.init();
