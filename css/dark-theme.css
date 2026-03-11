@@ -1079,3 +1079,156 @@
 .dark-theme .text-gray-500 {
   color: var(--text-tertiary) !important;
 }
+
+/* ================================
+   博客卡片暗色模式
+   ================================ */
+
+.dark-theme .blog-card {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.dark-theme .blog-card:hover {
+  box-shadow: var(--shadow-md) !important;
+  border-color: var(--border-hover) !important;
+}
+
+.dark-theme .blog-card-content {
+  background: var(--bg-secondary) !important;
+}
+
+.dark-theme .blog-card-image {
+  background: var(--bg-tertiary) !important;
+}
+
+/* ================================
+   博客详情页暗色模式
+   ================================ */
+
+.dark-theme #blogDetail {
+  color: var(--text-primary) !important;
+}
+
+.dark-theme #blogDetail article {
+  background: var(--bg-secondary) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.dark-theme #blogDetail header {
+  border-bottom-color: var(--border-color) !important;
+}
+
+.dark-theme #blogDetail h1 {
+  color: var(--text-primary) !important;
+}
+
+.dark-theme #blogDetail footer {
+  border-top-color: var(--border-color) !important;
+}
+
+.dark-theme #blogDetail .blog-content-official {
+  color: var(--text-primary) !important;
+}
+
+/* 博客详情侧边栏 */
+.dark-theme .member-sidebar-detail .sidebar-card {
+  background: var(--bg-secondary) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.dark-theme .member-sidebar-detail .sidebar-card h3 {
+  color: var(--text-primary) !important;
+}
+
+.dark-theme .member-sidebar-detail .sidebar-card p {
+  color: var(--text-secondary) !important;
+}
+
+.dark-theme .member-sidebar-detail div[style*="background: #f5f5f5"] {
+  background: var(--bg-tertiary) !important;
+}
+
+.dark-theme .member-sidebar-detail h3[style*="color: #333"] {
+  color: var(--text-primary) !important;
+}
+
+.dark-theme .member-sidebar-detail p[style*="color: #999"] {
+  color: var(--text-secondary) !important;
+}
+
+.dark-theme .member-sidebar-detail h3[style*="font-size: 14px"] {
+  color: var(--text-primary) !important;
+}
+
+/* ================================
+   通用 Tailwind 暗色覆盖
+   ================================ */
+
+.dark-theme .border-b {
+  border-bottom-color: var(--border-color) !important;
+}
+
+.dark-theme .border-t {
+  border-top-color: var(--border-color) !important;
+}
+
+.dark-theme .border {
+  border-color: var(--border-color) !important;
+}
+
+.dark-theme .border-gray-200,
+.dark-theme .border-gray-300 {
+  border-color: var(--border-color) !important;
+}
+
+.dark-theme .bg-gray-100 {
+  background: var(--bg-primary) !important;
+}
+
+.dark-theme .bg-gray-50,
+.dark-theme .hover\:bg-gray-50:hover {
+  background: var(--bg-tertiary) !important;
+}
+
+.dark-theme .hover\:bg-gray-100:hover {
+  background: var(--bg-hover) !important;
+}
+
+.dark-theme .text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+.dark-theme .shadow-sm {
+  box-shadow: var(--shadow-sm) !important;
+}
+
+/* 成员页内联style覆盖 */
+.dark-theme #memberAvatarSidebar,
+.dark-theme div[style*="background:#f5f5f5"] {
+  background: var(--bg-tertiary) !important;
+}
+
+.dark-theme .back-button {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark-theme .back-button:hover {
+  background: var(--bg-tertiary) !important;
+}
+
+.dark-theme .blog-list-item:hover {
+  background: var(--bg-tertiary) !important;
+}
+
+/* 月份选择器内联style覆盖 */
+.dark-theme .calendar-month-selector-new {
+  background: var(--bg-tertiary) !important;
+}
+
+.dark-theme #monthDropdown {
+  background: var(--bg-secondary) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+}

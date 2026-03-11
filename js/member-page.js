@@ -342,7 +342,7 @@ window.MemberPage = {
           <div class="calendar-section">
             <h3 style="text-align: center; font-size: 18px; font-weight: bold; color: #7e57c2; margin-bottom: 16px; letter-spacing: 2px;">ARCHIVES</h3>
             <div style="margin-bottom: 16px; position: relative;">
-              <div class="calendar-month-selector-new" style="width: 100%; padding: 12px 16px; background: white; border: 2px solid #7e57c2; border-radius: 8px; cursor: pointer; transition: all 0.3s ease;" onclick="MemberPage.toggleMonthDropdown()" onmouseover="this.style.background='#f3e5f5'" onmouseout="this.style.background='white'">
+              <div class="calendar-month-selector-new" style="width: 100%; padding: 12px 16px; background: white; border: 2px solid #7e57c2; border-radius: 8px; cursor: pointer; transition: all 0.3s ease;" onclick="MemberPage.toggleMonthDropdown()" onmouseover="this.style.background=document.documentElement.classList.contains('dark-theme')?'#3a3a3a':'#f3e5f5'" onmouseout="this.style.background=document.documentElement.classList.contains('dark-theme')?'':'white'">
                 <div style="display: flex; align-items: center; justify-content: center;">
                   <span id="calendarMonth" style="font-weight: bold; font-size: 16px; color: #7e57c2;">2025.10</span>
                   <span id="dropdownArrow" style="margin-left: 8px; color: #7e57c2; transition: transform 0.3s ease;">▼</span>
