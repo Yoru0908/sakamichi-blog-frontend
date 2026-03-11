@@ -86,30 +86,8 @@ window.MemberPage = {
         }
         
         .member-sidebar {
-          position: sticky;
-          top: 80px;
-          max-height: calc(100vh - 100px);
-          overflow-y: auto;
-          align-self: start;
-          scrollbar-width: thin;
-          scrollbar-color: rgba(126,87,194,0.3) transparent;
-        }
-        
-        .member-sidebar::-webkit-scrollbar {
-          width: 4px;
-        }
-        
-        .member-sidebar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        
-        .member-sidebar::-webkit-scrollbar-thumb {
-          background: rgba(126,87,194,0.3);
-          border-radius: 2px;
-        }
-        
-        .member-sidebar::-webkit-scrollbar-thumb:hover {
-          background: rgba(126,87,194,0.5);
+          /* no sticky here - let grid stretch it so child sticky works */
+          align-self: stretch;
         }
         
         .sidebar-card {
@@ -118,6 +96,9 @@ window.MemberPage = {
           padding: 24px;
           margin-bottom: 20px;
           text-align: center;
+          position: sticky;
+          top: 80px;
+          z-index: 10;
         }
         
         .member-avatar-sidebar {
