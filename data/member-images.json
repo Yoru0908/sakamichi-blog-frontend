@@ -1,5 +1,5 @@
 {
-  "lastUpdate": "2026-10-01T03:32:59.986Z",
+  "lastUpdate": "2026-10-01T04:00:02.627Z",
   "note": "成员真实图片 - 乃木坂46(JSONP API)、樱坂46/日向坂46(HTML解析) 官网自动更新",
   "source": "官网API + HTML解析",
   "images": {
@@ -2270,24 +2270,24 @@
       "group": "樱坂46",
       "generation": "二期生",
       "generationNumber": "2",
-      "status": "active",
-      "isActive": true
+      "status": "graduated",
+      "isActive": false
     },
     "河田陽菜": {
       "imageUrl": "",
       "group": "日向坂46",
       "generation": "二期生",
       "generationNumber": "2",
-      "status": "active",
-      "isActive": true
+      "status": "graduated",
+      "isActive": false
     },
     "松田好花": {
       "imageUrl": "",
       "group": "日向坂46",
       "generation": "二期生",
       "generationNumber": "2",
-      "status": "active",
-      "isActive": true
+      "status": "graduated",
+      "isActive": false
     }
   }
 }
